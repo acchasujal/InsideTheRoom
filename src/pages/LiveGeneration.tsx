@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { generateLivePerspectives, LiveGenerationResponse } from '../utils/mockApi';
+import { generateLivePerspectives, type LiveGenerationResponse } from '../utils/mockApi';
 import { PerspectiveCard } from '../components/PerspectiveCard';
 import './LiveGeneration.css';
 
