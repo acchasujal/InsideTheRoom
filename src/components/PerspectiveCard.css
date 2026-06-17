@@ -1,0 +1,46 @@
+.perspective-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  border-left: 4px solid var(--text-muted);
+  width: 100%;
+}
+
+.persona-badge {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.perspective-text {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+/* Themes */
+.theme-referee {
+  border-left-color: #3B82F6;
+  background: var(--color-referee);
+}
+
+.theme-fan {
+  border-left-color: #F97316;
+  background: var(--color-fan);
+}
+
+.theme-var {
+  border-left-color: #10B981;
+  background: var(--color-var);
+}
+
+.theme-rulebook {
+  border-left-color: #8B5CF6;
+  background: var(--color-rulebook);
+}
+
+.theme-default {
+  border-left-color: var(--text-muted);
+}

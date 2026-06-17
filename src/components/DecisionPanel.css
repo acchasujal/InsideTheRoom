@@ -1,0 +1,48 @@
+.decision-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  width: 100%;
+}
+
+.decision-panel h3 {
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.options-group {
+  display: flex;
+  gap: var(--space-4);
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-decision {
+  flex: 1;
+  max-width: 300px;
+  padding: var(--space-3) var(--space-4);
+  font-size: 1.25rem;
+  background-color: var(--bg-panel);
+  color: var(--text-primary);
+  border: var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.btn-decision:hover:not(:disabled) {
+  background-color: var(--text-primary);
+  color: var(--bg-color);
+  transform: translateY(-4px);
+}
+
+.btn-decision.selected {
+  background-color: var(--text-primary);
+  color: var(--bg-color);
+  border-color: var(--text-primary);
+}
+
+.btn-decision.dimmed {
+  opacity: 0.4;
+  transform: scale(0.98);
+}

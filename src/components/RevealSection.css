@@ -1,0 +1,31 @@
+.reveal-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.reveal-explanation {
+  background: var(--bg-panel);
+  border-left: 4px solid var(--accent-color);
+  padding: var(--space-3) var(--space-4);
+  border-radius: 4px 12px 12px 4px;
+}
+
+.reveal-explanation p {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.125rem;
+  font-weight: 400;
+}
+
+.fade-in-delayed {
+  animation: fadeInDelayed 2s ease-in-out forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInDelayed {
+  0% { opacity: 0; transform: translateY(10px); }
+  60% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}

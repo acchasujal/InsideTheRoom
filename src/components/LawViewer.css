@@ -1,0 +1,40 @@
+.law-viewer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  transition: all var(--transition-slow);
+}
+
+.law-citation {
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.law-text {
+  font-size: 1.25rem;
+  line-height: 1.8;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.reveal-target {
+  transition: all var(--transition-slow);
+}
+
+.reveal-target.highlighted {
+  color: var(--accent-color);
+  font-weight: 600;
+  text-shadow: 0 0 16px rgba(234, 179, 8, 0.6);
+  background: rgba(234, 179, 8, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.revealed-state {
+  border-color: rgba(234, 179, 8, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(234, 179, 8, 0.1);
+}
