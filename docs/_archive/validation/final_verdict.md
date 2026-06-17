@@ -1,0 +1,33 @@
+# Final Verdict — Phase 2B
+
+## TASK 6 — Competitive comparison
+
+**vs. DECODED (data-reveals-truth thesis).** This project loses on production polish almost by the prior documents' own admission — Principle 10 explicitly concedes the plan is to compete on argument, not spectacle, which is itself an acknowledgment of where it's weaker. It wins on the kind of memorability DECODED structurally can't produce: a closing idea (Suárez) that lands as a quiet gut-punch rather than a visual flourish. The risk is variance — this is a higher-ceiling, higher-floor bet than a polish-driven competitor. If the argument lands cleanly, it beats DECODED on the thing judges actually remember. If it doesn't land — if the demo runs long, or a judge collapses the VAR/Suárez insights into "this is just generic legal indeterminacy" before the close — there's much less to fall back on, because there's no visual spectacle floor to catch the fall. DECODED's slickness is more failure-resistant; this project's argument is not.
+
+**vs. Football Atlas (visualization-reveals-truth thesis).** Same dynamic, with an added wrinkle: a technical judge may read Football Atlas as "real engineering" and this project as "a clever copywriting exercise with an LLM wrapper" unless the multi-perspective reasoning is visibly, demonstrably the product of genuine model reasoning rather than scripted content. Principle 6 (demo must use pre-computed, cached outputs with zero live generation) and Principle 9 (Granite must be structurally necessary, not decorative) are in real tension here: the safer the demo is made, the less it can show live reasoning happening, and the harder it becomes to prove in front of judges — rather than merely assert in documentation — that Granite is doing anything a static lookup table couldn't do. This tension isn't resolved anywhere in the current documents and is worth resolving before a technical judge notices it unprompted.
+
+**vs. SameWhistle (consistency-reveals-truth thesis).** This is the strongest matchup for the project. SameWhistle's entire premise — that inconsistency can be engineered away — is the literal thing this thesis claims is structurally impossible. The moat argument in the source documents holds up well here specifically, better than it holds up against the other two competitors.
+
+**Where the project clearly wins:** emotional depth and narrative payoff (nothing else in the comparison set has a closing beat like Suárez), and a genuinely stronger interaction model (decide → discover → reconsider) than passive dashboards or visualizations.
+
+**Where it clearly loses:** visual production value, and — until the Principle 6/9 tension is resolved — the ability to prove live, in front of judges, that the AI component is doing necessary work rather than narrating pre-written content.
+
+---
+
+## TASK 7 — Verdict
+
+**KEEP.** Perišić as the opening incident (best balance of clarity, stakes, and emotional weight, despite its category-fit problem). De Jong's "same referee, two conclusions" as the strongest single piece of evidence in the set. Suárez as the emotional closer — its category mismatch is real, but its retention and emotional power are strong enough that the right move is to declare the mismatch on purpose rather than remove the incident. The two-decision mechanic itself. The five-category taxonomy as an organizing device, since it's a genuine differentiator from "five examples of bad referee calls."
+
+**REVISE.** State plainly, in the actual delivered content (not just internal strategy docs), that Suárez and Zidane-style incidents prove a different and related claim — the law's deliberate silence, not an undefined word — rather than letting a judge discover the inconsistency unprompted. Surfaced as a deliberate second mechanism ("the law preserves judgment two ways: undefined words, and deliberate silence on what a remedy should be"), this becomes a sign of a more sophisticated thesis instead of a hidden seam. Rewrite the Perišić framing to acknowledge it blends Intent and Threshold rather than claim pure Intent. Write a one-line preemptive answer to the "this is just general legal indeterminacy" objection into the VAR Judgment reveal itself, rather than hoping no judge raises it live. Resolve, before building anything further, whether VAR Judgment is a standalone fifth experience or a second layer inside Perišić — the documents currently assume both.
+
+**REMOVE.** Any framing, anywhere in the build, that treats VAR Judgment as capable of carrying its own emotional weight independent of another incident. The project's own numbers already say it can't.
+
+**REPLACE.** Nothing in the incident roster — the replacement search found no genuinely stronger candidate in the provided universe, and forcing a swap for the sake of having one would violate the only rule that matters here (don't replace unless it's actually better). If time pressure forces an actual cut, Mbappé is the more defensible one to drop, not VAR Judgment, since it has the weakest emotional stakes of the five and no way to nest inside another incident's narrative the way VAR Judgment can nest inside Perišić's.
+
+---
+
+## Final question
+
+**If this project fails to win, the single most likely reason is runtime, not thesis quality.** Five full decide-evidence-reveal-decide cycles is a lot of content for a three-minute demo. The team's own stated principle — that a broken or rushed demo overrides quality everywhere else — means the most probable failure mode is self-inflicted: either the pacing gets compressed until the "experience before explanation" sequence the whole thesis depends on collapses into explanation-first, or the demo runs over time. A secondary, lower-probability but higher-severity risk: a legally or philosophically literate judge reframes the VAR or Suárez insight as a restatement of a well-known general idea about rule-based systems in real time, and the team's prepared defense (specificity) answers a different objection (vagueness) than the one actually raised (genericness), leaving them without a ready response in the room.
+
+**If this project wins, the single strongest reason is the Suárez closing line.** "The law was followed exactly as written, and the outcome was still felt as unjust" is a precise, well-known story told with a sentence most judges will not have heard articulated that cleanly before, and it requires no football literacy or rules knowledge to feel. If nothing else in the demo lands perfectly, that one beat, delivered well, is likely to outlast most competitors' feature lists in a judge's memory a week later — which, per the project's own stated standard, is the actual game being played.
