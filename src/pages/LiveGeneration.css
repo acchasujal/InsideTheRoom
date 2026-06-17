@@ -1,0 +1,77 @@
+.live-input-section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: var(--bg-panel);
+  padding: var(--space-4);
+  border-radius: 12px;
+  border: var(--glass-border);
+}
+
+.incident-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--text-muted);
+  border-radius: 8px;
+  padding: var(--space-3);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+  font-size: 1.125rem;
+  resize: vertical;
+  transition: all var(--transition-fast);
+}
+
+.incident-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.2);
+}
+
+/* Terminal Styling */
+.terminal-window {
+  width: 100%;
+  background: #000000;
+  border: 1px solid #333;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+}
+
+.terminal-header {
+  background: #1a1a1a;
+  padding: 8px 16px;
+  border-bottom: 1px solid #333;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.terminal-body {
+  padding: var(--space-3);
+  min-height: 250px;
+  color: #10B981; /* Hacker Green for logs */
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.log-line {
+  margin-bottom: 4px;
+  opacity: 0;
+  animation: typeIn 0.1s forwards;
+}
+
+@keyframes typeIn {
+  to { opacity: 1; }
+}
+
+.cursor {
+  display: inline-block;
+  width: 8px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}

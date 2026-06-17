@@ -29,9 +29,15 @@ export const Home: React.FC = () => {
           <br/>They're about what a word means.
         </p>
 
-        <button className="btn-primary" style={{ fontSize: '1.25rem', padding: '16px 32px' }} onClick={handleStart}>
-          Enter the Review Room
-        </button>
+        <div style={{ display: 'flex', gap: '16px' }}>
+          <button className="btn-primary" style={{ fontSize: '1.25rem', padding: '16px 32px' }} onClick={handleStart}>
+            Enter the Review Room
+          </button>
+          
+          <button className="btn-ghost" style={{ fontSize: '1.25rem', padding: '16px 32px' }} onClick={() => navigate('/live')}>
+            Live Generation
+          </button>
+        </div>
       </main>
     </div>
   );
