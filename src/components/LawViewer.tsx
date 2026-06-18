@@ -4,11 +4,11 @@ import './LawViewer.css';
 interface LawViewerProps {
   lawText: string;
   lawCitation: string;
-  highlightTerm?: string;
+  highlightTerms?: string[];
   animateReveal?: boolean;
 }
 
-export const LawViewer: React.FC<LawViewerProps> = ({ lawText, lawCitation, highlightTerm, animateReveal = false }) => {
+export const LawViewer: React.FC<LawViewerProps> = ({ lawText, lawCitation, highlightTerms = [], animateReveal = false }) => {
   const [isRevealed, setIsRevealed] = useState(!animateReveal);
 
   useEffect(() => {
@@ -21,18 +21,24 @@ export const LawViewer: React.FC<LawViewerProps> = ({ lawText, lawCitation, high
   }, [animateReveal]);
 
   const renderText = () => {
-    if (!highlightTerm) return lawText;
+    if (!highlightTerms || highlightTerms.length === 0) return lawText;
 
-    const parts = lawText.split(new RegExp(`(${highlightTerm})`, 'gi'));
-    return parts.map((part, index) => 
-      part.toLowerCase() === highlightTerm.toLowerCase() ? (
+    // Build a regex that matches any of the highlight terms
+    const escapedTerms = highlightTerms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const regex = new RegExp(`(${escapedTerms.join('|')})`, 'gi');
+    
+    const parts = lawText.split(regex);
+    
+    return parts.map((part, index) => {
+      const isMatch = highlightTerms.some(term => term.toLowerCase() === part.toLowerCase());
+      return isMatch ? (
         <span key={index} className={`reveal-target ${isRevealed ? 'highlighted' : ''}`}>
           {part}
         </span>
       ) : (
         part
-      )
-    );
+      );
+    });
   };
 
   return (

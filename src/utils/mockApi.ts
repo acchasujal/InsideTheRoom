@@ -8,7 +8,7 @@ export interface LiveGenerationResponse {
   perspectives: GeneratedPerspective[];
 }
 
-export const generateLivePerspectives = async (incidentText: string): Promise<LiveGenerationResponse> => {
+export const generateLivePerspectives = async (_incidentText: string): Promise<LiveGenerationResponse> => {
   // Simulate network delay for the pipeline processing effect (5 seconds)
   return new Promise((resolve) => {
     setTimeout(() => {

@@ -5,7 +5,7 @@ import './RevealSection.css';
 interface RevealSectionProps {
   lawText: string;
   lawCitation: string;
-  undefinedTerm: string;
+  highlightTerms: string[];
   explanation: string;
   isVisible: boolean;
 }
@@ -13,7 +13,7 @@ interface RevealSectionProps {
 export const RevealSection: React.FC<RevealSectionProps> = ({ 
   lawText, 
   lawCitation, 
-  undefinedTerm, 
+  highlightTerms, 
   explanation, 
   isVisible 
 }) => {
@@ -24,7 +24,7 @@ export const RevealSection: React.FC<RevealSectionProps> = ({
       <LawViewer 
         lawText={lawText} 
         lawCitation={lawCitation} 
-        highlightTerm={undefinedTerm}
+        highlightTerms={highlightTerms}
         animateReveal={true}
       />
       

@@ -1,16 +1,20 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface DemoContextType {
   currentIncidentIndex: number;
+  isDemoMode: boolean;
   nextIncident: () => void;
   resetDemo: () => void;
+  setDemoMode: (mode: boolean) => void;
 }
 
 const DemoContext = createContext<DemoContextType | undefined>(undefined);
 
 export const DemoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentIncidentIndex, setCurrentIncidentIndex] = useState(0);
+  const [isDemoMode, setIsDemoMode] = useState(false);
   const navigate = useNavigate();
 
   const resetDemo = () => {
@@ -24,7 +28,7 @@ export const DemoProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     let escapeCount = 0;
-    let escapeTimer: NodeJS.Timeout;
+    let escapeTimer: ReturnType<typeof setTimeout>;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -50,7 +54,7 @@ export const DemoProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [navigate]);
 
   return (
-    <DemoContext.Provider value={{ currentIncidentIndex, nextIncident, resetDemo }}>
+    <DemoContext.Provider value={{ currentIncidentIndex, isDemoMode, nextIncident, resetDemo, setDemoMode: setIsDemoMode }}>
       {children}
     </DemoContext.Provider>
   );

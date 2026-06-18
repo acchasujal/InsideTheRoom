@@ -5,7 +5,7 @@ import { useDemo } from '../context/DemoContext';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
-  const { currentIncidentIndex, resetDemo } = useDemo();
+  const { currentIncidentIndex, resetDemo, isDemoMode, setDemoMode } = useDemo();
 
   const handleStart = () => {
     if (currentIncidentIndex !== 0) {
@@ -29,14 +29,29 @@ export const Home: React.FC = () => {
           <br/>They're about what a word means.
         </p>
 
-        <div style={{ display: 'flex', gap: '16px' }}>
-          <button className="btn-primary" style={{ fontSize: '1.25rem', padding: '16px 32px' }} onClick={handleStart}>
-            Enter the Review Room
-          </button>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }}>
+          <div style={{ display: 'flex', gap: '16px' }}>
+            <button className="btn-primary" style={{ fontSize: '1.25rem', padding: '16px 32px' }} onClick={handleStart}>
+              Enter the Review Room
+            </button>
+            
+            <button className="btn-ghost" style={{ fontSize: '1.25rem', padding: '16px 32px' }} onClick={() => navigate('/live')}>
+              Live Generation
+            </button>
+          </div>
           
-          <button className="btn-ghost" style={{ fontSize: '1.25rem', padding: '16px 32px' }} onClick={() => navigate('/live')}>
-            Live Generation
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-muted)' }}>
+            <input 
+              type="checkbox" 
+              id="demoMode" 
+              checked={isDemoMode}
+              onChange={(e) => setDemoMode(e.target.checked)}
+              style={{ accentColor: 'var(--accent-color)', width: '18px', height: '18px', cursor: 'pointer' }}
+            />
+            <label htmlFor="demoMode" style={{ cursor: 'pointer', fontSize: '0.9rem' }}>
+              Canonical Demo Path (Skip Mbappé/De Jong)
+            </label>
+          </div>
         </div>
       </main>
     </div>

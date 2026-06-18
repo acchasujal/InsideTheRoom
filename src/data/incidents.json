@@ -4,6 +4,8 @@
     "title": "Perišić Handball",
     "theme": "Intent / Threshold Blend",
     "summary": "Ivan Perišić's arm makes contact with the ball in the penalty area during the 2018 World Cup Final.",
+    "imageFile": "perisic.webp",
+    "altImageFile": "perisic1.jpg",
     "lawInvolved": "Law 12 (Fouls and Misconduct - Handling the ball)",
     "disputedTerm": "\"Deliberately\" / \"Unnaturally bigger\"",
     "evidenceShown": "Video/images of the ball striking the arm; player's running posture.",
@@ -13,9 +15,9 @@
       { "persona": "VAR", "text": "The arm position was unnaturally bigger, creating a barrier. This is a clear and obvious error by the referee." },
       { "persona": "Rulebook", "text": "It is an offense if a player deliberately touches the ball or makes their body unnaturally bigger." }
     ],
-    "reveal": "The word \"deliberately\" appears four times in Law 12 and has no definition. \"Unnaturally bigger\" has no definition.",
+    "reveal": "The rulebook demands we penalize 'deliberate' acts. It never defines what 'deliberate' means. The foundation of the law is blank.",
     "decision2Prompt": "Now that you know the law doesn't define these terms, is it still a clear penalty?",
-    "reflection": "The certainty of the first decision was built on undefined terms. Mental state is unobservable.",
+    "reflection": "We are searching for objective truth in an unobservable mind.",
     "emotionalObjective": "Shock and realization that the rulebook is hollow at its core."
   },
   {
@@ -23,6 +25,7 @@
     "title": "VAR Nested Layer",
     "theme": "Judgment",
     "summary": "The VAR intervention mechanism regarding the Perišić handball.",
+    "imageFile": "var.png",
     "lawInvolved": "VAR Protocol",
     "disputedTerm": "\"Clear and obvious error\"",
     "evidenceShown": "The referee's initial \"no penalty\" call vs. the VAR recommendation to review and overturn.",
@@ -32,9 +35,9 @@
       { "persona": "VAR", "text": "The missed handball was a clear error that directly impacted a goal-scoring opportunity." },
       { "persona": "Rulebook", "text": "VAR may only intervene in the event of a \"clear and obvious error\" or \"serious missed incident.\"" }
     ],
-    "reveal": "\"Clear and obvious\" has no definition. The correction mechanism itself relies on an interpretive judgment.",
+    "reveal": "\"Clear and obvious\" has no definition. VAR doesn't remove human ambiguity. It just puts it on a screen.",
     "decision2Prompt": "Does a review mechanism based on an undefined term solve the ambiguity, or just move it?",
-    "reflection": "We replaced an undefined foul with an undefined standard for correction.",
+    "reflection": "VAR doesn't fix ambiguity. It just moves it to a screen.",
     "emotionalObjective": "Epiphany about systemic ambiguity in officiating technology."
   },
   {
@@ -42,6 +45,8 @@
     "title": "De Jong Chest Kick",
     "theme": "Threshold",
     "summary": "Nigel de Jong kicks Xabi Alonso in the chest during the 2010 World Cup Final.",
+    "imageFile": "dejong.jpg",
+    "altImageFile": "dejong1.jpg",
     "lawInvolved": "Law 12 (Fouls and Misconduct)",
     "disputedTerm": "\"Serious foul play\" (excessive force) vs. \"reckless\" (yellow card)",
     "evidenceShown": "The high boot to the chest. Referee Howard Webb issuing a yellow card, and his later quote stating it should have been red.",
@@ -51,9 +56,9 @@
       { "persona": "VAR", "text": "The player used excessive force and endangered the safety of an opponent. It is serious foul play." },
       { "persona": "Rulebook", "text": "Reckless challenges warrant a yellow card. Using excessive force constitutes serious foul play (red card)." }
     ],
-    "reveal": "Howard Webb gave a yellow, but years later said it should have been red. Same referee, same footage, two answers. The boundary between \"reckless\" and \"excessive force\" is undefined.",
+    "reveal": "Same referee. Same video. Two different answers. The line between a yellow card and a red card doesn't actually exist.",
     "decision2Prompt": "If the same referee gives two different answers to the exact same footage, what is the \"correct\" call?",
-    "reflection": "The boundary between a caution and a sending-off is fundamentally undefined.",
+    "reflection": "The difference between playing the game and ruining it is a boundary that doesn't exist.",
     "emotionalObjective": "Resignation to the impossibility of objective consistency."
   },
   {
@@ -61,6 +66,8 @@
     "title": "Mbappé \"Deliberate Play\" Offside",
     "theme": "Scope",
     "summary": "Kylian Mbappé receives the ball in an offside position, but a defender's touch resets the play, allowing him to score in the 2021 Nations League Final.",
+    "imageFile": "mbappe.jpg",
+    "altImageFile": "mbappe1.jpg",
     "lawInvolved": "Law 11 (Offside)",
     "disputedTerm": "\"Deliberately played\"",
     "evidenceShown": "Mbappé's position, the pass, the defender's attempt to intercept, and the resulting goal.",
@@ -70,7 +77,7 @@
       { "persona": "VAR", "text": "The defender's action meets the criteria for a deliberate play. The offside offense is nullified." },
       { "persona": "Rulebook", "text": "A player in an offside position receiving the ball from an opponent who deliberately played the ball is not considered to have gained an advantage." }
     ],
-    "reveal": "\"Deliberately played\" has no definition. Its guidance terms (e.g., \"in control\") are also undefined. It is undefined all the way down.",
+    "reveal": "The rule resets if the ball is 'deliberately played.' But the law cannot explain what 'deliberate' means. The rule is trapped in its own missing definitions.",
     "decision2Prompt": "Can you enforce an offside rule if the condition that resets it is undefined?",
     "reflection": "The law defines its very area of application using undefined terms.",
     "emotionalObjective": "Frustration with recursive bureaucratic ambiguity."
@@ -80,6 +87,8 @@
     "title": "Suárez Goal-Line Handball",
     "theme": "Context",
     "summary": "Luis Suárez intentionally handles the ball on the goal line to prevent a certain goal for Ghana in the 2010 World Cup Quarter-Final.",
+    "imageFile": "suarez.webp",
+    "altImageFile": "suarez1.webp",
     "lawInvolved": "Law 12 (Fouls and Misconduct)",
     "disputedTerm": "Adequacy of punishment / Procedural vs. Substantive Justice",
     "evidenceShown": "The deliberate handball, the red card, the missed penalty, and Uruguay advancing.",
@@ -89,7 +98,7 @@
       { "persona": "VAR", "text": "The referee correctly identified the denial of an obvious goal-scoring opportunity by handball. Red card and penalty are the correct sanctions." },
       { "persona": "Rulebook", "text": "Denying the opposing team a goal or an obvious goal-scoring opportunity by a handball offense results in a sending-off and a penalty kick." }
     ],
-    "reveal": "The law doesn't define 'adequate remedy.' It doesn't define 'justice.' It only defines procedure. Every rule was followed perfectly. Ghana still went home.",
+    "reveal": "Every rule was followed perfectly. The maximum punishment was given. But the law only guarantees procedure, not justice. The cheater advanced, and Ghana went home.",
     "decision2Prompt": "Was justice served?",
     "reflection": "The law is completely silent on whether its remedy fits the context of the situation.",
     "emotionalObjective": "A deep sense of unfairness and an understanding of the fundamental limits of the law."
