@@ -3,13 +3,17 @@
 **Objective:** Secure judge recall by delivering the core thesis through the two-decision mechanic.
 **Runtime:** 3:00 strictly enforced.
 
-## 0:00 - 0:10 | The Hook
+## The 3-Minute Narrative Flow
+
+The demo backbone is three beats, fixed in this order, never reduced:
+
+### 0:00 - 0:15 | The Hook
 **Screen:** Home / Hook Screen. Neutral background.
 **Action:** Presenter loads the page.
 **Narration:** "Football's biggest controversies aren't about what happened on the pitch. They're about what a word means. Welcome to the VAR Room."
 **Action:** Presenter clicks "Enter the VAR Room".
 
-## 0:10 - 0:45 | Incident 1: Perišić & Intent
+### 0:15 - 1:10 | Beat 1 — Perišić
 **Screen:** Incident Setup Screen (Perišić Handball).
 **Action:** Show brief clip/image of the handball.
 **Narration:** "2018 World Cup Final. Perišić's arm blocks the ball. Penalty or no penalty? In your head, make a choice."
@@ -21,47 +25,33 @@
 **Narration:** "Granite generates perfectly logical, opposite conclusions from the same video. Why? Let's look at the law."
 **Screen:** Reveal Screen.
 **Action:** Highlight the words "deliberately" and "unnaturally bigger".
-**Narration:** "The word 'deliberately' appears four times in Law 12. It has no definition. 'Unnaturally bigger' has no definition. The rules are hollow."
+**Narration:** "The rulebook demands we penalize 'deliberate' acts. It never defines what 'deliberate' means. The foundation of the law is blank."
 **Emotional Objective:** Shock that the rulebook lacks basic definitions.
 
-## 0:45 - 1:05 | VAR Nested Layer: Judgment
+### 1:10 - 1:40 | Beat 2 — VAR Nested
 **Screen:** Reveal Screen (VAR Protocol).
 **Narration:** "What about the video referee? VAR overturned the on-field call. But VAR can only intervene for a 'clear and obvious error.'"
 **Action:** Highlight "clear and obvious error".
-**Narration:** "That phrase has no definition either. We've replaced an undefined foul with an undefined correction standard."
+**Narration:** "That phrase has no definition either. VAR doesn't remove human ambiguity. It just puts it on a screen."
 **Emotional Objective:** Epiphany about systemic ambiguity.
 
-## 1:05 - 1:45 | Incident 2: De Jong & Threshold
-**Screen:** Incident Setup Screen (De Jong Chest Kick).
-**Action:** Show De Jong kicking Alonso.
-**Narration:** "2010 Final. De Jong kicks Alonso in the chest. Red card, right?"
-**Screen:** Decision 1 Screen.
-**Action:** Presenter selects "Red Card".
-**Screen:** Reveal Screen.
-**Narration:** "Referee Howard Webb gave a yellow card. Years later, watching this exact footage, he said it should have been red. Same referee, same video, two answers."
-**Action:** Highlight "reckless" vs "excessive force".
-**Narration:** "Why? Because 'reckless' is a yellow. 'Excessive force' is a red. The boundary between them is fundamentally undefined."
-**Emotional Objective:** Resignation to the impossibility of objective consistency.
-
-## 1:45 - 2:00 | Incident 3: Mbappé & Scope [CUTTABLE IF SHORT ON TIME]
-**Screen:** Incident Setup Screen (Mbappé).
-**Narration:** "Mbappé is offside, but a defender tries to play the ball. Does it reset the offside?"
-**Screen:** Reveal Screen.
-**Narration:** "The law says it resets if 'deliberately played.' That phrase has no definition. It's undefined all the way down."
-**Emotional Objective:** Frustration with recursive ambiguity.
-
-## 2:00 - 2:45 | Incident 4: Suárez & Context
+### 1:40 - 2:50 | Beat 3 — Suárez
 **Screen:** Incident Setup Screen (Suárez).
-**Narration:** "The first incidents showed undefined words. This last one is different."
+**Narration:** "The first incident showed undefined words. This last one is different."
 **Action:** Show Suárez handball.
 **Narration:** "Suárez intentionally handles the ball to stop a certain goal for Ghana."
 **Screen:** Decision 1 Screen.
 **Action:** Presenter clicks "Was justice served? No."
 **Screen:** Reveal Screen.
-**Narration:** "The referee applied the law perfectly. Red card, penalty. But the law doesn't define 'adequate remedy.' It doesn't define 'justice.' It only defines procedure. Every rule was followed perfectly, and Ghana still went home."
+**Narration:** "Every rule was followed perfectly. The maximum punishment was given. But the law only guarantees procedure, not justice. The cheater advanced, and Ghana went home."
 **Emotional Objective:** Deep sense of unfairness regarding the limits of the law.
 
-## 2:45 - 3:00 | The Close
+### 2:50 - 3:00 | The Close
 **Screen:** Home / Hook Screen (Return).
 **Narration:** "Football law doesn't need better data. It was designed to need better judgment. And it put that judgment in a room where the people making the call are using words that have no definitions. That's what we built."
+*(Note: Mention, do not demo, that De Jong and Mbappé exist in the product as two further categories of the same phenomenon, explorable after the formal demo or during Q&A.)*
 **Action:** Fade to black. End of demo.
+
+## The Ruthless Cut Hierarchy
+
+**Cut hierarchy (single tier):** If time is short, cut Layer 2 (Live Generation / `/live`) entirely — do not open that page. The 3-beat backbone is never cut. If genuinely desperate, compress Beat 2 (VAR Nested) to a single spoken sentence instead of a full perspectives/reveal cycle — do not skip it outright, since it is the project's most distinctive insight, not a disposable extra.

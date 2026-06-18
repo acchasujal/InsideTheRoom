@@ -2,6 +2,24 @@
 
 This registry provides the structured content required for the five canonical incidents.
 
+## Canonical Incident Sequencing
+
+There are two separate sequences. Both are correct, for different purposes:
+
+**Product taxonomy order** (all 5, for in-app free exploration and the written submission's taxonomy claim):
+1. Perišić — Intent/Threshold blend
+2. De Jong — Threshold
+3. Mbappé — Scope
+4. VAR Nested — Judgment
+5. Suárez — Context (climax)
+
+**Demo backbone order** (live presentation, 3 beats only):
+1. Perišić
+2. VAR Nested (continues directly from Perišić — same incident, second layer)
+3. Suárez
+
+De Jong and Mbappé are fully built, fully navigable product content. They are absent from the scripted live walkthrough specifically. Any document or script referring to "the demo" should use the 3-beat order; any document referring to "the product" or "the taxonomy" should use the 5-incident order.
+
 ## 1. Perišić Handball (Intent / Threshold Blend)
 - **Incident Summary:** Ivan Perišić's arm makes contact with the ball in the penalty area during the 2018 World Cup Final.
 - **FIFA Law Involved:** Law 12 (Fouls and Misconduct - Handling the ball).
@@ -13,7 +31,7 @@ This registry provides the structured content required for the five canonical in
 - **Rulebook Perspective:** It is an offense if a player deliberately touches the ball or makes their body unnaturally bigger.
 - **Reveal:** The word "deliberately" appears four times in Law 12 and has no definition. "Unnaturally bigger" has no definition.
 - **Decision 2 Prompt:** Now that you know the law doesn't define these terms, is it still a clear penalty?
-- **Reflection:** The certainty of the first decision was built on undefined terms. Mental state is unobservable.
+- **Reflection:** We are searching for objective truth in an unobservable mind.
 - **Emotional Objective:** Shock and realization that the rulebook is hollow at its core.
 
 ## 2. VAR Nested Layer (Judgment)
@@ -27,7 +45,7 @@ This registry provides the structured content required for the five canonical in
 - **Rulebook Perspective:** VAR may only intervene in the event of a "clear and obvious error" or "serious missed incident."
 - **Reveal:** "Clear and obvious" has no definition. The correction mechanism itself relies on an interpretive judgment.
 - **Decision 2 Prompt:** Does a review mechanism based on an undefined term solve the ambiguity, or just move it?
-- **Reflection:** We replaced an undefined foul with an undefined standard for correction.
+- **Reflection:** VAR doesn't fix ambiguity. It just moves it to a screen.
 - **Emotional Objective:** Epiphany about systemic ambiguity in officiating technology.
 
 ## 3. De Jong Chest Kick (Threshold)
@@ -41,7 +59,7 @@ This registry provides the structured content required for the five canonical in
 - **Rulebook Perspective:** Reckless challenges warrant a yellow card. Using excessive force constitutes serious foul play (red card).
 - **Reveal:** Howard Webb gave a yellow, but years later said it should have been red. Same referee, same footage, two answers. The boundary between "reckless" and "excessive force" is undefined.
 - **Decision 2 Prompt:** If the same referee gives two different answers to the exact same footage, what is the "correct" call?
-- **Reflection:** The boundary between a caution and a sending-off is fundamentally undefined.
+- **Reflection:** The difference between playing the game and ruining it is a boundary that doesn't exist.
 - **Emotional Objective:** Resignation to the impossibility of objective consistency.
 
 ## 4. Mbappé "Deliberate Play" Offside (Scope)
@@ -67,7 +85,7 @@ This registry provides the structured content required for the five canonical in
 - **Referee Perspective:** I applied the law perfectly. I sent the player off and awarded a penalty kick. That is the maximum punishment allowed.
 - **VAR Perspective:** The referee correctly identified the denial of an obvious goal-scoring opportunity by handball. Red card and penalty are the correct sanctions.
 - **Rulebook Perspective:** Denying the opposing team a goal or an obvious goal-scoring opportunity by a handball offense results in a sending-off and a penalty kick.
-- **Reveal:** The law doesn't define 'adequate remedy.' It doesn't define 'justice.' It only defines procedure. Every rule was followed perfectly. Ghana still went home.
+- **Reveal:** The law doesn't define 'adequate remedy.' It doesn't define 'justice.' It only defines procedure. Every rule was followed perfectly. The penalty was missed, and Ghana still went home.
 - **Decision 2 Prompt:** Was justice served?
 - **Reflection:** The law is completely silent on whether its remedy fits the context of the situation.
 - **Emotional Objective:** A deep sense of unfairness and an understanding of the fundamental limits of the law.

@@ -1,5 +1,7 @@
 # Implementation Tasks
 
+**CRITICAL RULE:** After completing each task in this document, the agent MUST create a specific, atomic git commit for that task's changes and push to the remote repository. This ensures traceability and easy rollbacks.
+
 This document translates the VAR Room project strategy into executable development tickets.
 
 ## 1. Setup
@@ -25,7 +27,7 @@ This document translates the VAR Room project strategy into executable developme
 * **Dependencies:** None
 * **Priority:** Critical
 * **Estimated Effort:** 1 Day
-* **Acceptance Criteria:** `incidents.json` contains valid data for all 5 incidents (Perišić, VAR Nested, De Jong, Mbappé, Suárez), including pre-computed Granite perspectives.
+* **Acceptance Criteria:** `incidents.json` contains valid data for Perišić, De Jong, and Suárez, including pre-computed Granite perspectives.
 
 ## 3. Frontend
 
@@ -41,22 +43,7 @@ This document translates the VAR Room project strategy into executable developme
 * **Dependencies:** TASK-FE-01, TASK-CON-01
 * **Priority:** Critical
 * **Estimated Effort:** 3 Days
-* **Acceptance Criteria:** User can click through all 5 incidents sequentially in free-exploration mode. Additionally, the canonical live-demo path (Perišić → VAR Nested → Suárez) must be directly navigable without passing through De Jong or Mbappé — this requires the incident-to-incident navigation logic to support a non-sequential "demo mode" jump rather than only incrementing through the `incidents.json` array index. **Status: Complete (Implemented via isDemoMode flag).**
-
-### Frontend Task Breakdown
-
-#### Build Sequence
-* **Phase A: Architecture & State (Critical Path):** Initialize Project (Next.js/Vite, ESLint), Context Provider (`DemoContext` for `currentIncidentIndex` and `resetDemo`), Routing Setup (`/`, `/incident/[id]`, `/live`).
-* **Phase B: Design System & Primitives (Critical Path):** CSS Variables (Inter/Outfit, dark mode, glassmorphism), Typography Components, Buttons & Inputs.
-* **Phase C: Core Components (Critical Path):** `IncidentCard`, `DecisionPanel`, `LawViewer`, `PerspectiveBubble`.
-* **Phase D: Layouts & Pages (Critical Path):** `Home Layout` (Hook), `Incident Layout` (Main Loop).
-* **Phase E: Animations & Polish (Demo-Critical Work):** The Reveal Animation (1.0s delay), Phase Transitions (fade-ins).
-* **Phase F: Layer 2 Live Integration (Parallelizable):** `/live` Page (text input), Loading State (pipeline logging animation), Results Parsing (mapping JSON response).
-
-#### Work Categorization
-* **Critical Path (Must Build to Win):** Phases A, B, C, D. Without these, there is no Layer 1 demo.
-* **Demo-Critical Work (High ROI):** Phase E (Animations & Polish). The Reveal Animation is what sells the intellectual "a-ha" moment to the judges.
-* **Parallelizable Work:** Phase F (Layer 2). Can be built concurrently with the main loop.
+* **Acceptance Criteria:** User can click through the 3 core incidents sequentially.
 
 ## 4. Backend
 
@@ -66,20 +53,6 @@ This document translates the VAR Room project strategy into executable developme
 * **Priority:** Medium
 * **Estimated Effort:** 1 Day
 * **Acceptance Criteria:** Endpoint accepts requests, validates input, and returns mock JSON.
-
-### Backend Task Breakdown
-
-#### Build Sequence
-* **Phase A: Static Data Formatting (Critical Path):** Data Normalization (`incident_content_registry.md` to `incidents.json`), Offline Generation (Run Granite prompts for all 5 incidents).
-* **Phase B: Serverless API Proxy (Demo-Critical):** API Route Setup (`POST /api/v1/incidents/generate`), Input Validation (sanitize text), Mock Integration (hardcoded successful response).
-* **Phase C: LangFlow & Granite Orchestration (Parallelizable):** LangFlow Pipeline Setup, Docling Integration (FIFA law retrieval), Granite Node Configuration (watsonx.ai keys), Webhook Exposure.
-* **Phase D: API Layer Integration (Demo-Critical):** Connect Proxy to Webhook, Error Handling (timeout handling), Response Parsing (`incidents.json` schema matching).
-* **Phase E: Deployment & Caching (Demo-Critical):** Edge Deployment (Vercel/Netlify), Disable Caching (on `/api/v1/incidents/generate`).
-
-#### Work Categorization
-* **Critical Path (Must Build to Win):** Phase A (Static JSON). Layer 1 cannot function without this data for all 5 incidents.
-* **Demo-Critical Work (High ROI):** Phase E (Deployment). The API must be accessible globally without CORS issues.
-* **Parallelizable Work:** Phases B, C, D. The entire Layer 2 backend can be built entirely independently of the frontend Layer 1 loop.
 
 ## 5. AI Integration
 
@@ -107,7 +80,7 @@ This document translates the VAR Room project strategy into executable developme
 * **Acceptance Criteria:** Pressing the hotkey instantly resets the demo to the hook page.
 
 ### [TASK-DEMO-02] Offline Asset Loading
-* **Description:** Embed lightweight, stylized illustration assets (not photoreal depictions of real players — see asset-strategy note) and ensure they preload on the Home page.
+* **Description:** Embed heavily compressed MP4s/GIFs and ensure they preload on the Home page.
 * **Dependencies:** TASK-FE-02
 * **Priority:** High
 * **Estimated Effort:** 1 Day

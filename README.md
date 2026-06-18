@@ -1,73 +1,62 @@
-# React + TypeScript + Vite
+# Inside The Room (VAR Room)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to **VAR Room**, an interactive incident simulator and decision-making application. This repository contains the React + TypeScript frontend built with Vite.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Getting Started
 
-## React Compiler
+Follow these steps to set up and run the application locally on your machine.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
 
-## Expanding the ESLint configuration
+Make sure you have [Node.js](https://nodejs.org/) installed (LTS version recommended).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 1. Install Dependencies
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Clone the repository, navigate to the project root directory, and run the following command to install the required packages:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Run the Development Server
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Start the local development server with Hot Module Replacement (HMR):
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+Once started, the terminal will display the local URL (typically [http://localhost:5173](http://localhost:5173)). Open this address in your web browser to view the application.
+
+### 3. Build for Production
+
+To compile and optimize the application for production deployment, run:
+
+```bash
+npm run build
+```
+
+This will generate a static production bundle in the `dist/` directory.
+
+### 4. Preview the Production Build
+
+You can preview the production-built site locally to ensure everything works as expected:
+
+```bash
+npm run preview
+```
+
+---
+
+## 📂 Project Structure & Documentation
+
+Detailed project architecture, strategy guides, design systems, and product requirements are located in the `docs` folder.
+
+To understand the project goals and frontend/backend systems, please refer to:
+* 📖 [Documentation Index (docs/README.md)](file:///d:/Projects/InsideTheRoom/docs/README.md)
+* 📝 [Frontend UI System (docs/03_frontend/ui_system.md)](file:///d:/Projects/InsideTheRoom/docs/03_frontend/ui_system.md)
+* 📝 [Product Requirements (docs/02_product/product_requirements.md)](file:///d:/Projects/InsideTheRoom/docs/02_product/product_requirements.md)
+* 📝 [Milestone Plan (docs/06_execution/milestone_plan.md)](file:///d:/Projects/InsideTheRoom/docs/06_execution/milestone_plan.md)
+
