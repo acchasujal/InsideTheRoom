@@ -12,11 +12,11 @@ export const LiveGeneration: React.FC = () => {
   const [result, setResult] = useState<LiveGenerationResponse | null>(null);
 
   const pipelineSteps = [
-    "Initializing LangFlow Pipeline...",
+    "Initializing IBM watsonx.ai Session...",
     "Connecting to IBM watsonx.ai...",
     "Sanitizing input text...",
-    "Querying Docling Vector Store for FIFA Laws...",
-    "Law retrieved. Identifying ambiguous terms...",
+    "Querying Knowledge Base for Incident Context...",
+    "Laws retrieved. Identifying ambiguous terms...",
     "Spawning Granite Personas (Referee, VAR, Fan, Rulebook)...",
     "Synthesizing divergent perspectives...",
     "Finalizing response payload..."
@@ -65,7 +65,7 @@ export const LiveGeneration: React.FC = () => {
   return (
     <div className="app-container">
       <header className="header">
-        <h2>VAR Room — Live Granite Generation (Layer 2)</h2>
+        <h2>Inside the Room — Live Granite Generation</h2>
       </header>
 
       <main className="main-content" style={{ width: '100%', maxWidth: '900px' }}>
@@ -94,7 +94,7 @@ export const LiveGeneration: React.FC = () => {
         {status === 'GENERATING' && (
           <div className="terminal-window fade-in">
             <div className="terminal-header">
-              <span>LangFlow Execution Log</span>
+              <span>IBM watsonx.ai Execution Log</span>
             </div>
             <div className="terminal-body mono">
               {logs.map((log, i) => (
@@ -104,6 +104,7 @@ export const LiveGeneration: React.FC = () => {
             </div>
           </div>
         )}
+
 
         {status === 'COMPLETE' && result && (
           <div className="live-results fade-in">

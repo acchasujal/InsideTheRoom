@@ -96,7 +96,7 @@ export const IncidentContainer: React.FC = () => {
   const rulebookText = incident.perspectives.find(p => p.persona === 'Rulebook')?.text || "";
 
   const layer1Steps = [
-    "> Querying Vector Store for relevant law...",
+    "> Querying knowledge base for relevant law...",
     "> Spawning personas (Fan, Referee, VAR)...",
     "> Synthesizing divergent perspectives..."
   ];

@@ -19,14 +19,18 @@ export const Home: React.FC = () => {
   return (
     <div className="app-container fade-in">
       <header className="header">
-        <h2>VAR Room</h2>
+        <h2>Inside the Room</h2>
       </header>
       
-      <main className="main-content" style={{ marginTop: '10vh' }}>
-        <h1 style={{ fontSize: '4rem' }}>The Law Defines Procedure.</h1>
-        <p style={{ fontSize: '1.5rem', marginBottom: '64px', color: 'var(--text-muted)' }}>
-          Football's biggest controversies aren't about what happened. 
-          <br/>They're about what a word means.
+      <main className="main-content" style={{ marginTop: '10vh', textAlign: 'center', maxWidth: '800px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <h1 style={{ fontSize: '3.5rem', lineHeight: '1.2', marginBottom: '24px' }}>
+          Every high-stakes decision happens inside ambiguity.
+        </h1>
+        <p style={{ fontSize: '1.25rem', color: 'var(--accent-color)', fontWeight: '500', marginBottom: '16px' }}>
+          Granite doesn't give you the answer. It gives you every answer a reasonable expert would give — and makes the disagreement itself the output.
+        </p>
+        <p style={{ fontSize: '1.1rem', marginBottom: '64px', color: 'var(--text-muted)', lineHeight: '1.6' }}>
+          Inside the Room uses IBM Granite to surface the full landscape of legitimate perspectives on incidents where rules, evidence, and human judgment intersect — before a final call is made. Demonstrated through football, designed for everywhere.
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }}>
@@ -57,3 +61,4 @@ export const Home: React.FC = () => {
     </div>
   );
 };
+
