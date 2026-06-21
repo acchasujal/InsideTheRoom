@@ -44,9 +44,20 @@ export const LiveGeneration: React.FC = () => {
     setLogs([]);
     setResult(null);
 
-    const response = await generateLivePerspectives(inputText);
-    setStatus('COMPLETE');
-    setResult(response);
+    try {
+      const response = await generateLivePerspectives(inputText);
+      setStatus('COMPLETE');
+      setResult(response);
+    } catch (err: any) {
+      console.error(err);
+      setStatus('COMPLETE');
+      setResult({
+        retrievedLaw: "Error: Failed to connect to backend",
+        perspectives: [
+          { persona: "System", text: err.message || "An error occurred while generating perspectives." }
+        ]
+      });
+    }
   };
 
   return (

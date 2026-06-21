@@ -7,7 +7,7 @@ import { DecisionPanel } from '../components/DecisionPanel';
 import { PerspectiveCard } from '../components/PerspectiveCard';
 import { RevealSection } from '../components/RevealSection';
 
-type Step = 'SETUP' | 'DECISION_1' | 'PERSPECTIVES' | 'REVEAL' | 'DECISION_2';
+type Step = 'SETUP' | 'DECISION_1' | 'PERSPECTIVES' | 'REVEAL' | 'DECISION_2' | 'COMPARISON';
 
 export const IncidentContainer: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +19,8 @@ export const IncidentContainer: React.FC = () => {
   const [step, setStep] = useState<Step>('SETUP');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationLogs, setGenerationLogs] = useState<string[]>([]);
+  const [decision1, setDecision1] = useState<string | null>(null);
+  const [decision2, setDecision2] = useState<string | null>(null);
 
   useEffect(() => {
     setStep('SETUP');
@@ -29,7 +31,8 @@ export const IncidentContainer: React.FC = () => {
     return <div className="app-container"><h2>Incident not found</h2></div>;
   }
 
-  const handleDecision1 = (_decision: string) => {
+  const handleDecision1 = (decision: string) => {
+    setDecision1(decision);
     setIsGenerating(true);
     setStep('PERSPECTIVES');
     setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 100);
@@ -40,7 +43,13 @@ export const IncidentContainer: React.FC = () => {
     }, 2500);
   };
 
-  const handleDecision2 = (_decision: string) => {
+  const handleDecision2 = (decision: string) => {
+    setDecision2(decision);
+    setStep('COMPARISON');
+    setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 100);
+  };
+
+  const handleNextIncident = () => {
     if (isDemoMode) {
       if (incident.id === 'perisic') {
         navigate('/incident/var_nested');
@@ -110,8 +119,8 @@ export const IncidentContainer: React.FC = () => {
       <main className="main-content" style={{ width: '100%', maxWidth: '900px', marginTop: '32px' }}>
         
         <div style={{
-          opacity: ['REVEAL', 'DECISION_2'].includes(step) ? 0.2 : 1,
-          pointerEvents: ['REVEAL', 'DECISION_2'].includes(step) ? 'none' : 'auto',
+          opacity: ['REVEAL', 'DECISION_2', 'COMPARISON'].includes(step) ? 0.2 : 1,
+          pointerEvents: ['REVEAL', 'DECISION_2', 'COMPARISON'].includes(step) ? 'none' : 'auto',
           transition: 'opacity 1.5s ease',
           width: '100%',
           display: 'flex',
@@ -121,7 +130,7 @@ export const IncidentContainer: React.FC = () => {
           <IncidentCard 
             title="Incident Evidence"
             mediaType="image"
-            mediaUrl={`/assets/${(step === 'REVEAL' || step === 'DECISION_2') && (incident as any).altImageFile ? (incident as any).altImageFile : ((incident as any).imageFile || incident.id + '.png')}`}
+            mediaUrl={`/assets/${(step === 'REVEAL' || step === 'DECISION_2' || step === 'COMPARISON') && (incident as any).altImageFile ? (incident as any).altImageFile : ((incident as any).imageFile || incident.id + '.png')}`}
             description={incident.summary + " " + incident.evidenceShown}
           />
 
@@ -133,17 +142,17 @@ export const IncidentContainer: React.FC = () => {
           </div>
         )}
 
-        {['DECISION_1', 'PERSPECTIVES', 'REVEAL', 'DECISION_2'].includes(step) && (
+        {['DECISION_1', 'PERSPECTIVES', 'REVEAL', 'DECISION_2', 'COMPARISON'].includes(step) && (
           <div className="fade-in" style={{ width: '100%' }}>
             <DecisionPanel 
               title="What is the correct call?"
-              options={["Foul / Penalty / Red", "Play On / Yellow"]}
+              options={(incident as any).decision1Options || ["Foul / Penalty / Red", "Play On / Yellow"]}
               onSelect={handleDecision1}
             />
           </div>
         )}
 
-        {['PERSPECTIVES', 'REVEAL', 'DECISION_2'].includes(step) && (
+        {['PERSPECTIVES', 'REVEAL', 'DECISION_2', 'COMPARISON'].includes(step) && (
           <div className="fade-in" style={{ marginTop: '64px', width: '100%', display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <h3 style={{ color: 'var(--text-muted)' }}>Granite Perspectives Generated</h3>
             
@@ -193,7 +202,7 @@ export const IncidentContainer: React.FC = () => {
         )}
         </div>
 
-        {['REVEAL', 'DECISION_2'].includes(step) && (
+        {['REVEAL', 'DECISION_2', 'COMPARISON'].includes(step) && (
           <div className="fade-in" style={{ marginTop: '64px', width: '100%' }}>
             <RevealSection 
               isVisible={true}
@@ -214,15 +223,34 @@ export const IncidentContainer: React.FC = () => {
           </div>
         )}
 
-        {step === 'DECISION_2' && (
+        {['DECISION_2', 'COMPARISON'].includes(step) && (
           <div className="fade-in" style={{ marginTop: '80px', width: '100%', textAlign: 'center', padding: '32px', background: 'var(--bg-panel)', borderRadius: '12px' }}>
             <h3 style={{ marginBottom: '24px', color: 'var(--text-primary)', fontSize: '1.5rem' }}>{incident.decision2Prompt}</h3>
             <p style={{ color: 'var(--text-muted)', marginBottom: '32px', fontStyle: 'italic' }}>{incident.reflection}</p>
             <DecisionPanel 
               title=""
-              options={incident.id === 'suarez' ? ["No", "Yes"] : ["My call was correct", "The law is ambiguous"]}
+              options={(incident as any).decision2Options || ["My call was correct", "The law is ambiguous"]}
               onSelect={handleDecision2}
             />
+          </div>
+        )}
+
+        {step === 'COMPARISON' && (
+          <div className="fade-in" style={{ marginTop: '80px', width: '100%', textAlign: 'center', padding: '32px', background: 'var(--bg-panel)', borderRadius: '12px', border: '1px solid var(--accent-color)' }}>
+            <h3 style={{ marginBottom: '32px', color: 'var(--accent-color)', fontSize: '1.5rem' }}>The Shift</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '48px', flexWrap: 'wrap', gap: '24px' }}>
+               <div style={{ background: 'rgba(255,255,255,0.05)', padding: '24px', borderRadius: '8px', minWidth: '250px' }}>
+                 <p style={{ color: 'var(--text-muted)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.85rem' }}>Initial Judgment</p>
+                 <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{decision1}</p>
+               </div>
+               <div style={{ background: 'rgba(255,255,255,0.05)', padding: '24px', borderRadius: '8px', minWidth: '250px' }}>
+                 <p style={{ color: 'var(--text-muted)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.85rem' }}>After Law Reveal</p>
+                 <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{decision2}</p>
+               </div>
+            </div>
+            <button className="btn-primary" onClick={handleNextIncident} style={{ fontSize: '1.25rem' }}>
+              Continue
+            </button>
           </div>
         )}
       </main>

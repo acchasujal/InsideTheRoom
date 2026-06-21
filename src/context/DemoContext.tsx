@@ -14,7 +14,7 @@ const DemoContext = createContext<DemoContextType | undefined>(undefined);
 
 export const DemoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentIncidentIndex, setCurrentIncidentIndex] = useState(0);
-  const [isDemoMode, setIsDemoMode] = useState(false);
+  const [isDemoMode, setIsDemoMode] = useState(true);
   const navigate = useNavigate();
 
   const resetDemo = () => {

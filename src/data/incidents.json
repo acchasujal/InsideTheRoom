@@ -17,6 +17,8 @@
     ],
     "reveal": "The rulebook demands we penalize 'deliberate' acts. It never defines what 'deliberate' means. The foundation of the law is blank.",
     "decision2Prompt": "Now that you know the law doesn't define these terms, is it still a clear penalty?",
+    "decision1Options": ["Penalty", "No Penalty"],
+    "decision2Options": ["My call was correct", "The law is ambiguous"],
     "reflection": "We are searching for objective truth in an unobservable mind.",
     "emotionalObjective": "Shock and realization that the rulebook is hollow at its core."
   },
@@ -37,6 +39,8 @@
     ],
     "reveal": "\"Clear and obvious\" has no definition. VAR doesn't remove human ambiguity. It just puts it on a screen.",
     "decision2Prompt": "Does a review mechanism based on an undefined term solve the ambiguity, or just move it?",
+    "decision1Options": ["Overturn Call", "Stick with Referee"],
+    "decision2Options": ["It solves ambiguity", "It just moves it"],
     "reflection": "VAR doesn't fix ambiguity. It just moves it to a screen.",
     "emotionalObjective": "Epiphany about systemic ambiguity in officiating technology."
   },
@@ -58,6 +62,8 @@
     ],
     "reveal": "Same referee. Same video. Two different answers. The line between a yellow card and a red card doesn't actually exist.",
     "decision2Prompt": "If the same referee gives two different answers to the exact same footage, what is the \"correct\" call?",
+    "decision1Options": ["Red Card", "Yellow Card"],
+    "decision2Options": ["My call was correct", "The law is ambiguous"],
     "reflection": "The difference between playing the game and ruining it is a boundary that doesn't exist.",
     "emotionalObjective": "Resignation to the impossibility of objective consistency."
   },
@@ -79,6 +85,8 @@
     ],
     "reveal": "The rule resets if the ball is 'deliberately played.' But the law cannot explain what 'deliberate' means. The rule is trapped in its own missing definitions.",
     "decision2Prompt": "Can you enforce an offside rule if the condition that resets it is undefined?",
+    "decision1Options": ["Offside", "Goal Stands"],
+    "decision2Options": ["My call was correct", "The law is ambiguous"],
     "reflection": "The law defines its very area of application using undefined terms.",
     "emotionalObjective": "Frustration with recursive bureaucratic ambiguity."
   },
@@ -100,6 +108,8 @@
     ],
     "reveal": "Every rule was followed perfectly. The maximum punishment was given. But the law only guarantees procedure, not justice. The cheater advanced, and Ghana went home.",
     "decision2Prompt": "Was justice served?",
+    "decision1Options": ["It was cheating", "It was tactical"],
+    "decision2Options": ["Yes, maximum punishment given", "No, Ghana was robbed"],
     "reflection": "The law is completely silent on whether its remedy fits the context of the situation.",
     "emotionalObjective": "A deep sense of unfairness and an understanding of the fundamental limits of the law."
   }
