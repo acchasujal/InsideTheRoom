@@ -25,16 +25,18 @@ export const LiveGeneration: React.FC = () => {
   useEffect(() => {
     if (status === 'GENERATING') {
       let currentStep = 0;
-      const interval = setInterval(() => {
+      let timeoutId: ReturnType<typeof setTimeout>;
+
+      const streamLog = () => {
         if (currentStep < pipelineSteps.length) {
           setLogs(prev => [...prev, `[${new Date().toISOString().substring(11, 19)}] ${pipelineSteps[currentStep]}`]);
           currentStep++;
-        } else {
-          clearInterval(interval);
+          timeoutId = setTimeout(streamLog, Math.random() * 500 + 400);
         }
-      }, 600); // Emulate real-time log streaming
+      };
 
-      return () => clearInterval(interval);
+      streamLog();
+      return () => clearTimeout(timeoutId);
     }
   }, [status]);
 

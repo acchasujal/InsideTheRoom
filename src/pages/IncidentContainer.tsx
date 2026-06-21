@@ -21,11 +21,20 @@ export const IncidentContainer: React.FC = () => {
   const [generationLogs, setGenerationLogs] = useState<string[]>([]);
   const [decision1, setDecision1] = useState<string | null>(null);
   const [decision2, setDecision2] = useState<string | null>(null);
+  const bottomRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setStep('SETUP');
     window.scrollTo(0, 0);
   }, [id]);
+
+  useEffect(() => {
+    if (step !== 'SETUP') {
+      setTimeout(() => {
+        bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }, 100);
+    }
+  }, [step, isGenerating]);
 
   if (!incident) {
     return <div className="app-container"><h2>Incident not found</h2></div>;
@@ -35,7 +44,6 @@ export const IncidentContainer: React.FC = () => {
     setDecision1(decision);
     setIsGenerating(true);
     setStep('PERSPECTIVES');
-    setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 100);
     
     // Simulate Granite API thinking/generation delay
     setTimeout(() => {
@@ -46,7 +54,6 @@ export const IncidentContainer: React.FC = () => {
   const handleDecision2 = (decision: string) => {
     setDecision2(decision);
     setStep('COMPARISON');
-    setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 100);
   };
 
   const handleNextIncident = () => {
@@ -98,15 +105,19 @@ export const IncidentContainer: React.FC = () => {
     if (isGenerating) {
       setGenerationLogs([]);
       let currentStep = 0;
-      const interval = setInterval(() => {
+      let timeoutId: ReturnType<typeof setTimeout>;
+      
+      const streamLog = () => {
         if (currentStep < layer1Steps.length) {
           setGenerationLogs(prev => [...prev, layer1Steps[currentStep]]);
           currentStep++;
-        } else {
-          clearInterval(interval);
+          // Random jitter between 400ms and 900ms for terminal realism
+          timeoutId = setTimeout(streamLog, Math.random() * 500 + 400);
         }
-      }, 700);
-      return () => clearInterval(interval);
+      };
+      
+      streamLog();
+      return () => clearTimeout(timeoutId);
     }
   }, [isGenerating]);
 
@@ -188,13 +199,7 @@ export const IncidentContainer: React.FC = () => {
             )}
             
             {step === 'PERSPECTIVES' && !isGenerating && (
-              <button className="fade-in btn-primary" onClick={() => {
-                setStep('REVEAL');
-                // Allow a slight delay for render, then scroll to the exact LawViewer to sync with the 1s reveal animation
-                setTimeout(() => {
-                  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-                }, 100);
-              }} style={{ alignSelf: 'center', marginTop: '32px' }}>
+              <button className="fade-in btn-primary" onClick={() => setStep('REVEAL')} style={{ alignSelf: 'center', marginTop: '32px' }}>
                 Consult the Law
               </button>
             )}
@@ -213,10 +218,7 @@ export const IncidentContainer: React.FC = () => {
             />
             
             {step === 'REVEAL' && (
-              <button className="btn-ghost" onClick={() => {
-                setStep('DECISION_2');
-                setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 100);
-              }} style={{ marginTop: '48px', display: 'block', margin: '48px auto 0' }}>
+              <button className="btn-ghost" onClick={() => setStep('DECISION_2')} style={{ marginTop: '48px', display: 'block', margin: '48px auto 0' }}>
                 Reflect
               </button>
             )}
@@ -253,6 +255,7 @@ export const IncidentContainer: React.FC = () => {
             </button>
           </div>
         )}
+        <div ref={bottomRef} />
       </main>
     </div>
   );
