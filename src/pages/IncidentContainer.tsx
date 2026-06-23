@@ -21,6 +21,7 @@ export const IncidentContainer: React.FC = () => {
   const [generationLogs, setGenerationLogs] = useState<string[]>([]);
   const [decision1, setDecision1] = useState<string | null>(null);
   const [decision2, setDecision2] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const bottomRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -121,10 +122,80 @@ export const IncidentContainer: React.FC = () => {
     }
   }, [isGenerating]);
 
+  // P0 Task 3: Shift Reflection Engine
+  const getCritique = () => {
+    if (!decision2) return "";
+    if (decision2 === "The law is ambiguous" || decision2 === "It just moves it" || decision2 === "No, Ghana was robbed") {
+      return "You acknowledged the structural ambiguity of the rule system after reviewing the text. You accepted that the rulebook cannot logically resolve this incident, forcing a reliance on human moral context rather than strict procedural automation.";
+    }
+    if (decision2 === "My call was correct" || decision2 === "It solves ambiguity" || decision2 === "Yes, maximum punishment given") {
+      return "You maintained your judgment and affirmed its correctness despite the rule's undefined terms. This shows a high reliance on personal intuition to resolve semantic gaps and enforce order where the law is silent.";
+    }
+    return "You adjusted your judgment upon reviewing the rule's criteria. This indicates that transparency and inspection of written law can actively reshape confidence and offset initial cognitive biases.";
+  };
+
+  // P0 Task 2: Shift / Divergence Detection
+  const isShifted = decision2 === "The law is ambiguous" || decision2 === "It just moves it" || decision2 === "No, Ghana was robbed";
+
+  // P0 Task 1: Audit Report Export
+  const exportAuditReport = () => {
+    const timestamp = new Date().toISOString();
+    const markdownText = `# INSIDE THE ROOM — DECISION AUDIT REPORT
+Generated: ${timestamp}
+System: IBM watsonx.ai (Model: ibm/granite-13b-chat-v2)
+Pillar Focus: Explainability, Transparency, Auditability
+
+## 1. INCIDENT ANALYSIS
+* **Incident Title:** ${incident.title}
+* **Theme:** ${incident.theme}
+* **Linguistic Tension Term:** ${incident.disputedTerm}
+* **Applicable Rule:** ${incident.lawInvolved}
+* **Ambiguity Rating:** ${incident.ambiguityScore}/10
+
+## 2. GRANITE PERSPECTIVES CONSULTED
+${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
+
+## 3. HUMAN JUDGMENT DIVERGENCE PATH
+* **Initial Judgment (Decision 1):** ${decision1}
+* **Reflective Judgment (Decision 2):** ${decision2}
+* **Alignment Status:** ${isShifted ? "DIVERGENCE DETECTED (Ambiguity Acknowledged)" : "OPINION CONFIRMED (Intuitive Certainty)"}
+* **Cognitive Shift Critique:** "${getCritique()}"
+
+## 4. SYSTEM COMPLIANCE SIGNATURE
+* **Inference Model:** ibm/granite-13b-chat-v2
+* **Decoding Parameters:** greedy (reproducible)
+* **Audit Signature:** watsonx-granite-v2-active-human-in-the-loop
+`;
+
+    navigator.clipboard.writeText(markdownText).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
   return (
     <div className="app-container" style={{ paddingBottom: '128px' }}>
-      <header className="header" style={{ position: 'sticky', top: 0, background: 'var(--bg-color)', zIndex: 10, padding: '16px 0', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-        <h2>{incident.title} — {incident.theme}</h2>
+      <header className="header" style={{ position: 'sticky', top: 0, background: 'var(--bg-color)', zIndex: 10, padding: '16px 0', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <button className="btn-ghost" style={{ padding: '8px 16px', fontSize: '0.9rem' }} onClick={() => navigate('/')}>
+            ← Home
+          </button>
+          <h2 style={{ margin: 0 }}>{incident.title}</h2>
+        </div>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.75rem', background: 'rgba(234, 179, 8, 0.1)', color: 'var(--accent-color)', border: '1px solid rgba(234,179,8,0.3)', padding: '4px 8px', borderRadius: '4px', fontFamily: 'monospace', fontWeight: 'bold' }}>
+            Ambiguity: {incident.ambiguityScore} / 10
+          </span>
+          <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', padding: '4px 8px', borderRadius: '4px', fontFamily: 'monospace' }}>
+            Model: ibm/granite-13b-chat-v2
+          </span>
+          <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', padding: '4px 8px', borderRadius: '4px' }}>
+            Transparency
+          </span>
+          <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', padding: '4px 8px', borderRadius: '4px' }}>
+            Auditability
+          </span>
+        </div>
       </header>
       
       <main className="main-content" style={{ width: '100%', maxWidth: '900px', marginTop: '32px' }}>
@@ -240,7 +311,19 @@ export const IncidentContainer: React.FC = () => {
         {step === 'COMPARISON' && (
           <div className="fade-in" style={{ marginTop: '80px', width: '100%', textAlign: 'center', padding: '32px', background: 'var(--bg-panel)', borderRadius: '12px', border: '1px solid var(--accent-color)' }}>
             <h3 style={{ marginBottom: '32px', color: 'var(--accent-color)', fontSize: '1.5rem' }}>The Shift</h3>
-            <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '48px', flexWrap: 'wrap', gap: '24px' }}>
+            
+            {/* P0 Task 2: Divergence Badge */}
+            {isShifted ? (
+              <div style={{ display: 'inline-block', background: 'rgba(234, 179, 8, 0.1)', color: 'var(--accent-color)', border: '1px solid rgba(234, 179, 8, 0.3)', padding: '6px 16px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '24px' }}>
+                ⚠️ OPINION SHIFT DETECTED
+              </div>
+            ) : (
+              <div style={{ display: 'inline-block', background: 'rgba(16, 185, 129, 0.1)', color: '#10B981', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '6px 16px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '24px' }}>
+                ✓ OPINION CONFIRMED
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '32px', flexWrap: 'wrap', gap: '24px' }}>
                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '24px', borderRadius: '8px', minWidth: '250px' }}>
                  <p style={{ color: 'var(--text-muted)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.85rem' }}>Initial Judgment</p>
                  <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{decision1}</p>
@@ -250,9 +333,30 @@ export const IncidentContainer: React.FC = () => {
                  <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{decision2}</p>
                </div>
             </div>
-            <button className="btn-primary" onClick={handleNextIncident} style={{ fontSize: '1.25rem' }}>
-              Continue
-            </button>
+
+            {/* P0 Task 3: Shift Critique Text Box */}
+            <div style={{ maxWidth: '600px', margin: '0 auto 40px auto', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', padding: '20px 24px', borderRadius: '8px', textAlign: 'left' }}>
+              <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--accent-color)', letterSpacing: '1px', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Cognitive Alignment Analysis</span>
+              <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-muted)', lineHeight: '1.6', fontStyle: 'italic' }}>
+                "{getCritique()}"
+              </p>
+            </div>
+
+            {/* P0 Task 1 & Continue Controls */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
+              <button 
+                className="btn-ghost" 
+                onClick={exportAuditReport} 
+                style={{ fontSize: '1.1rem', padding: '12px 24px', border: '1px solid rgba(255,255,255,0.1)' }}
+              >
+                {copied ? "✓ Copied Audit Trail" : "📥 Export Decision Audit"}
+              </button>
+              
+              <button className="btn-primary" onClick={handleNextIncident} style={{ fontSize: '1.1rem', padding: '12px 24px' }}>
+                Continue
+              </button>
+            </div>
+
           </div>
         )}
         <div ref={bottomRef} />

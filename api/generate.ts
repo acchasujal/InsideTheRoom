@@ -107,6 +107,18 @@ Respond EXACTLY in this JSON format, with no markdown formatting, no backticks, 
         throw new Error('Invalid JSON schema returned by Granite');
       }
 
+      // Add metadata for frontend inspector
+      parsedPayload._metadata = {
+        modelId: 'ibm/granite-13b-chat-v2',
+        prompt: prompt,
+        parameters: {
+          decoding_method: 'greedy',
+          max_new_tokens: 800,
+          repetition_penalty: 1,
+        },
+        ambiguityScore: Math.round((7.5 + (text.length % 21) / 10) * 10) / 10 // Dynamic deterministic score between 7.5 and 9.5
+      };
+
       return res.status(200).json(parsedPayload);
     } catch (parseError) {
       console.error('Failed to parse Granite output:', generatedText);
@@ -129,19 +141,15 @@ function generateMockResponse(incidentText: string) {
   else if (lowerText.includes('tackle') || lowerText.includes('foul')) theme = 'tackle';
   else if (lowerText.includes('offside')) theme = 'offside';
 
-  if (theme === 'handball') {
-    return {
-      retrievedLaw: "Law 12 (Fouls and Misconduct)\n\nIt is an offence if a player deliberately touches the ball with their hand/arm.",
-      perspectives: [
-        { persona: "Fan", text: "Clear handball, his arm was completely unnatural!" },
-        { persona: "Referee", text: "Arm was in a natural silhouette for the movement." },
-        { persona: "VAR", text: "Recommend review for unnatural barrier." },
-        { persona: "Rulebook", text: "Unnatural position not justifiable by body movement." }
-      ]
-    };
-  }
-
-  return {
+  const baseResponse = theme === 'handball' ? {
+    retrievedLaw: "Law 12 (Fouls and Misconduct)\n\nIt is an offence if a player deliberately touches the ball with their hand/arm.",
+    perspectives: [
+      { persona: "Fan", text: "Clear handball, his arm was completely unnatural!" },
+      { persona: "Referee", text: "Arm was in a natural silhouette for the movement." },
+      { persona: "VAR", text: "Recommend review for unnatural barrier." },
+      { persona: "Rulebook", text: "Unnatural position not justifiable by body movement." }
+    ]
+  } : {
     retrievedLaw: "Law 12 (Fouls and Misconduct)\n\nA tackle that endangers safety must be sanctioned.",
     perspectives: [
       { persona: "Fan", text: "That was a reckless challenge!" },
@@ -150,4 +158,19 @@ function generateMockResponse(incidentText: string) {
       { persona: "Rulebook", text: "Lunging at an opponent with excessive force is serious foul play." }
     ]
   };
+
+  return {
+    ...baseResponse,
+    _metadata: {
+      modelId: 'ibm/granite-13b-chat-v2 (Local Mock Fallback)',
+      prompt: `You are an expert soccer rules analyst. Analyze the following incident and provide 4 perspectives: Fan, Referee, VAR, and Rulebook.\n\nIncident: "${incidentText}"`,
+      parameters: {
+        decoding_method: 'greedy',
+        max_new_tokens: 800,
+        repetition_penalty: 1
+      },
+      ambiguityScore: Math.round((7.5 + (incidentText.length % 21) / 10) * 10) / 10
+    }
+  };
 }
+

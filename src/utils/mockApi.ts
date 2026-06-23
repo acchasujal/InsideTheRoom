@@ -6,6 +6,12 @@ export interface GeneratedPerspective {
 export interface LiveGenerationResponse {
   retrievedLaw: string;
   perspectives: GeneratedPerspective[];
+  _metadata?: {
+    modelId: string;
+    prompt: string;
+    parameters: any;
+    ambiguityScore: number;
+  };
 }
 
 export const generateLivePerspectives = async (incidentText: string): Promise<LiveGenerationResponse> => {
