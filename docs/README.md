@@ -38,7 +38,7 @@ Contains the core strategic thesis, competition moats, and high-level AI approac
 
 ### 02. Product Specifications (`docs/02_product/`)
 Details what needs to be built, user interactions, and screen layouts.
-* 📝 [product_requirements.md](file:///d:/Projects/InsideTheRoom/docs/02_product/product_requirements.md) — Features, scope constraints, and the LangFlow pipeline requirements.
+* 📝 [product_requirements.md](file:///d:/Projects/InsideTheRoom/docs/02_product/product_requirements.md) — Features, scope constraints, and the watsonx.ai integration requirements.
 * 📝 [user_journey.md](file:///d:/Projects/InsideTheRoom/docs/02_product/user_journey.md) — Chronological walk-through of the user experience during the demo.
 * 📝 [screen_specifications.md](file:///d:/Projects/InsideTheRoom/docs/02_product/screen_specifications.md) — User actions, inputs, and outputs per screen.
 * 📝 [incident_content_registry.md](file:///d:/Projects/InsideTheRoom/docs/02_product/incident_content_registry.md) — The full content payload for all five incidents.
@@ -50,7 +50,7 @@ Specifies design system values, reusable components, and client-side logic.
 * 📝 [frontend_architecture.md](file:///d:/Projects/InsideTheRoom/docs/03_frontend/frontend_architecture.md) — React/Next.js/Vite routing, local state management, and asset optimization.
 
 ### 04. Backend & Integration (`docs/04_backend/`)
-Outlines backend services, endpoints, data stores, and LangFlow details.
+Outlines backend services, endpoints, data stores, and watsonx.ai details.
 * 📝 [backend_architecture.md](file:///d:/Projects/InsideTheRoom/docs/04_backend/backend_architecture.md) — Subsystems, CDN delivery layer, and proxy routing structure.
 * 📝 [api_contracts.md](file:///d:/Projects/InsideTheRoom/docs/04_backend/api_contracts.md) — Request/Response schemas, validation rules, and status codes.
 * 📝 [database_schema.md](file:///d:/Projects/InsideTheRoom/docs/04_backend/database_schema.md) — Static document schema (JSON) alongside a future PostgreSQL relational schema.

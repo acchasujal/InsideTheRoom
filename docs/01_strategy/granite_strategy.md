@@ -23,7 +23,7 @@ To satisfy both Principle 6 (The Demo Is the Product: zero live generation risk)
 | **Multi-Perspective Reasoning** | Generating genuinely contradictory conclusions from the *same* incident and the *same* law proves cross-frame synthesis. |
 | **Adversarial Citation Grounding** | Granite must use the retrieved law and the undefined term to build a logical argument supporting its persona's conclusion. |
 | **Insight Compression** | Synthesizing the incident, the law, and the thesis into a single compressed sentence. |
-| **Novel Incident Processing** | Accepting free-text input and running the LangFlow pipeline in real time (Layer 2). |
+| **Novel Incident Processing** | Accepting free-text input and running the watsonx.ai Granite pipeline in real time (Layer 2). |
 
 ## 3. What Granite Must NEVER Do
 
@@ -32,15 +32,15 @@ To satisfy both Principle 6 (The Demo Is the Product: zero live generation risk)
 - **Power a Chatbot:** The product is an experience, not a Q&A tool.
 - **Match outcome prediction:** Explicitly disqualified by the challenge brief.
 
-## 4. The LangFlow Pipeline Architecture
+## 4. The watsonx.ai Pipeline Architecture
 
-A single-node pipeline is read as decorative. The pipeline must contain functionally necessary steps:
+The backend proxy pipeline contains the following functionally necessary steps:
 
 1. **Incident Input:** Accepts structured/free-text description.
-2. **Law Retrieval (Docling):** Retrieves the relevant FIFA Law.
+2. **Law Context Matching:** Retrieves the relevant governing law context.
 3. **Term Analysis:** Identifies the undefined term in the law.
-4. **Perspective Agents (×5):** Five distinct agents apply persona framing to reason toward conclusions.
-5. **Divergence Validator:** Ensures at least two perspectives genuinely disagree (structural safeguard).
+4. **Perspective Agents (×4):** Four distinct persona viewpoints apply specific framing to reason toward conclusions.
+5. **Divergence Validator:** Lexical and polarity comparison validating perspective divergence (structural safeguard).
 6. **Insight Compressor:** Generates the single-sentence summary.
 
 ## 5. The Demo Protocol

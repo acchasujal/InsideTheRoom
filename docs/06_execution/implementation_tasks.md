@@ -72,26 +72,26 @@ This document translates the VAR Room project strategy into executable developme
 #### Build Sequence
 * **Phase A: Static Data Formatting (Critical Path):** Data Normalization (`incident_content_registry.md` to `incidents.json`), Offline Generation (Run Granite prompts for all 5 incidents).
 * **Phase B: Serverless API Proxy (Demo-Critical):** API Route Setup (`POST /api/v1/incidents/generate`), Input Validation (sanitize text), Mock Integration (hardcoded successful response).
-* **Phase C: LangFlow & Granite Orchestration (Parallelizable):** LangFlow Pipeline Setup, Docling Integration (FIFA law retrieval), Granite Node Configuration (watsonx.ai keys), Webhook Exposure.
-* **Phase D: API Layer Integration (Demo-Critical):** Connect Proxy to Webhook, Error Handling (timeout handling), Response Parsing (`incidents.json` schema matching).
-* **Phase E: Deployment & Caching (Demo-Critical):** Edge Deployment (Vercel/Netlify), Disable Caching (on `/api/v1/incidents/generate`).
+* **Phase C: watsonx.ai REST Integration (Parallelizable):** API Payload Construction, context matching database integration, Granite system prompt design, credentials integration.
+* **Phase D: API Layer Integration (Demo-Critical):** Connect Proxy to watsonx.ai endpoint, Error Handling (timeout handling), Response Parsing (`incidents.json` schema matching).
+* **Phase E: Deployment & Caching (Demo-Critical):** Edge Deployment (Vercel), Disable Caching (on `/api/generate`).
 
 #### Work Categorization
-* **Critical Path (Must Build to Win):** Phase A (Static JSON). Layer 1 cannot function without this data for all 5 incidents.
+* **Critical Path (Must Build to Win):** Phase A (Static JSON). Layer 1 cannot function without this data for all incidents.
 * **Demo-Critical Work (High ROI):** Phase E (Deployment). The API must be accessible globally without CORS issues.
 * **Parallelizable Work:** Phases B, C, D. The entire Layer 2 backend can be built entirely independently of the frontend Layer 1 loop.
 
 ## 5. AI Integration
 
-### [TASK-AI-01] LangFlow Pipeline Deployment
-* **Description:** Host the LangFlow pipeline integrating IBM Docling and Granite for the live generation layer.
+### [TASK-AI-01] watsonx.ai Integration and Direct REST Call
+* **Description:** Integrate the watsonx.ai client or direct REST endpoints with Granite-13b-chat models for the live generation layer.
 * **Dependencies:** None
 * **Priority:** Medium
 * **Estimated Effort:** 2 Days
-* **Acceptance Criteria:** LangFlow exposes a webhook that generates 5 perspectives from incident text.
+* **Acceptance Criteria:** Calling the watsonx.ai endpoint generates 4 perspectives from incident text.
 
-### [TASK-AI-02] Backend to LangFlow Connection
-* **Description:** Connect the backend API proxy (TASK-BE-01) to the live LangFlow pipeline.
+### [TASK-AI-02] Backend to watsonx.ai Connection
+* **Description:** Connect the backend API proxy (TASK-BE-01) to the live watsonx.ai endpoint.
 * **Dependencies:** TASK-BE-01, TASK-AI-01
 * **Priority:** Medium
 * **Estimated Effort:** 1 Day

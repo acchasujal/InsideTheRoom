@@ -1,86 +1,76 @@
 # Inside the Room
 
-Every high-stakes decision happens inside ambiguity.
+Every rulebook — FIFA's, your insurer's, your content policy's — contains words like 
+"deliberate" or "reasonable" that are undefined on purpose.
 
-Inside the Room is a Granite-powered system that surfaces the full landscape of legitimate perspectives on any incident where rules, evidence, and human judgment intersect — before a final call is made.
+Those undefined words are where discretion lives. They are where lawsuits begin, 
+where regulators investigate, and where AI systems fail silently.
 
-Built for IBM watsonx.
-Demonstrated through football.
-Designed for everywhere.
+Inside the Room is the first tool that finds those words automatically, 
+shows you exactly where your own rules stop being rules 
+and start being someone's judgment call — 
+and documents that boundary as a compliance-grade artifact.
+
+Built on IBM Granite. Demonstrated through football. Designed for any governing text.
 
 ---
 
-### Core One-Liner
+### The Problem (One Sentence)
 
-Granite doesn't give you the answer.
-
-It gives you every answer a reasonable expert would give — and makes the disagreement itself the output.
+FIFA Law 12 says a handball must be "deliberate." 
+The law never defines "deliberate." 
+That is not a football problem. That is H.L.A. Hart's open-texture problem — 
+and it exists in every contract, policy, and regulation ever written.
 
 ---
 
 ### What We Built
 
-We built a system that makes AI useful precisely where certainty is impossible.
+A Granite-powered discretion disclosure instrument.
 
-Inside the Room uses IBM Granite to generate multiple, structurally legitimate perspectives on incidents where the rules themselves do not determine a single correct answer.
+Not a decision tool. Not a prediction engine. 
+A system that finds the undefined term in any governing text, 
+generates every legitimate reading of it, 
+and produces a structured audit artifact showing exactly where the rules run out.
 
-It does not resolve ambiguity.
-
-It maps ambiguity.
-
-Completely.
-
-Transparently.
-
-So the human making the final call can understand the full landscape of reasonable interpretations instead of receiving a single confident prediction.
+IBM's watsonx.governance is built to make discretion visible and auditable. 
+Inside the Room is that capability, demonstrated live.
 
 ---
 
-### IBM Positioning
+### The Framing Sensitivity Finding
 
-Inside the Room demonstrates Granite's ability to support trustworthy reasoning under genuine ambiguity.
+Same incident. Same rule. Different words. Different Granite output.
 
-Rather than producing a single authoritative answer, Granite exposes competing but defensible interpretations and allows humans to inspect, compare, and challenge them.
+If the AI's reading of "reckless" shifts with how the incident is phrased — 
+so does every human expert who reads an incident report.
 
-The goal is not automation of judgment.
-
-The goal is transparency of judgment.
-
----
-
-### Q&A Anchor
-
-**Question:**
-Why doesn't the AI simply choose the correct answer?
-
-**Answer:**
-Because the project is built around situations where no universally accepted correct answer exists.
-
-The objective is not to replace judgment.
-
-The objective is to expose the full space of reasonable judgments so humans can make better decisions.
+The tool doesn't just map the ambiguity in the rule. 
+It maps the ambiguity in description — which is where real discretion risk enters the system.
 
 ---
 
-### Strongest Reframe
+### IBM Alignment
 
-* **Old framing:** Football rules are ambiguous.
-* **Better framing:** Human judgment is unavoidable.
-* **Best framing:** Some decisions cannot be automated because the ambiguity exists in the rule itself, not in the data. Inside the Room makes that ambiguity visible.
+Inside the Room maps directly onto watsonx.governance's core use case: 
+making AI decision discretion visible, auditable, and reportable to regulators and stakeholders.
+
+The output is not a recommendation. 
+It is a Discretion Disclosure Report — 
+a compliance-grade artifact documenting which term is undefined, 
+what the defensible readings are, 
+and where the rule stops being a rule.
 
 ---
 
-### Demo Closing
+### Falsifiable Claim
 
-We didn't build a football app.
+Submit the same incident in neutral language and in loaded language. 
+The perspectives will diverge. 
+We show you the divergence on screen, with identical model parameters, 
+so the only variable is the phrasing.
 
-We built a system that shows what happens when experts disagree and asks AI to hold that disagreement honestly rather than erase it.
-
-That's not a football problem.
-
-That's a problem faced by courts, hospitals, regulators, companies, and every person making a high-stakes decision under uncertainty.
-
-And increasingly, it's a problem every AI system must learn to navigate.
+That is the discretion risk. That is what this tool surfaces.
 
 ---
 

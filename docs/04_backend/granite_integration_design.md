@@ -14,39 +14,38 @@ Granite is NOT used as a chatbot, a match outcome predictor, or a simple text su
 ## 2. Layer Architecture
 
 * **Precomputed Layer (Layer 1):** Granite was used during the build phase to generate the five canonical incidents. The outputs were verified by humans for strict legal accuracy, locked, and bundled into the static frontend as `incidents.json`.
-* **Live Generation Layer (Layer 2):** Granite is connected via a live LangFlow pipeline accessible via the `/live` route for demoing to judges.
+* **Live Generation Layer (Layer 2):** Granite is connected via a live serverless API proxy endpoint accessible via the `/live` route for demoing to judges.
 
 ### Why Granite is Necessary
 A static website cannot dynamically process a novel incident, retrieve the law, and produce opposing, logically coherent perspectives on demand. Granite acts as an adversarial legal reasoning engine, proving the thesis over an infinite domain of unstructured text.
 
 ### What is Cached vs Generated
-* **Cached:** All outputs for the 5 canonical incidents (Perišić, De Jong, Mbappé, Suárez, and the VAR Layer).
+* **Cached:** All outputs for the canonical incidents (Perišić, De Jong, Mbappé, Suárez, and the VAR Layer).
 * **Generated:** Any input submitted through the Layer 2 `/live` endpoint.
 
-## 3. The LangFlow Prompt Flow (Layer 2)
+## 3. The watsonx.ai Prompt Flow (Layer 2)
 
-1. **Incident Input Node:** Receives the user's free-text scenario.
-2. **Law Retrieval Node (Docling):** Performs a semantic search against the official FIFA Laws dataset.
-3. **Term Analysis Node (Granite):** Analyzes the incident against the retrieved law to identify the specific undefined term (e.g., "deliberately").
-4. **Adversarial Agents Node (Granite × 5 Parallel):**
-   * *Fan Agent Prompt:* "You are a biased fan. Using the incident and the retrieved law, argue passionately for the most dramatic outcome."
-   * *Referee Agent Prompt:* "You are a pragmatic referee. Argue for the safest game-management outcome."
-   * *VAR Agent Prompt:* "You are pedantic VAR. Focus strictly on the letter of the law."
-   * *Player Agent Prompt:* "You are the accused player. Defend your intent."
-   * *Rulebook Agent Prompt:* "State only the objective facts and the limitations of the text."
-5. **Divergence Validator Node (Python Script):** Checks if at least two perspectives reach opposite conclusions. If not, re-prompts the agents to be more extreme.
-6. **Insight Compressor Node (Granite):** Outputs the final synthesis reflection sentence.
+1. **Incident Input:** Receives the user's free-text scenario.
+2. **Law Context Matching:** Performs context matching against the official rulebook dataset.
+3. **Term Analysis (Granite):** Analyzes the incident against the retrieved law to identify the specific undefined term (e.g., "deliberately").
+4. **Adversarial Agents (Granite × 4):**
+   * *Fan Persona Prompt:* "Fan (Purposive Reading): Argue for the spirit, objective, or moral intent of the rule."
+   * *Referee Persona Prompt:* "Referee (Contextual Reading): Argue how the rule text applies to physical context and facts."
+   * *VAR Persona Prompt:* "VAR (Procedural-Threshold Reading): Argue whether the action crossed the strict procedural threshold."
+   * *Rulebook Persona Prompt:* "Rulebook (Strict Constructionist): State only the literal, rigid interpretation of the exact wording."
+5. **Divergence Validator:** A Jaccard similarity and polarity shift validator to check if perspectives genuinely diverge.
+6. **Insight Compressor (Granite):** Outputs the final synthesis reflection sentence.
 
 ## 4. Grounding & Citation Strategy
 
 * **Grounding:** Granite must be given a strict system prompt: *"You must base your entire argument on the provided Law Text. Do not invent rules. Acknowledge ambiguity where it exists."*
-* **Citation:** Every perspective generated must explicitly quote the law text retrieved by Docling at least once.
+* **Citation:** Every perspective generated must explicitly quote the law text retrieved by context matching at least once.
 
 ## 5. Hallucination Prevention
 
-* **Restricted Domain:** The vector store contains ONLY official IFAB/FIFA rulebooks.
+* **Restricted Domain:** The context store contains ONLY official rulebooks and policy documents.
 * **System Prompting:** "If the law does not define a term, you must explicitly state 'The law does not define [term]'."
-* **No Law Generation:** Granite is explicitly forbidden from generating law text from its training weights. It must only use the context window provided by Docling.
+* **No Law Generation:** Granite is explicitly forbidden from generating law text from its training weights. It must only use the context window provided by context matching.
 
 ## 6. Demo Fallback Strategy
 
