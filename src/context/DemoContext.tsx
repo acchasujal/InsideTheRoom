@@ -13,12 +13,28 @@ interface DemoContextType {
 const DemoContext = createContext<DemoContextType | undefined>(undefined);
 
 export const DemoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [currentIncidentIndex, setCurrentIncidentIndex] = useState(0);
-  const [isDemoMode, setIsDemoMode] = useState(true);
+  const [currentIncidentIndex, setCurrentIncidentIndex] = useState(() => {
+    const saved = localStorage.getItem('demo_currentIncidentIndex');
+    return saved !== null ? parseInt(saved, 10) : 0;
+  });
+  const [isDemoMode, setIsDemoMode] = useState(() => {
+    const saved = localStorage.getItem('demo_isDemoMode');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    localStorage.setItem('demo_currentIncidentIndex', currentIncidentIndex.toString());
+  }, [currentIncidentIndex]);
+
+  useEffect(() => {
+    localStorage.setItem('demo_isDemoMode', JSON.stringify(isDemoMode));
+  }, [isDemoMode]);
 
   const resetDemo = () => {
     setCurrentIncidentIndex(0);
+    localStorage.removeItem('demo_currentIncidentIndex');
+    localStorage.removeItem('demo_isDemoMode');
     navigate('/');
   };
 

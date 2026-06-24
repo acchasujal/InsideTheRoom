@@ -43,7 +43,95 @@
 **What makes it dangerous:** Volume. In a fast judging pass with limited time per project, "did a lot of things competently" can outscore "made one sharp point," purely because more rubric boxes get a checkmark. It wins on coverage, not on memorability of a single idea.
 
 ---
+## TASK 1 — Competitor Deconstruction
 
+
+
+| Project | Core thesis | Category owned | Judges love | Judges reject | Strongest proof | Strongest emotional moment | Hidden risk | Most memorable element |
+
+|---|---|---|---|---|---|---|---|---|
+
+| **FirstTouch** | Decision quality ≠ outcome quality | Verifiable decision-grounding | Truth Anchor vetoes the model — structural, not asserted | Cold; analytics vocabulary requires buy-in before it lands | Geometric veto mechanism | None strong — it's rigor, not story | Coldness costs it the room if the panel is fatigued | "The model can be wrong and the system catches it" |
+
+| **DECODED** | Maximal explainability across football | Coverage | Breadth = illusion of completeness | No unifying claim across 5 modules | None singular — wins on volume | Baggio 1994 line | "What's the ONE thing this proves?" has no answer | The hexagon score, not an idea |
+
+| **PitchSense AI** | Disclosed-methodology prediction | Trust via methodology | Time-based split, no leakage | Median submission, low ceiling | Disclosed train/test split | None | Forgettable | The methodology disclosure itself |
+
+| **Pitch-Vision AI** | Production value as the pitch | Spectacle | Instant 10-second wow | No throughline once probed | None | The visual itself | Dazzle compresses scrutiny, which cuts both ways once noticed | 2.5D telestrator |
+
+| **AI FairPlay** | AI as FIFA trust-and-safety layer (abuse, governance audit, fraud) [Speculation on actual build state — doc is marketing-register, no architecture, no repo file structure shown] | Social-good / institutional governance | Maps to real harms (trafficking, discrimination) judges care about emotionally | Scope is enormous (3 unrelated AI systems) with no visible evidence any one of them works end-to-end | Unclear — no code-level claim verifiable from what's provided | The vision paragraph ("every child feels safe in the stands") | Breadth-without-depth, worse than DECODED's — DECODED at least ships 5 working modules; this reads as 3 problem statements with a watsonx Orchestrate label attached | The moral framing, not any feature |
+
+| **Dribble Studio** | Turn Opta data into creator content in 10 seconds | Commercial feasibility | Live paying customers, real MCP+Postgres+Granite pipeline, deployed | Conceptually the safest, least ambiguous-judgment-relevant project in the field — it's a SaaS feature, not a reasoning system | Live commercial deployment + working MCP tool-call architecture | None — it's a tool, not an argument | Lowest thesis depth of any competitor here; an IBM judge scoring "innovation" specifically may mark it down for being "just a generator" | "$39/month, real subscribers" |
+
+| **TactiqAI** [Note: architecture described in doc — LangChain, Docling, Context Forge MCP Gateway — same claims-vs-code gap risk Inside the Room itself had; unverifiable without the repo] | Tactical/VAR explainability, audience-tiered | Multi-level explainability | Three audience levels (casual/intermediate/expert) is a genuinely good idea | If docs/code mismatch the way ItR's did, this is the most exposed project in the new set | "VAR Decision Reconstruction" with exact FIFA law citation | None specifically | **Direct category collision with your VAR Nested Layer** — closer overlap than any other competitor, old or new | Formation Visualizer animation |
+
+
+
+---
+
+
+
+## TASK 2 — Direct Comparison
+
+
+
+**Where they beat you:** FirstTouch on verifiability; Dribble Studio on feasibility/commercial proof (nobody else in either competitor set has live paying users); Pitch-Vision on first-impression visual impact; TactiqAI on having a second, genuinely different visualization mechanism (Formation Visualizer) you don't have an equivalent for.
+
+
+
+**Where you beat them:** Category originality — none of the 7 competitors (old or new) argue "the ambiguity is the point, not a bug." AI FairPlay and TactiqAI both implicitly assume AI's job is to *resolve* ambiguity (flag the abuse, explain the correct call) — your thesis is structurally opposed to both, which is a real differentiation, not a marketing one.
+
+
+
+**What you should learn:** From Dribble Studio specifically — they prove feasibility by being commercially live, which is a stronger feasibility signal than anything words can do. You can't replicate that in the time left, but you can borrow the *instinct*: anywhere your README still asserts something words could assert falsely, replace it with something a judge can click and verify themselves (the live/fallback badge already does this — extend the instinct everywhere else, starting with the playbook).
+
+
+
+**What you should steal:** TactiqAI's audience-tier idea is genuinely good and cheap to imitate at the copy level — your Discretion Disclosure Report could offer a one-line toggle between "plain-language" and "compliance-officer" framing of the same output, which would also reinforce the governance positioning.
+
+
+
+**What you must never copy:** AI FairPlay's scope. Their three-system breadth is the same trap DECODED already fell into, just with a more sympathetic mission statement. Your single sharpest asset relative to every competitor in this document, old and new, is that you do one thing and can defend all of it. Do not dilute that.
+
+
+
+---
+
+
+
+## TASK 3 — Category Analysis
+
+
+
+| Competitor | Category owned |
+
+|---|---|
+
+| FirstTouch | Verifiable decision-quality scoring |
+
+| DECODED | Maximal coverage explainer |
+
+| PitchSense | Disclosed-methodology prediction |
+
+| Pitch-Vision | Visual spectacle |
+
+| AI FairPlay | Institutional trust-and-safety monitoring |
+
+| Dribble Studio | Commercial content-generation tooling |
+
+| TactiqAI | Audience-tiered tactical/VAR explainability |
+
+
+
+**Inside the Room's category, if the playbook fix lands:** "Discretion disclosure instrument for governing text" — none of the 7 are in this category. TactiqAI is the closest adjacent threat (it touches VAR + law citation), but its mechanism is *explainability of a correct-seeming answer*, while yours is *disclosure that no correct answer exists*. That's a real, citable, opposite claim — not a marketing distinction. [Medium-high confidence: the distinction is logically sound; whether a judge draws it unprompted is uncertain, which is exactly why it needs to be said out loud, not assumed]
+
+
+
+**Can you occupy a category none of them can follow into?** Yes, conditionally. The category is real and currently uncontested. The condition is that the playbook stops contradicting it — a judge who reads "LangFlow pipeline" in your defense doc after reading "discretion disclosure instrument" in your README sees a project that doesn't know what it is, which is the one thing that *would* let a judge fold you back into "football app," undoing the entire repositioning effort already done elsewhere.
+
+
+
+---
 ## Comparison Against Inside the Room
 
 **1. Which project is most likely to win?**
