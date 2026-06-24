@@ -7,7 +7,7 @@ import { DecisionPanel } from '../components/DecisionPanel';
 import { PerspectiveCard } from '../components/PerspectiveCard';
 import { RevealSection } from '../components/RevealSection';
 
-type Step = 'SETUP' | 'DECISION_1' | 'PERSPECTIVES' | 'REVEAL' | 'DECISION_2' | 'COMPARISON';
+type Step = 'SETUP' | 'DECISION_1' | 'PERSPECTIVES' | 'TENSION' | 'DECISION_2' | 'COMPARISON';
 
 export const IncidentContainer: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -97,9 +97,9 @@ export const IncidentContainer: React.FC = () => {
   const rulebookText = incident.perspectives.find(p => p.persona === 'Rulebook')?.text || "";
 
   const layer1Steps = [
-    "> Querying knowledge base for relevant law...",
-    "> Spawning personas (Fan, Referee, VAR)...",
-    "> Synthesizing divergent perspectives..."
+    "> Retrieving validated benchmark case from cache...",
+    "> Loading audited perspectives (Fan, Referee, VAR)...",
+    "> Finalizing local compliance payload..."
   ];
 
   useEffect(() => {
@@ -183,6 +183,12 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
           <h2 style={{ margin: 0 }}>{incident.title}</h2>
         </div>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <button
+            onClick={() => navigate('/heatmap')}
+            style={{ background: 'transparent', border: '1px solid rgba(234,179,8,0.3)', color: '#EAB308', padding: '4px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem', fontFamily: 'monospace', fontWeight: 600 }}
+          >
+            ⬛ Heatmap
+          </button>
           <span style={{ fontSize: '0.75rem', background: 'rgba(234, 179, 8, 0.1)', color: 'var(--accent-color)', border: '1px solid rgba(234,179,8,0.3)', padding: '4px 8px', borderRadius: '4px', fontFamily: 'monospace', fontWeight: 'bold' }}>
             Ambiguity: {incident.ambiguityScore} / 10
           </span>
@@ -201,8 +207,8 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
       <main className="main-content" style={{ width: '100%', maxWidth: '900px', marginTop: '32px' }}>
         
         <div style={{
-          opacity: ['REVEAL', 'DECISION_2', 'COMPARISON'].includes(step) ? 0.2 : 1,
-          pointerEvents: ['REVEAL', 'DECISION_2', 'COMPARISON'].includes(step) ? 'none' : 'auto',
+          opacity: ['TENSION', 'DECISION_2', 'COMPARISON'].includes(step) ? 0.2 : 1,
+          pointerEvents: ['TENSION', 'DECISION_2', 'COMPARISON'].includes(step) ? 'none' : 'auto',
           transition: 'opacity 1.5s ease',
           width: '100%',
           display: 'flex',
@@ -212,7 +218,7 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
           <IncidentCard 
             title="Incident Evidence"
             mediaType="image"
-            mediaUrl={`/assets/${(step === 'REVEAL' || step === 'DECISION_2' || step === 'COMPARISON') && (incident as any).altImageFile ? (incident as any).altImageFile : ((incident as any).imageFile || incident.id + '.png')}`}
+            mediaUrl={`/assets/${(step === 'TENSION' || step === 'DECISION_2' || step === 'COMPARISON') && (incident as any).altImageFile ? (incident as any).altImageFile : ((incident as any).imageFile || incident.id + '.png')}`}
             description={incident.summary + " " + incident.evidenceShown}
           />
 
@@ -224,7 +230,7 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
           </div>
         )}
 
-        {['DECISION_1', 'PERSPECTIVES', 'REVEAL', 'DECISION_2', 'COMPARISON'].includes(step) && (
+        {['DECISION_1', 'PERSPECTIVES', 'TENSION', 'DECISION_2', 'COMPARISON'].includes(step) && (
           <div className="fade-in" style={{ width: '100%' }}>
             <DecisionPanel 
               title="What is the correct call?"
@@ -234,7 +240,7 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
           </div>
         )}
 
-        {['PERSPECTIVES', 'REVEAL', 'DECISION_2', 'COMPARISON'].includes(step) && (
+        {['PERSPECTIVES', 'TENSION', 'DECISION_2', 'COMPARISON'].includes(step) && (
           <div className="fade-in" style={{ marginTop: '64px', width: '100%', display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <h3 style={{ color: 'var(--text-muted)' }}>Granite Perspectives Generated</h3>
             
@@ -270,25 +276,31 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
             )}
             
             {step === 'PERSPECTIVES' && !isGenerating && (
-              <button className="fade-in btn-primary" onClick={() => setStep('REVEAL')} style={{ alignSelf: 'center', marginTop: '32px' }}>
-                Consult the Law
-              </button>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', marginTop: '32px' }}>
+                <button className="fade-in btn-primary" onClick={() => setStep('TENSION')}>
+                  Enter the Structural Tension
+                </button>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
+                  IBM Granite has surfaced the discretion boundary.
+                </span>
+              </div>
             )}
           </div>
         )}
         </div>
 
-        {['REVEAL', 'DECISION_2', 'COMPARISON'].includes(step) && (
+        {['TENSION', 'DECISION_2', 'COMPARISON'].includes(step) && (
           <div className="fade-in" style={{ marginTop: '64px', width: '100%' }}>
             <RevealSection 
               isVisible={true}
               lawCitation={incident.lawInvolved}
               lawText={rulebookText}
               highlightTerms={highlightTerms} 
-              explanation={incident.reveal}
+              explanation={incident.structuralTension}
+              tensionTerm={incident.tensionTerm}
             />
             
-            {step === 'REVEAL' && (
+            {step === 'TENSION' && (
               <button className="btn-ghost" onClick={() => setStep('DECISION_2')} style={{ marginTop: '48px', display: 'block', margin: '48px auto 0' }}>
                 Reflect
               </button>
@@ -309,50 +321,149 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
         )}
 
         {step === 'COMPARISON' && (
-          <div className="fade-in" style={{ marginTop: '80px', width: '100%', textAlign: 'center', padding: '32px', background: 'var(--bg-panel)', borderRadius: '12px', border: '1px solid var(--accent-color)' }}>
-            <h3 style={{ marginBottom: '32px', color: 'var(--accent-color)', fontSize: '1.5rem' }}>The Shift</h3>
-            
-            {/* P0 Task 2: Divergence Badge */}
-            {isShifted ? (
-              <div style={{ display: 'inline-block', background: 'rgba(234, 179, 8, 0.1)', color: 'var(--accent-color)', border: '1px solid rgba(234, 179, 8, 0.3)', padding: '6px 16px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '24px' }}>
-                ⚠️ OPINION SHIFT DETECTED
+          <div className="fade-in print-container" style={{ 
+            marginTop: '80px', 
+            width: '100%', 
+            textAlign: 'left', 
+            padding: '40px', 
+            background: '#121212', 
+            borderRadius: '8px', 
+            border: '2px solid rgba(234, 179, 8, 0.4)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.5)'
+          }}>
+            {/* Header branding */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #EAB308', paddingBottom: '16px', marginBottom: '32px' }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, color: '#f5f5f5', letterSpacing: '1px', textTransform: 'uppercase' }}>
+                  Discretion Disclosure Report
+                </h3>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '1.5px' }}>
+                  Governance Audit & Risk Assessment Memo
+                </span>
               </div>
-            ) : (
-              <div style={{ display: 'inline-block', background: 'rgba(16, 185, 129, 0.1)', color: '#10B981', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '6px 16px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '24px' }}>
-                ✓ OPINION CONFIRMED
+              <div style={{ textAlign: 'right' }}>
+                <span style={{ fontSize: '0.75rem', color: '#EAB308', border: '1px solid #EAB308', padding: '4px 8px', borderRadius: '4px', fontFamily: 'monospace', fontWeight: 'bold' }}>
+                  IBM watsonx.governance active
+                </span>
               </div>
-            )}
+            </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '32px', flexWrap: 'wrap', gap: '24px' }}>
-               <div style={{ background: 'rgba(255,255,255,0.05)', padding: '24px', borderRadius: '8px', minWidth: '250px' }}>
-                 <p style={{ color: 'var(--text-muted)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.85rem' }}>Initial Judgment</p>
-                 <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{decision1}</p>
+            {/* Metadata Fields Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '32px', background: 'rgba(255,255,255,0.02)', padding: '24px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <div>
+                <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace' }}>Incident Focus</span>
+                <p style={{ margin: '4px 0 0 0', fontWeight: 'bold', fontSize: '1.05rem' }}>{incident.title}</p>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace' }}>Undefined Term</span>
+                <p style={{ margin: '4px 0 0 0', fontWeight: 'bold', fontSize: '1.05rem', color: '#EAB308' }}>"{incident.tensionTerm}"</p>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace' }}>Governing Policy</span>
+                <p style={{ margin: '4px 0 0 0', fontWeight: 'bold', fontSize: '1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{incident.lawInvolved}</p>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace' }}>Discretion Rating</span>
+                <p style={{ margin: '4px 0 0 0', fontWeight: 'bold', fontSize: '1.05rem', color: '#EAB308' }}>{incident.ambiguityScore} / 10</p>
+              </div>
+            </div>
+
+            {/* Divergence Status Chip */}
+            <div style={{ marginBottom: '32px', textAlign: 'center' }}>
+              {isShifted ? (
+                <div style={{ display: 'inline-block', background: 'rgba(234, 179, 8, 0.1)', color: '#EAB308', border: '1px solid rgba(234, 179, 8, 0.4)', padding: '10px 24px', borderRadius: '4px', fontSize: '0.9rem', fontWeight: 'bold', letterSpacing: '1px', textTransform: 'uppercase', fontFamily: 'monospace' }}>
+                  ⚠️ Discretion Acknowledged & Opinion Shifted
+                </div>
+              ) : (
+                <div style={{ display: 'inline-block', background: 'rgba(16, 185, 129, 0.1)', color: '#10B981', border: '1px solid rgba(16, 185, 129, 0.4)', padding: '10px 24px', borderRadius: '4px', fontSize: '0.9rem', fontWeight: 'bold', letterSpacing: '1px', textTransform: 'uppercase', fontFamily: 'monospace' }}>
+                  ✓ Intuitive Judgment Confirmed
+                </div>
+              )}
+            </div>
+
+            {/* Decision Path Compare */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', marginBottom: '32px' }}>
+               <div style={{ background: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                 <p style={{ color: 'var(--text-muted)', margin: '0 0 8px 0', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.8rem', fontFamily: 'monospace' }}>1. Initial Intuitive Judgment</p>
+                 <p style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: 0 }}>{decision1}</p>
                </div>
-               <div style={{ background: 'rgba(255,255,255,0.05)', padding: '24px', borderRadius: '8px', minWidth: '250px' }}>
-                 <p style={{ color: 'var(--text-muted)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.85rem' }}>After Law Reveal</p>
-                 <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{decision2}</p>
+               <div style={{ background: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                 <p style={{ color: 'var(--text-muted)', margin: '0 0 8px 0', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.8rem', fontFamily: 'monospace' }}>2. Post-Tension Disclosure Judgment</p>
+                 <p style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: 0 }}>{decision2}</p>
                </div>
             </div>
 
-            {/* P0 Task 3: Shift Critique Text Box */}
-            <div style={{ maxWidth: '600px', margin: '0 auto 40px auto', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', padding: '20px 24px', borderRadius: '8px', textAlign: 'left' }}>
-              <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--accent-color)', letterSpacing: '1px', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Cognitive Alignment Analysis</span>
-              <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-muted)', lineHeight: '1.6', fontStyle: 'italic' }}>
+            {/* Shift Critique */}
+            <div style={{ background: 'rgba(255,255,255,0.02)', borderLeft: '4px solid #EAB308', padding: '24px', borderRadius: '0 8px 8px 0', marginBottom: '40px' }}>
+              <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: '#EAB308', letterSpacing: '1.5px', fontWeight: 'bold', display: 'block', marginBottom: '12px', fontFamily: 'monospace' }}>
+                Cognitive Shift Analysis
+              </span>
+              <p style={{ margin: 0, fontSize: '1rem', color: 'var(--text-primary)', lineHeight: '1.6', fontStyle: 'italic' }}>
                 "{getCritique()}"
               </p>
             </div>
 
-            {/* P0 Task 1 & Continue Controls */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
+            {/* Mapped Perspectives Audit Log */}
+            <div style={{ marginBottom: '40px' }}>
+              <h4 style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px', fontFamily: 'monospace' }}>
+                Audit Trail of Consulting Interpretations
+              </h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {incident.perspectives.map((p, idx) => {
+                  let subLabel = "";
+                  if (p.persona === "Fan") subLabel = "Purposive Reading";
+                  else if (p.persona === "Referee") subLabel = "Contextual Reading";
+                  else if (p.persona === "VAR") subLabel = "Procedural Reading";
+                  else if (p.persona === "Rulebook") subLabel = "Strict Constructionist Reading";
+
+                  return (
+                    <div key={idx} style={{ padding: '16px', background: 'rgba(255,255,255,0.01)', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '4px' }}>
+                        <strong style={{ fontSize: '0.95rem' }}>{p.persona}</strong>
+                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>— {subLabel}</span>
+                      </div>
+                      <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>{p.text}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* System compliance signatures */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '24px', marginBottom: '32px', flexWrap: 'wrap', gap: '20px' }}>
+              <div>
+                <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block' }}>System Infrastructure</span>
+                <span style={{ fontSize: '0.8rem', fontFamily: 'monospace' }}>IBM Watsonx.governance (Model: Granite-13b)</span>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block' }}>Inference Parameters</span>
+                <span style={{ fontSize: '0.8rem', fontFamily: 'monospace' }}>greedy / max_tokens: 800</span>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block' }}>Compliance ID</span>
+                <span style={{ fontSize: '0.8rem', fontFamily: 'monospace' }}>{`watsonx-dec-audit-${incident.id}-${new Date().toISOString().slice(2, 10).replace(/-/g, '')}`}</span>
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', flexWrap: 'wrap' }} className="no-print">
               <button 
                 className="btn-ghost" 
                 onClick={exportAuditReport} 
-                style={{ fontSize: '1.1rem', padding: '12px 24px', border: '1px solid rgba(255,255,255,0.1)' }}
+                style={{ fontSize: '1.05rem', padding: '12px 24px', border: '1px solid rgba(255,255,255,0.1)' }}
               >
-                {copied ? "✓ Copied Audit Trail" : "📥 Export Decision Audit"}
+                {copied ? "✓ Copied Markdown Memo" : "📥 Export Compliance Memo"}
               </button>
               
-              <button className="btn-primary" onClick={handleNextIncident} style={{ fontSize: '1.1rem', padding: '12px 24px' }}>
+              <button 
+                className="btn-ghost" 
+                onClick={() => window.print()} 
+                style={{ fontSize: '1.05rem', padding: '12px 24px', border: '1px solid rgba(255,255,255,0.1)' }}
+              >
+                🖨️ Print Governance Report
+              </button>
+              
+              <button className="btn-primary" onClick={handleNextIncident} style={{ fontSize: '1.05rem', padding: '12px 24px', border: '1px solid #EAB308' }}>
                 Continue
               </button>
             </div>
