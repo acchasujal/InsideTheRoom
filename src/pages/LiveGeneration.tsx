@@ -4,6 +4,141 @@ import { generateLivePerspectives } from '../utils/mockApi';
 import { PerspectiveCard } from '../components/PerspectiveCard';
 import './LiveGeneration.css';
 
+// ─── Client-side fallback: mirrors api/generate.ts domain routing ─────────────
+// Called only when the network request to /api/generate itself fails (dev env,
+// timeout, no proxy). Produces domain-correct output instead of a generic
+// football handball payload.
+function buildClientFallback(incidentText: string): any {
+  const t = incidentText.toLowerCase();
+
+  // ── Corporate compliance / data disclosure ──────────────────────────────────
+  if (
+    t.includes('employee') || t.includes('consultant') || t.includes('contractor') ||
+    t.includes('disclosure') || t.includes('proprietary') || t.includes('data') ||
+    t.includes('document') || t.includes('shared') || t.includes('leak')
+  ) {
+    const isLoaded =
+      t.includes('leak') || t.includes('unauthorized') || t.includes('confidential') ||
+      t.includes('malicious') || t.includes('steal') || t.includes('breach');
+    return {
+      retrievedLaw:
+        'Section 4.2 (Information Security & Data Protection Policy)\n\nEmployees must safeguard company information. Unauthorized transmission of proprietary business data to external third parties is strictly prohibited. External reviews must occur under authorized non-disclosure terms.',
+      perspectives: [
+        { persona: 'Fan', text: isLoaded
+          ? 'Purposive Reading: The employee committed a major compliance violation. Bypassing standard protocols exposes the entire product line to corporate espionage, regardless of execution speed.'
+          : 'Purposive Reading: The collaboration with an external consultant was intended to accelerate critical QA testing, directly serving the project\'s success and company milestones.' },
+        { persona: 'Referee', text: isLoaded
+          ? 'Contextual Reading: Sharing proprietary documents without security approval constitutes a direct breach of corporate data policy. The action cannot be excused by intent.'
+          : 'Contextual Reading: An active Master Services Agreement and NDA were in place with the consultant. The information remained within a legally protected business circle.' },
+        { persona: 'VAR', text: isLoaded
+          ? 'Procedural Reading: The data transmission crossed the severity threshold for immediate compliance escalation and credential revocation.'
+          : 'Procedural Reading: The sharing was restricted to specific files under review, not meeting the threshold of a systemic database leak or IP compromise.' },
+        { persona: 'Rulebook', text: 'Strict Constructionist Reading: All disclosures of proprietary company assets to non-employee entities must be pre-cleared by corporate legal counsel. Unsanctioned transfers are policy violations regardless of intent.' },
+      ],
+      tensionTerm: 'authorized',
+      interpretationSpread: { purposive: isLoaded ? 92 : 35, contextual: isLoaded ? 88 : 28, procedural: isLoaded ? 95 : 42, strict: 80 },
+      _metadata: {
+        modelId: 'ibm/granite-13b-chat-v2 (Local Mock Fallback)',
+        prompt: `Incident: "${incidentText}"`,
+        inferenceStatus: 'LOCAL_MOCK_FALLBACK',
+        parameters: { decoding_method: 'greedy', max_new_tokens: 800 },
+        ambiguityScore: isLoaded ? 9.1 : 7.2,
+        tensionTerm: 'authorized',
+        interpretationSpread: { purposive: isLoaded ? 92 : 35, contextual: isLoaded ? 88 : 28, procedural: isLoaded ? 95 : 42, strict: 80 },
+      },
+    };
+  }
+
+  // ── Handball ─────────────────────────────────────────────────────────────────
+  if (
+    t.includes('handball') || t.includes('arm') || t.includes('hand') ||
+    t.includes('deliberately touches') || t.includes('contact with the ball') || t.includes('cross')
+  ) {
+    const isLoaded =
+      t.includes('violently') || t.includes('no attempt') || t.includes('deliberately') ||
+      t.includes('extended') || t.includes('intercepted') || t.includes('outward');
+    return {
+      retrievedLaw: 'Law 12 (Fouls and Misconduct - Handling the ball)\n\nIt is an offence if a player deliberately touches the ball with their hand/arm, or touches the ball when their hand/arm has made their body unnaturally bigger.',
+      perspectives: [
+        { persona: 'Fan', text: isLoaded ? 'Purposive Reading: Blatant infraction — clear penalty.' : 'Purposive Reading: Natural body movement — no time to react.' },
+        { persona: 'Referee', text: isLoaded ? 'Contextual Reading: Arm created an unnatural barrier. Penalty.' : 'Contextual Reading: Natural arm position for a player in stride. Play on.' },
+        { persona: 'VAR', text: isLoaded ? 'Procedural Reading: Confirm unnatural arm position — penalty.' : 'Procedural Reading: Incidental contact. No clear and obvious error.' },
+        { persona: 'Rulebook', text: 'Strict Constructionist Reading: Handling is penalized if deliberate or arm makes body unnaturally bigger. "Deliberately" is undefined.' },
+      ],
+      tensionTerm: 'deliberately',
+      interpretationSpread: { purposive: isLoaded ? 97 : 18, contextual: isLoaded ? 75 : 30, procedural: isLoaded ? 88 : 45, strict: 50 },
+      _metadata: { modelId: 'ibm/granite-13b-chat-v2 (Local Mock Fallback)', prompt: `Incident: "${incidentText}"`, inferenceStatus: 'LOCAL_MOCK_FALLBACK', parameters: { decoding_method: 'greedy', max_new_tokens: 800 }, ambiguityScore: isLoaded ? 9.4 : 8.5, tensionTerm: 'deliberately', interpretationSpread: { purposive: isLoaded ? 97 : 18, contextual: isLoaded ? 75 : 30, procedural: isLoaded ? 88 : 45, strict: 50 } },
+    };
+  }
+
+  // ── Football tackle / foul ────────────────────────────────────────────────────
+  if (
+    t.includes('tackle') || t.includes('foul') || t.includes('contact with') ||
+    t.includes('challenge') || t.includes('lunged') || t.includes('attacker') ||
+    t.includes('defender') || t.includes('reckless') || t.includes('excessive')
+  ) {
+    const isLoaded =
+      t.includes('violently') || t.includes('no attempt to play') || t.includes('lunged') ||
+      t.includes('excessive') || t.includes('reckless') || t.includes('assault') || t.includes('force');
+    return {
+      retrievedLaw: 'Law 12 (Fouls and Misconduct - Serious Foul Play)\n\nA tackle or challenge that endangers the safety of an opponent or uses excessive force or brutality must be sanctioned as serious foul play.',
+      perspectives: [
+        { persona: 'Fan', text: isLoaded ? 'Purposive Reading: Dangerous challenge — red card offense.' : 'Purposive Reading: Clean tackle — ball first, incidental contact.' },
+        { persona: 'Referee', text: isLoaded ? 'Contextual Reading: High and dangerous — serious foul play, red card.' : 'Contextual Reading: Firm but playing the ball. Yellow card sufficient.' },
+        { persona: 'VAR', text: isLoaded ? 'Procedural Reading: Excessive force confirmed — red card review.' : 'Procedural Reading: Does not meet brutality threshold. Stick with yellow.' },
+        { persona: 'Rulebook', text: 'Strict Constructionist Reading: The threshold between "reckless" and "excessive force" is the undefined boundary.' },
+      ],
+      tensionTerm: 'excessive force',
+      interpretationSpread: { purposive: isLoaded ? 97 : 12, contextual: isLoaded ? 80 : 35, procedural: isLoaded ? 90 : 28, strict: 65 },
+      _metadata: { modelId: 'ibm/granite-13b-chat-v2 (Local Mock Fallback)', prompt: `Incident: "${incidentText}"`, inferenceStatus: 'LOCAL_MOCK_FALLBACK', parameters: { decoding_method: 'greedy', max_new_tokens: 800 }, ambiguityScore: isLoaded ? 8.9 : 7.6, tensionTerm: 'excessive force', interpretationSpread: { purposive: isLoaded ? 97 : 12, contextual: isLoaded ? 80 : 35, procedural: isLoaded ? 90 : 28, strict: 65 } },
+    };
+  }
+
+  // ── Governance / fiduciary ────────────────────────────────────────────────────
+  if (
+    t.includes('board') || t.includes('fiduciary') || t.includes('director') ||
+    t.includes('vote') || t.includes('conflict of interest') || t.includes('equity') ||
+    t.includes('regulatory') || t.includes('governance')
+  ) {
+    const isLoaded =
+      t.includes('concealing') || t.includes('enrich') || t.includes('willfully') ||
+      t.includes('deliberately') || t.includes('bypass') || t.includes('breach') || t.includes('violat');
+    return {
+      retrievedLaw: 'Section 5.1 (Corporate Governance - Conflict of Interest & Fiduciary Duty)\n\nBoard members must disclose any material financial interest in matters subject to a vote. A "material" conflict is defined as any interest that a reasonable person would consider significant.',
+      perspectives: [
+        { persona: 'Fan', text: isLoaded ? 'Purposive Reading: Fiduciary duty violated — personal gain influenced corporate vote.' : 'Purposive Reading: Minor indirect equity through a spouse may not compromise judgment if de minimis.' },
+        { persona: 'Referee', text: isLoaded ? 'Contextual Reading: Concealing a financial relationship while voting is a direct breach of the duty of loyalty.' : 'Contextual Reading: Spousal equity without evidence of influence may fall below the mandatory recusal threshold.' },
+        { persona: 'VAR', text: isLoaded ? 'Procedural Reading: Non-disclosure crosses the materiality threshold. Vote must be reviewed.' : 'Procedural Reading: Equity position must be reviewed against the materiality standard before a finding can be made.' },
+        { persona: 'Rulebook', text: 'Strict Constructionist Reading: "Material" is not defined with a monetary threshold. "Reasonable person" is itself undefined.' },
+      ],
+      tensionTerm: 'material',
+      interpretationSpread: { purposive: isLoaded ? 91 : 32, contextual: isLoaded ? 85 : 40, procedural: isLoaded ? 88 : 45, strict: 70 },
+      _metadata: { modelId: 'ibm/granite-13b-chat-v2 (Local Mock Fallback)', prompt: `Incident: "${incidentText}"`, inferenceStatus: 'LOCAL_MOCK_FALLBACK', parameters: { decoding_method: 'greedy', max_new_tokens: 800 }, ambiguityScore: isLoaded ? 9.0 : 7.4, tensionTerm: 'material', interpretationSpread: { purposive: isLoaded ? 91 : 32, contextual: isLoaded ? 85 : 40, procedural: isLoaded ? 88 : 45, strict: 70 } },
+    };
+  }
+
+  // ── Domain-agnostic fallback ──────────────────────────────────────────────────
+  const cleanWords = incidentText.split(/\s+/).filter((w) => w.length > 4);
+  const keyword = (cleanWords[0] || 'Behavioral').replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '');
+  const kw = keyword.charAt(0).toUpperCase() + keyword.slice(1).toLowerCase();
+  const isLoaded =
+    t.includes('violation') || t.includes('breach') || t.includes('violently') ||
+    t.includes('severe') || t.includes('unauthorized') || t.includes('failure') ||
+    t.includes('deliberate') || t.includes('intentional') || t.includes('willful');
+  return {
+    retrievedLaw: `Section Governance.10.3 (Standard Operational Conduct - Compliance Policy)\n\nActions and processes must align with core transparency guidelines. The term "${kw.toLowerCase()}" is subject to interpretive review.`,
+    perspectives: [
+      { persona: 'Fan', text: isLoaded ? 'Purposive Reading: A clear violation of standard procedure — corrective action is warranted.' : 'Purposive Reading: Conducted in good faith to advance critical operations — a strict penalty runs counter to the spirit of operational agility.' },
+      { persona: 'Referee', text: isLoaded ? 'Contextual Reading: A direct conflict with procedural guidelines — formal sanctions are justified.' : 'Contextual Reading: The surrounding context places this behavior within a justifiable gray zone that does not warrant formal escalation.' },
+      { persona: 'VAR', text: isLoaded ? 'Procedural Reading: Event logs confirm a material breach — immediate review required.' : 'Procedural Reading: Standard deviation within acceptable margins — does not cross the threshold requiring intervention.' },
+      { persona: 'Rulebook', text: `Strict Constructionist Reading: The policy does not define a measurable threshold for "${kw.toLowerCase()}" — every adjudication of this term is a discretionary judgment call.` },
+    ],
+    tensionTerm: kw.toLowerCase(),
+    interpretationSpread: { purposive: isLoaded ? 88 : 30, contextual: isLoaded ? 72 : 35, procedural: isLoaded ? 80 : 40, strict: 60 },
+    _metadata: { modelId: 'ibm/granite-13b-chat-v2 (Local Mock Fallback)', prompt: `Incident: "${incidentText}"`, inferenceStatus: 'LOCAL_MOCK_FALLBACK', parameters: { decoding_method: 'greedy', max_new_tokens: 800 }, ambiguityScore: isLoaded ? 8.8 : 6.9, tensionTerm: kw.toLowerCase(), interpretationSpread: { purposive: isLoaded ? 88 : 30, contextual: isLoaded ? 72 : 35, procedural: isLoaded ? 80 : 40, strict: 60 } },
+  };
+}
+
 type LiveStatus = 'IDLE' | 'GENERATING' | 'COMPLETE';
 type Mode = 'single' | 'sensitivity';
 
@@ -156,40 +291,18 @@ export const LiveGeneration: React.FC = () => {
         setSingleResult(response);
       }
     } else {
-      // API failed — build a graceful mock fallback so demo continues
+      // API failed — use domain-routing client fallback so demo never shows
+      // football handball outputs for a compliance scenario
       console.error('API call failed:', apiResult.reason);
       setHadApiError(true);
-      const isLoaded = loadedText.toLowerCase().includes('violently') ||
-        loadedText.toLowerCase().includes('deliberately') ||
-        loadedText.toLowerCase().includes('leaked') ||
-        loadedText.toLowerCase().includes('unauthorized');
-
-      const fallbackPayload = {
-        retrievedLaw: "Law 12 (Fouls and Misconduct - Handling the ball)\n\nIt is an offence if a player deliberately touches the ball with their hand/arm, or touches the ball when their hand/arm has made their body unnaturally bigger.",
-        perspectives: [
-          { persona: "Fan", text: isLoaded ? "Purposive Reading: Blatant infraction — he moved his arm outward to deliberately intercept the ball. Clear penalty." : "Purposive Reading: Completely natural body movement — the ball struck his arm at point-blank range with no time to react." },
-          { persona: "Referee", text: isLoaded ? "Contextual Reading: The arm was extended and created an unnatural barrier. I had to blow the whistle." : "Contextual Reading: The arm position was natural for a player in stride. No deliberate motion. Play on." },
-          { persona: "VAR", text: isLoaded ? "Procedural Reading: The replay confirms an unnatural arm position. Recommend on-field review — penalty." : "Procedural Reading: Incidental contact during a natural jumping action. No clear and obvious error. No penalty." },
-          { persona: "Rulebook", text: "Strict Constructionist Reading: Handling is penalized if a player deliberately touches the ball or makes their body unnaturally bigger. 'Deliberately' is not defined." }
-        ],
-        tensionTerm: "deliberately",
-        _metadata: { modelId: 'ibm/granite-13b-chat-v2 (Local Mock Fallback)', inferenceStatus: 'LOCAL_MOCK_FALLBACK', ambiguityScore: isLoaded ? 9.4 : 8.5 }
-      };
-
-      const neutralFallback = {
-        ...fallbackPayload,
-        perspectives: [
-          { persona: "Fan", text: "Purposive Reading: Completely natural body movement — the ball struck his arm at point-blank range with no time to react." },
-          { persona: "Referee", text: "Contextual Reading: The arm position was natural for a player in stride. No deliberate motion. Play on." },
-          { persona: "VAR", text: "Procedural Reading: Incidental contact during a natural jumping action. No clear and obvious error. No penalty." },
-          { persona: "Rulebook", text: "Strict Constructionist Reading: Handling is penalized if a player deliberately touches the ball. 'Deliberately' is not defined." }
-        ]
-      };
 
       if (capturedMode === 'sensitivity') {
-        setSensitivityResult({ neutral: neutralFallback, loaded: fallbackPayload });
+        setSensitivityResult({
+          neutral: buildClientFallback(inputText),
+          loaded: buildClientFallback(loadedText),
+        });
       } else {
-        setSingleResult(neutralFallback);
+        setSingleResult(buildClientFallback(inputText));
       }
     }
 
