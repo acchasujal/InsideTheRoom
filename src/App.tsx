@@ -3,6 +3,7 @@ import { DemoProvider } from './context/DemoContext';
 import { Home } from './pages/Home';
 import { IncidentContainer } from './pages/IncidentContainer';
 import { LiveGeneration } from './pages/LiveGeneration';
+import { HeatmapDemo } from './pages/HeatmapDemo';
 import './App.css';
 
 const IncidentContainerWrapper = () => {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/incident/:id" element={<IncidentContainerWrapper />} />
           <Route path="/live" element={<LiveGeneration />} />
+          <Route path="/heatmap" element={<HeatmapDemo />} />
         </Routes>
       </DemoProvider>
     </Router>
