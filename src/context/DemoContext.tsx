@@ -35,13 +35,14 @@ export const DemoProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         escapeCount++;
         clearTimeout(escapeTimer);
         
-        if (escapeCount >= 3) {
+        // Require 5 presses within 2 seconds — prevents accidental reset during Q&A
+        if (escapeCount >= 5) {
           resetDemo();
           escapeCount = 0;
         } else {
           escapeTimer = setTimeout(() => {
             escapeCount = 0;
-          }, 1000); // Must press 3 times within 1 second
+          }, 2000);
         }
       }
     };
@@ -52,6 +53,7 @@ export const DemoProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       clearTimeout(escapeTimer);
     };
   }, [navigate]);
+
 
   return (
     <DemoContext.Provider value={{ currentIncidentIndex, isDemoMode, nextIncident, resetDemo, setDemoMode: setIsDemoMode }}>

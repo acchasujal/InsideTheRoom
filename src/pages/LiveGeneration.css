@@ -75,3 +75,16 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
+
+/* Preset selector button hover — was referenced in JSX but had no CSS rule */
+.preset-btn:hover {
+  background: rgba(234, 179, 8, 0.06) !important;
+  border-color: rgba(234, 179, 8, 0.35) !important;
+  transform: translateY(-1px);
+  transition: all 0.15s ease;
+}
+
+.preset-btn {
+  transition: all 0.15s ease;
+}
+
