@@ -9,6 +9,7 @@
     "altImageFile": "perisic1.jpg",
     "lawInvolved": "Law 12 (Fouls and Misconduct - Handling the ball)",
     "disputedTerm": "\"Deliberately\" / \"Unnaturally bigger\"",
+    "tensionTerm": "deliberately",
     "evidenceShown": "Video/images of the ball striking the arm; player's running posture.",
     "perspectives": [
       { "persona": "Fan", "text": "It's a clear penalty. His arm blocked the cross and gave an unfair advantage." },
@@ -16,7 +17,7 @@
       { "persona": "VAR", "text": "The arm position was unnaturally bigger, creating a barrier. This is a clear and obvious error by the referee." },
       { "persona": "Rulebook", "text": "It is an offense if a player deliberately touches the ball or makes their body unnaturally bigger." }
     ],
-    "reveal": "The rulebook demands we penalize 'deliberate' acts. It never defines what 'deliberate' means. The foundation of the law is blank.",
+    "structuralTension": "'Deliberately' is the word this rule never defines. Every perspective above is a legitimate reading of it. The disagreement you just saw isn't a failure of interpretation — it is the actual content of the law at this boundary.",
     "decision2Prompt": "Now that you know the law doesn't define these terms, is it still a clear penalty?",
     "decision1Options": ["Penalty", "No Penalty"],
     "decision2Options": ["My call was correct", "The law is ambiguous"],
@@ -32,6 +33,7 @@
     "imageFile": "var.png",
     "lawInvolved": "VAR Protocol",
     "disputedTerm": "\"Clear and obvious error\"",
+    "tensionTerm": "clear and obvious error",
     "evidenceShown": "The referee's initial \"no penalty\" call vs. the VAR recommendation to review and overturn.",
     "perspectives": [
       { "persona": "Fan", "text": "The initial call was completely wrong; VAR saved the game." },
@@ -39,7 +41,7 @@
       { "persona": "VAR", "text": "The missed handball was a clear error that directly impacted a goal-scoring opportunity." },
       { "persona": "Rulebook", "text": "VAR may only intervene in the event of a \"clear and obvious error\" or \"serious missed incident.\"" }
     ],
-    "reveal": "\"Clear and obvious\" has no definition. VAR doesn't remove human ambiguity. It just puts it on a screen.",
+    "structuralTension": "'Clear and obvious error' is the term this rule never defines. Every perspective above is a legitimate reading of it. The disagreement you just saw isn't a failure of interpretation — it is the actual content of the law at this boundary.",
     "decision2Prompt": "Does a review mechanism based on an undefined term solve the ambiguity, or just move it?",
     "decision1Options": ["Overturn Call", "Stick with Referee"],
     "decision2Options": ["It solves ambiguity", "It just moves it"],
@@ -56,6 +58,7 @@
     "altImageFile": "dejong1.jpg",
     "lawInvolved": "Law 12 (Fouls and Misconduct)",
     "disputedTerm": "\"Serious foul play\" (excessive force) vs. \"reckless\" (yellow card)",
+    "tensionTerm": "serious foul play / reckless",
     "evidenceShown": "The high boot to the chest. Referee Howard Webb issuing a yellow card, and his later quote stating it should have been red.",
     "perspectives": [
       { "persona": "Fan", "text": "It's assault. A clear red card in any league in the world." },
@@ -63,7 +66,7 @@
       { "persona": "VAR", "text": "The player used excessive force and endangered the safety of an opponent. It is serious foul play." },
       { "persona": "Rulebook", "text": "Reckless challenges warrant a yellow card. Using excessive force constitutes serious foul play (red card)." }
     ],
-    "reveal": "Same referee. Same video. Two different answers. The line between a yellow card and a red card doesn't actually exist.",
+    "structuralTension": "'Serious foul play' and 'reckless' are the thresholds this rule never defines with mathematical boundary. Every perspective above is a legitimate reading of it. The disagreement you just saw isn't a failure of interpretation — it is the actual content of the law at this boundary.",
     "decision2Prompt": "If the same referee gives two different answers to the exact same footage, what is the \"correct\" call?",
     "decision1Options": ["Red Card", "Yellow Card"],
     "decision2Options": ["My call was correct", "The law is ambiguous"],
@@ -80,6 +83,7 @@
     "altImageFile": "mbappe1.jpg",
     "lawInvolved": "Law 11 (Offside)",
     "disputedTerm": "\"Deliberately played\"",
+    "tensionTerm": "deliberately played",
     "evidenceShown": "Mbappé's position, the pass, the defender's attempt to intercept, and the resulting goal.",
     "perspectives": [
       { "persona": "Fan", "text": "He was miles offside when the ball was kicked! The goal shouldn't stand." },
@@ -87,7 +91,7 @@
       { "persona": "VAR", "text": "The defender's action meets the criteria for a deliberate play. The offside offense is nullified." },
       { "persona": "Rulebook", "text": "A player in an offside position receiving the ball from an opponent who deliberately played the ball is not considered to have gained an advantage." }
     ],
-    "reveal": "The rule resets if the ball is 'deliberately played.' But the law cannot explain what 'deliberate' means. The rule is trapped in its own missing definitions.",
+    "structuralTension": "'Deliberately played' is the condition this rule never defines. Every perspective above is a legitimate reading of it. The disagreement you just saw isn't a failure of interpretation — it is the actual content of the law at this boundary.",
     "decision2Prompt": "Can you enforce an offside rule if the condition that resets it is undefined?",
     "decision1Options": ["Offside", "Goal Stands"],
     "decision2Options": ["My call was correct", "The law is ambiguous"],
@@ -104,7 +108,7 @@
     "altImageFile": "suarez1.webp",
     "lawInvolved": "Law 12 (Fouls and Misconduct)",
     "disputedTerm": "Adequacy of punishment / Procedural vs. Substantive Justice",
-    "ambiguityScore": 9.5,
+    "tensionTerm": "procedural vs substantive justice",
     "evidenceShown": "The deliberate handball, the red card, the missed penalty, and Uruguay advancing.",
     "perspectives": [
       { "persona": "Fan", "text": "He cheated, broke the rules intentionally, and his team was rewarded with a trip to the semi-finals." },
@@ -112,7 +116,7 @@
       { "persona": "VAR", "text": "The referee correctly identified the denial of an obvious goal-scoring opportunity by handball. Red card and penalty are the correct sanctions." },
       { "persona": "Rulebook", "text": "Denying the opposing team a goal or an obvious goal-scoring opportunity by a handball offense results in a sending-off and a penalty kick." }
     ],
-    "reveal": "Every rule was followed perfectly. The maximum punishment was given. But the law only guarantees procedure, not justice. The cheater advanced, and Ghana went home.",
+    "structuralTension": "'Denying a goal-scoring opportunity' and 'sending-off' are procedural remedies. The rulebook is completely silent on whether this procedural remedy fits the moral context or substantively serves justice. The disagreement you just saw isn't a failure of interpretation — it is the actual content of the law at this boundary.",
     "decision2Prompt": "Was justice served?",
     "decision1Options": ["It was cheating", "It was tactical"],
     "decision2Options": ["Yes, maximum punishment given", "No, Ghana was robbed"],

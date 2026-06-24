@@ -14,13 +14,17 @@ export interface LiveGenerationResponse {
   };
 }
 
-export const generateLivePerspectives = async (incidentText: string): Promise<LiveGenerationResponse> => {
+export const generateLivePerspectives = async (incidentText: string, loadedText?: string): Promise<any> => {
+  const body: any = { text: incidentText };
+  if (loadedText) {
+    body.loadedText = loadedText;
+  }
   const response = await fetch('/api/generate', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ text: incidentText })
+    body: JSON.stringify(body)
   });
 
   if (!response.ok) {
