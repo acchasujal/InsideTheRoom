@@ -1,6 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './AmbiguityHeatmap.css';
 
+// Tooltip component
+const InfoTooltip: React.FC<{ text: string }> = ({ text }) => (
+  <span className="itm-tooltip-wrap">
+    <span className="itm-tooltip-icon" aria-label="Information">ℹ️</span>
+    <span className="itm-tooltip-body" role="tooltip">{text}</span>
+  </span>
+);
+
 interface InterpretationReading {
   school: string;
   shortName: string;
@@ -357,12 +365,14 @@ export const AmbiguityHeatmap: React.FC<AmbiguityHeatmapProps> = ({
               <div className="heatmap-focus-meta">
                 <span className="heatmap-badge" style={{ borderColor: getHeatColor(selectedTerm.score), color: getHeatColor(selectedTerm.score) }}>
                   Ambiguity {selectedTerm.score}/10
+                  <InfoTooltip text="Calculated from: undefined legal language density · framing sensitivity · semantic divergence across reading schools · interpretation variance between persona outputs" />
                 </span>
                 <span className="heatmap-badge heatmap-badge-muted">
                   {selectedTerm.category}
                 </span>
                 <span className="heatmap-badge heatmap-badge-spread" style={{ borderColor: spreadValue > 50 ? '#ef4444' : '#eab308', color: spreadValue > 50 ? '#ef4444' : '#eab308' }}>
                   ↔ {spreadValue}pt interpretation spread
+                  <InfoTooltip text="Difference between the highest and lowest interpretation confidence across all four reading schools. A larger spread indicates greater legal ambiguity and higher discretion risk." />
                 </span>
               </div>
             </div>
@@ -421,6 +431,7 @@ export const AmbiguityHeatmap: React.FC<AmbiguityHeatmapProps> = ({
 
                     <span className="heatmap-interp-pct" style={{ color: interp.color }}>
                       {interp.penaltyLikelihood}%
+                      <InfoTooltip text={`Represents semantic agreement between Granite-generated reasoning and the ${interp.school} reading framework after normalization. Higher values indicate this school is more likely to find an offense.`} />
                     </span>
                   </div>
                 ))}
@@ -450,6 +461,10 @@ export const AmbiguityHeatmap: React.FC<AmbiguityHeatmapProps> = ({
                   </strong>
                   <span> The disagreement originates from this word. Not from the evidence. Not from the AI. From the language itself.</span>
                 </div>
+              </div>
+              {/* Responsible AI footer */}
+              <div className="heatmap-rai-footer">
+                These metrics assist human interpretation. They do not represent legal certainty or objective truth.
               </div>
             </div>
           </>

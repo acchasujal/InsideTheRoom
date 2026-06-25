@@ -1,6 +1,7 @@
 import React from 'react';
 import { LawViewer } from './LawViewer';
 import { PerspectiveCard } from './PerspectiveCard';
+import { DEFAULT_TERMS } from './AmbiguityHeatmap';
 import './RevealSection.css';
 
 interface RevealSectionProps {
@@ -21,6 +22,11 @@ export const RevealSection: React.FC<RevealSectionProps> = ({
   isVisible 
 }) => {
   if (!isVisible) return null;
+
+  // Find corresponding strength for Rulebook
+  const termData = DEFAULT_TERMS.find(t => t.term.toLowerCase() === tensionTerm.toLowerCase());
+  const rulebookInterp = termData?.interpretations.find(i => i.shortName.toLowerCase() === 'rulebook');
+  const strength = rulebookInterp ? rulebookInterp.penaltyLikelihood : undefined;
 
   return (
     <div className="reveal-section fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' }}>
@@ -70,6 +76,7 @@ export const RevealSection: React.FC<RevealSectionProps> = ({
           persona="Rulebook" 
           text={lawText} 
           colorTheme="rulebook" 
+          strength={strength}
         />
       </div>
 

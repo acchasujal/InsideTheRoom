@@ -6,6 +6,7 @@ import { IncidentCard } from '../components/IncidentCard';
 import { DecisionPanel } from '../components/DecisionPanel';
 import { PerspectiveCard } from '../components/PerspectiveCard';
 import { RevealSection } from '../components/RevealSection';
+import { DEFAULT_TERMS } from '../components/AmbiguityHeatmap';
 
 type Step = 'SETUP' | 'DECISION_1' | 'PERSPECTIVES' | 'TENSION' | 'DECISION_2' | 'COMPARISON';
 
@@ -126,12 +127,12 @@ export const IncidentContainer: React.FC = () => {
   const getCritique = () => {
     if (!decision2) return "";
     if (decision2 === "The law is ambiguous" || decision2 === "It just moves it" || decision2 === "No, Ghana was robbed") {
-      return "You acknowledged the structural ambiguity of the rule system after reviewing the text. You accepted that the rulebook cannot logically resolve this incident, forcing a reliance on human moral context rather than strict procedural automation.";
+      return "The participant's interpretation shifted after reviewing the governing rule text. Structural ambiguity was acknowledged as a source of interpretive variance. The participant recognized that the rulebook does not resolve this incident — human judgment remains the determining factor.";
     }
     if (decision2 === "My call was correct" || decision2 === "It solves ambiguity" || decision2 === "Yes, maximum punishment given") {
-      return "You maintained your judgment and affirmed its correctness despite the rule's undefined terms. This shows a high reliance on personal intuition to resolve semantic gaps and enforce order where the law is silent.";
+      return "The participant's interpretation remained stable after reviewing the governing rule text. The original judgment was maintained despite recognizing the undefined terms in the applicable law. This pattern is consistent with high interpretive confidence in the face of documented ambiguity.";
     }
-    return "You adjusted your judgment upon reviewing the rule's criteria. This indicates that transparency and inspection of written law can actively reshape confidence and offset initial cognitive biases.";
+    return "The participant's interpretation was adjusted upon reviewing the rule's criteria. This indicates that transparency and structured inspection of governing text can actively reshape confidence levels when undefined terms are surfaced.";
   };
 
   // P0 Task 2: Shift / Divergence Detection
@@ -204,11 +205,49 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
         </div>
       </header>
       
-      <main className="main-content" style={{ width: '100%', maxWidth: '900px', marginTop: '32px' }}>
+      <main className="main-content" style={{ width: '100%', maxWidth: '900px', marginTop: '20px' }}>
         
+        {/* Step Progress Indicator */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0', marginBottom: '28px', width: '100%' }}>
+          {[
+            { label: '1. Initial Judgment', step: 'SETUP' },
+            { label: '2. Granite Analysis', step: 'PERSPECTIVES' },
+            { label: '3. Audit Report', step: 'COMPARISON' }
+          ].map((s, i, arr) => {
+            const isActive = step === s.step;
+            const isPast = (
+              (s.step === 'SETUP' && step !== 'SETUP') ||
+              (s.step === 'PERSPECTIVES' && step === 'COMPARISON')
+            );
+            return (
+              <React.Fragment key={s.step}>
+                <div style={{
+                  padding: '6px 16px',
+                  borderRadius: '4px',
+                  fontSize: '0.72rem',
+                  fontFamily: 'monospace',
+                  fontWeight: isActive ? 700 : 400,
+                  background: isActive ? 'rgba(234,179,8,0.12)' : 'transparent',
+                  color: isActive ? '#EAB308' : isPast ? 'rgba(234,179,8,0.5)' : 'var(--text-muted)',
+                  border: isActive ? '1px solid rgba(234,179,8,0.35)' : '1px solid transparent',
+                  letterSpacing: '0.5px',
+                  transition: 'all 0.3s ease',
+                  whiteSpace: 'nowrap'
+                }}>
+                  {isPast ? '✓ ' : ''}{s.label}
+                </div>
+                {i < arr.length - 1 && (
+                  <div style={{ width: '28px', height: '1px', background: isPast ? 'rgba(234,179,8,0.3)' : 'rgba(255,255,255,0.1)', flexShrink: 0 }} />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+        
+        {/* Incident Evidence Container */}
         <div style={{
-          opacity: ['TENSION', 'DECISION_2', 'COMPARISON'].includes(step) ? 0.2 : 1,
-          pointerEvents: ['TENSION', 'DECISION_2', 'COMPARISON'].includes(step) ? 'none' : 'auto',
+          opacity: step === 'COMPARISON' ? 0.2 : 1,
+          pointerEvents: step === 'COMPARISON' ? 'none' : 'auto',
           transition: 'opacity 1.5s ease',
           width: '100%',
           display: 'flex',
@@ -218,105 +257,109 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
           <IncidentCard 
             title="Incident Evidence"
             mediaType="image"
-            mediaUrl={`/assets/${(step === 'TENSION' || step === 'DECISION_2' || step === 'COMPARISON') && (incident as any).altImageFile ? (incident as any).altImageFile : ((incident as any).imageFile || incident.id + '.png')}`}
+            mediaUrl={`/assets/${(step === 'COMPARISON' || (step === 'PERSPECTIVES' && !isGenerating)) && (incident as any).altImageFile ? (incident as any).altImageFile : ((incident as any).imageFile || incident.id + '.png')}`}
             description={incident.summary + " " + incident.evidenceShown}
           />
+        </div>
 
+        {/* Step: Setup (Problem Judgment) */}
         {step === 'SETUP' && (
-          <div className="fade-in" style={{ marginTop: '48px', width: '100%' }}>
-            <button className="btn-primary" onClick={() => setStep('DECISION_1')} style={{ margin: '0 auto', display: 'block', fontSize: '1.25rem' }}>
-              Make Judgment
-            </button>
-          </div>
-        )}
-
-        {['DECISION_1', 'PERSPECTIVES', 'TENSION', 'DECISION_2', 'COMPARISON'].includes(step) && (
-          <div className="fade-in" style={{ width: '100%' }}>
+          <div className="fade-in" style={{ width: '100%', marginTop: '28px' }}>
+            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+              <span style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '2px', display: 'block', marginBottom: '8px' }}>
+                Step 1 of 3 · Human Baseline
+              </span>
+              <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-muted)', maxWidth: '520px', marginInline: 'auto', lineHeight: 1.5 }}>
+                Before seeing the AI analysis, record your initial intuitive judgment below.
+              </p>
+            </div>
             <DecisionPanel 
-              title="What is the correct call?"
+              title="What is the observed judgment call?"
               options={(incident as any).decision1Options || ["Foul / Penalty / Red", "Play On / Yellow"]}
               onSelect={handleDecision1}
             />
           </div>
         )}
 
-        {['PERSPECTIVES', 'TENSION', 'DECISION_2', 'COMPARISON'].includes(step) && (
-          <div className="fade-in" style={{ marginTop: '64px', width: '100%', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <h3 style={{ color: 'var(--text-muted)' }}>Granite Perspectives Generated</h3>
-            
+        {/* Step: Perspectives, Tension, Reflection (Interpretation Divergence & Interactive Framing Test) */}
+        {step === 'PERSPECTIVES' && (
+          <div className="fade-in" style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '32px', marginTop: '32px' }}>
             {isGenerating ? (
-              <div className="terminal-window fade-in" style={{ margin: '0 auto', width: '100%', maxWidth: '600px' }}>
-                <div className="terminal-header"><span>Granite Inference Active</span></div>
-                <div className="terminal-body mono" style={{ color: 'var(--text-muted)' }}>
-                  {generationLogs.map((log, i) => (
-                    <div key={i} className="log-line">{log}</div>
-                  ))}
-                  <span className="cursor">_</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' }}>
+                <h3 style={{ color: 'var(--text-muted)', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '2px', fontFamily: 'monospace', margin: 0 }}>
+                  Analyzing Divergence...
+                </h3>
+                <div className="terminal-window fade-in" style={{ margin: '0 auto', width: '100%', maxWidth: '600px' }}>
+                  <div className="terminal-header"><span>Granite Inference Active</span></div>
+                  <div className="terminal-body mono" style={{ color: 'var(--text-muted)' }}>
+                    {generationLogs.map((log, i) => (
+                      <div key={i} className="log-line">{log}</div>
+                    ))}
+                    <span className="cursor">_</span>
+                  </div>
                 </div>
               </div>
             ) : (
-              <div className="fade-in" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
-                {incident.perspectives.filter(p => p.persona !== 'Rulebook').map((p, idx) => {
-                  let theme: any = 'default';
-                  const lower = p.persona.toLowerCase();
-                  if (lower.includes('referee')) theme = 'referee';
-                  if (lower.includes('fan')) theme = 'fan';
-                  if (lower.includes('var')) theme = 'var';
-                  
-                  return (
-                    <PerspectiveCard 
-                      key={idx}
-                      persona={p.persona}
-                      text={p.text}
-                      colorTheme={theme}
-                    />
-                  );
-                })}
-              </div>
-            )}
-            
-            {step === 'PERSPECTIVES' && !isGenerating && (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', marginTop: '32px' }}>
-                <button className="fade-in btn-primary" onClick={() => setStep('TENSION')}>
-                  Enter the Structural Tension
-                </button>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
-                  IBM Granite has surfaced the discretion boundary.
-                </span>
-              </div>
-            )}
-          </div>
-        )}
-        </div>
+              <>
+                {/* 1. Interpretation Divergence */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <h3 style={{ color: 'var(--text-muted)', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '2px', fontFamily: 'monospace', margin: 0, textAlign: 'left' }}>
+                    Granite Generated Perspectives
+                  </h3>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
+                    {incident.perspectives.filter(p => p.persona !== 'Rulebook').map((p, idx) => {
+                      let theme: any = 'default';
+                      const lower = p.persona.toLowerCase();
+                      if (lower.includes('referee')) theme = 'referee';
+                      if (lower.includes('fan')) theme = 'fan';
+                      if (lower.includes('var')) theme = 'var';
+                      
+                      // Find corresponding strength
+                      const termData = DEFAULT_TERMS.find(t => t.incidentId === incident.id);
+                      const interp = termData?.interpretations.find(i => i.shortName.toLowerCase() === lower);
+                      const strength = interp ? interp.penaltyLikelihood : undefined;
 
-        {['TENSION', 'DECISION_2', 'COMPARISON'].includes(step) && (
-          <div className="fade-in" style={{ marginTop: '64px', width: '100%' }}>
-            <RevealSection 
-              isVisible={true}
-              lawCitation={incident.lawInvolved}
-              lawText={rulebookText}
-              highlightTerms={highlightTerms} 
-              explanation={incident.structuralTension}
-              tensionTerm={incident.tensionTerm}
-            />
-            
-            {step === 'TENSION' && (
-              <button className="btn-ghost" onClick={() => setStep('DECISION_2')} style={{ marginTop: '48px', display: 'block', margin: '48px auto 0' }}>
-                Reflect
-              </button>
-            )}
-          </div>
-        )}
+                      return (
+                        <PerspectiveCard 
+                          key={idx}
+                          persona={p.persona}
+                          text={p.text}
+                          colorTheme={theme}
+                          strength={strength}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
 
-        {['DECISION_2', 'COMPARISON'].includes(step) && (
-          <div className="fade-in" style={{ marginTop: '80px', width: '100%', textAlign: 'center', padding: '32px', background: 'var(--bg-panel)', borderRadius: '12px' }}>
-            <h3 style={{ marginBottom: '24px', color: 'var(--text-primary)', fontSize: '1.5rem' }}>{incident.decision2Prompt}</h3>
-            <p style={{ color: 'var(--text-muted)', marginBottom: '32px', fontStyle: 'italic' }}>{incident.reflection}</p>
-            <DecisionPanel 
-              title=""
-              options={(incident as any).decision2Options || ["My call was correct", "The law is ambiguous"]}
-              onSelect={handleDecision2}
-            />
+                {/* 2. Interactive Framing Test (RevealSection) */}
+                <div style={{ marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '32px' }}>
+                  <RevealSection 
+                    isVisible={true}
+                    lawCitation={incident.lawInvolved}
+                    lawText={rulebookText}
+                    highlightTerms={highlightTerms} 
+                    explanation={incident.structuralTension}
+                    tensionTerm={incident.tensionTerm}
+                  />
+                </div>
+
+                {/* 3. Reflection Call (Decision 2) */}
+                <div style={{ marginTop: '32px', width: '100%', textAlign: 'center', padding: '32px', background: 'var(--bg-panel)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <h3 style={{ marginBottom: '16px', color: 'var(--text-primary)', fontSize: '1.35rem', fontWeight: 700 }}>
+                    {incident.decision2Prompt}
+                  </h3>
+                  <p style={{ color: 'var(--text-muted)', marginBottom: '24px', fontSize: '0.95rem', fontStyle: 'italic', lineHeight: 1.5 }}>
+                    {incident.reflection}
+                  </p>
+                  <DecisionPanel 
+                    title=""
+                    options={(incident as any).decision2Options || ["My call was correct", "The law is ambiguous"]}
+                    onSelect={handleDecision2}
+                  />
+                </div>
+              </>
+            )}
           </div>
         )}
 
@@ -396,10 +439,13 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
             {/* Shift Critique */}
             <div style={{ background: 'rgba(255,255,255,0.02)', borderLeft: '4px solid #EAB308', padding: '24px', borderRadius: '0 8px 8px 0', marginBottom: '40px' }}>
               <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: '#EAB308', letterSpacing: '1.5px', fontWeight: 'bold', display: 'block', marginBottom: '12px', fontFamily: 'monospace' }}>
-                Cognitive Shift Analysis
+                Observed Reasoning Pattern
               </span>
               <p style={{ margin: 0, fontSize: '1rem', color: 'var(--text-primary)', lineHeight: '1.6', fontStyle: 'italic' }}>
                 "{getCritique()}"
+              </p>
+              <p style={{ margin: '12px 0 0 0', fontSize: '0.72rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+                These observations assist human interpretation. They do not evaluate the participant or represent a psychological assessment.
               </p>
             </div>
 
@@ -432,12 +478,16 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
             {/* System compliance signatures */}
             <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '24px', marginBottom: '32px', flexWrap: 'wrap', gap: '20px' }}>
               <div>
-                <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block' }}>System Infrastructure</span>
-                <span style={{ fontSize: '0.8rem', fontFamily: 'monospace' }}>IBM Watsonx.governance (Model: Granite-13b)</span>
+                <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block' }}>Inference Model</span>
+                <span style={{ fontSize: '0.8rem', fontFamily: 'monospace' }}>IBM Granite 13B Chat v2 · ibm/granite-13b-chat-v2</span>
               </div>
               <div>
-                <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block' }}>Inference Parameters</span>
-                <span style={{ fontSize: '0.8rem', fontFamily: 'monospace' }}>greedy / max_tokens: 800</span>
+                <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block' }}>Execution Mode</span>
+                <span style={{ fontSize: '0.8rem', fontFamily: 'monospace' }}>Greedy · Deterministic · Reproducible</span>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block' }}>Governance Status</span>
+                <span style={{ fontSize: '0.8rem', fontFamily: 'monospace', color: '#10B981' }}>✓ Human-in-the-Loop · Auditable</span>
               </div>
               <div>
                 <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block' }}>Compliance ID</span>
