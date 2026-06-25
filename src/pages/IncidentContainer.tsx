@@ -7,6 +7,8 @@ import { DecisionPanel } from '../components/DecisionPanel';
 import { PerspectiveCard } from '../components/PerspectiveCard';
 import { RevealSection } from '../components/RevealSection';
 import { DEFAULT_TERMS } from '../components/AmbiguityHeatmap';
+import { InterpretationSpreadHero } from '../components/InterpretationSpreadHero';
+
 
 type Step = 'SETUP' | 'DECISION_1' | 'PERSPECTIVES' | 'TENSION' | 'DECISION_2' | 'COMPARISON';
 
@@ -363,163 +365,151 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
           </div>
         )}
 
-        {step === 'COMPARISON' && (
-          <div className="fade-in print-container" style={{ 
-            marginTop: '80px', 
-            width: '100%', 
-            textAlign: 'left', 
-            padding: '40px', 
-            background: '#121212', 
-            borderRadius: '8px', 
-            border: '2px solid rgba(234, 179, 8, 0.4)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.5)'
-          }}>
-            {/* Header branding */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #EAB308', paddingBottom: '16px', marginBottom: '32px' }}>
-              <div>
-                <h3 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, color: '#f5f5f5', letterSpacing: '1px', textTransform: 'uppercase' }}>
-                  Discretion Disclosure Report
-                </h3>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '1.5px' }}>
-                  Governance Audit & Risk Assessment Memo
-                </span>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <span style={{ fontSize: '0.75rem', color: '#EAB308', border: '1px solid #EAB308', padding: '4px 8px', borderRadius: '4px', fontFamily: 'monospace', fontWeight: 'bold' }}>
-                  IBM watsonx.governance active
-                </span>
-              </div>
-            </div>
+        {step === 'COMPARISON' && (() => {
+          const termData = DEFAULT_TERMS.find(t => t.incidentId === incident.id);
+          const spread = {
+            purposive: termData?.interpretations.find(i => i.school.toLowerCase().includes('purposive'))?.penaltyLikelihood ?? 50,
+            contextual: termData?.interpretations.find(i => i.school.toLowerCase().includes('contextual'))?.penaltyLikelihood ?? 50,
+            procedural: termData?.interpretations.find(i => i.school.toLowerCase().includes('procedural'))?.penaltyLikelihood ?? 50,
+            strict: termData?.interpretations.find(i => i.school.toLowerCase().includes('strict'))?.penaltyLikelihood ?? 50,
+          };
 
-            {/* Metadata Fields Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '32px', background: 'rgba(255,255,255,0.02)', padding: '24px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.05)' }}>
-              <div>
-                <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace' }}>Incident Focus</span>
-                <p style={{ margin: '4px 0 0 0', fontWeight: 'bold', fontSize: '1.05rem' }}>{incident.title}</p>
-              </div>
-              <div>
-                <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace' }}>Undefined Term</span>
-                <p style={{ margin: '4px 0 0 0', fontWeight: 'bold', fontSize: '1.05rem', color: '#EAB308' }}>"{incident.tensionTerm}"</p>
-              </div>
-              <div>
-                <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace' }}>Governing Policy</span>
-                <p style={{ margin: '4px 0 0 0', fontWeight: 'bold', fontSize: '1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{incident.lawInvolved}</p>
-              </div>
-              <div>
-                <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace' }}>Discretion Rating</span>
-                <p style={{ margin: '4px 0 0 0', fontWeight: 'bold', fontSize: '1.05rem', color: '#EAB308' }}>{incident.ambiguityScore} / 10</p>
-              </div>
-            </div>
-
-            {/* Divergence Status Chip */}
-            <div style={{ marginBottom: '32px', textAlign: 'center' }}>
-              {isShifted ? (
-                <div style={{ display: 'inline-block', background: 'rgba(234, 179, 8, 0.1)', color: '#EAB308', border: '1px solid rgba(234, 179, 8, 0.4)', padding: '10px 24px', borderRadius: '4px', fontSize: '0.9rem', fontWeight: 'bold', letterSpacing: '1px', textTransform: 'uppercase', fontFamily: 'monospace' }}>
-                  ⚠️ Discretion Acknowledged & Opinion Shifted
+          return (
+            <div className="fade-in print-container" style={{ 
+              marginTop: '24px', 
+              width: '100%', 
+              textAlign: 'left', 
+              padding: '24px', 
+              background: '#0a0a0a', 
+              borderRadius: '12px', 
+              border: '1px solid rgba(255,255,255,0.06)',
+              boxShadow: '0 16px 48px rgba(0,0,0,0.6)'
+            }}>
+              {/* Dashboard Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '16px', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 850, color: '#f5f5f5', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                    Governance Audit Console
+                  </h3>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
+                    ID: {`watsonx-dec-audit-${incident.id}-${new Date().toISOString().slice(2, 10).replace(/-/g, '')}`}
+                  </span>
                 </div>
-              ) : (
-                <div style={{ display: 'inline-block', background: 'rgba(16, 185, 129, 0.1)', color: '#10B981', border: '1px solid rgba(16, 185, 129, 0.4)', padding: '10px 24px', borderRadius: '4px', fontSize: '0.9rem', fontWeight: 'bold', letterSpacing: '1px', textTransform: 'uppercase', fontFamily: 'monospace' }}>
-                  ✓ Intuitive Judgment Confirmed
+                
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }} className="no-print">
+                  <button className="btn-ghost" onClick={exportAuditReport} style={{ fontSize: '0.8rem', padding: '6px 12px', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    {copied ? "✓ Copied" : "📥 Export"}
+                  </button>
+                  <button className="btn-ghost" onClick={() => window.print()} style={{ fontSize: '0.8rem', padding: '6px 12px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    🖨️ Print
+                  </button>
+                  <button className="btn-primary" onClick={handleNextIncident} style={{ fontSize: '0.8rem', padding: '6px 12px', border: '1px solid #EAB308', background: '#EAB308', color: '#000' }}>
+                    Continue →
+                  </button>
                 </div>
-              )}
-            </div>
+              </div>
 
-            {/* Decision Path Compare */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', marginBottom: '32px' }}>
-               <div style={{ background: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                 <p style={{ color: 'var(--text-muted)', margin: '0 0 8px 0', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.8rem', fontFamily: 'monospace' }}>1. Initial Intuitive Judgment</p>
-                 <p style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: 0 }}>{decision1}</p>
-               </div>
-               <div style={{ background: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                 <p style={{ color: 'var(--text-muted)', margin: '0 0 8px 0', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.8rem', fontFamily: 'monospace' }}>2. Post-Tension Disclosure Judgment</p>
-                 <p style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: 0 }}>{decision2}</p>
-               </div>
-            </div>
+              {/* KPI Cards Bar */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px', marginBottom: '20px' }}>
+                <div className="glass-panel" style={{ padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: '2px', borderLeft: '3px solid #10b981' }}>
+                  <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Model Status</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10B981', display: 'inline-block', animation: 'pulse 1.5s infinite' }} />
+                    <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#f5f5f5', fontFamily: 'monospace' }}>Granite 13B</span>
+                  </div>
+                </div>
+                <div className="glass-panel" style={{ padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: '2px', borderLeft: '3px solid #EAB308' }}>
+                  <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Discretion Risk</span>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#EAB308', fontFamily: 'monospace' }}>{incident.ambiguityScore >= 8.5 ? 'HIGH RISK' : 'MODERATE RISK'}</span>
+                </div>
+                <div className="glass-panel" style={{ padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: '2px', borderLeft: '3px solid #EF4444' }}>
+                  <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Human Alignment</span>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: isShifted ? '#EAB308' : '#10B981', fontFamily: 'monospace' }}>
+                    {isShifted ? '⚠️ SHIFT DETECTED' : '✓ STABLE'}
+                  </span>
+                </div>
+                <div className="glass-panel" style={{ padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: '2px', borderLeft: '3px solid #3b82f6' }}>
+                  <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Compliance Pillar</span>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#3b82f6', fontFamily: 'monospace' }}>EXPLAINABLE AI</span>
+                </div>
+              </div>
 
-            {/* Shift Critique */}
-            <div style={{ background: 'rgba(255,255,255,0.02)', borderLeft: '4px solid #EAB308', padding: '24px', borderRadius: '0 8px 8px 0', marginBottom: '40px' }}>
-              <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: '#EAB308', letterSpacing: '1.5px', fontWeight: 'bold', display: 'block', marginBottom: '12px', fontFamily: 'monospace' }}>
-                Observed Reasoning Pattern
-              </span>
-              <p style={{ margin: 0, fontSize: '1rem', color: 'var(--text-primary)', lineHeight: '1.6', fontStyle: 'italic' }}>
-                "{getCritique()}"
-              </p>
-              <p style={{ margin: '12px 0 0 0', fontSize: '0.72rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
-                These observations assist human interpretation. They do not evaluate the participant or represent a psychological assessment.
-              </p>
-            </div>
+              {/* Columns Layout */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '20px', alignItems: 'start' }}>
+                
+                {/* Left Column: Spread Hero Infographic */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <span style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', letterSpacing: '1px' }}>Interpretation Spread Infographic</span>
+                  <InterpretationSpreadHero
+                    tensionTerm={incident.tensionTerm}
+                    ambiguityScore={incident.ambiguityScore}
+                    spread={spread}
+                    isCorporate={false}
+                  />
+                </div>
 
-            {/* Mapped Perspectives Audit Log */}
-            <div style={{ marginBottom: '40px' }}>
-              <h4 style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px', fontFamily: 'monospace' }}>
-                Audit Trail of Consulting Interpretations
-              </h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {incident.perspectives.map((p, idx) => {
-                  let subLabel = "";
-                  if (p.persona === "Fan") subLabel = "Purposive Reading";
-                  else if (p.persona === "Referee") subLabel = "Contextual Reading";
-                  else if (p.persona === "VAR") subLabel = "Procedural Reading";
-                  else if (p.persona === "Rulebook") subLabel = "Strict Constructionist Reading";
-
-                  return (
-                    <div key={idx} style={{ padding: '16px', background: 'rgba(255,255,255,0.01)', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.03)' }}>
-                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '4px' }}>
-                        <strong style={{ fontSize: '0.95rem' }}>{p.persona}</strong>
-                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>— {subLabel}</span>
-                      </div>
-                      <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>{p.text}</p>
+                {/* Right Column: Rule Focus & Decisions Timeline */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  
+                  {/* Governing Rule context */}
+                  <div style={{ background: '#121212', padding: '14px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                      <span style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', letterSpacing: '0.5px' }}>Policy / Rule Focus</span>
+                      <span style={{ fontSize: '0.6rem', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: '4px', color: '#f5f5f5' }}>{incident.title}</span>
                     </div>
-                  );
-                })}
-              </div>
-            </div>
+                    <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-primary)', lineHeight: 1.4 }}>
+                      {incident.lawInvolved}
+                    </p>
+                  </div>
 
-            {/* System compliance signatures */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '24px', marginBottom: '32px', flexWrap: 'wrap', gap: '20px' }}>
-              <div>
-                <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block' }}>Inference Model</span>
-                <span style={{ fontSize: '0.8rem', fontFamily: 'monospace' }}>IBM Granite 13B Chat v2 · ibm/granite-13b-chat-v2</span>
-              </div>
-              <div>
-                <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block' }}>Execution Mode</span>
-                <span style={{ fontSize: '0.8rem', fontFamily: 'monospace' }}>Greedy · Deterministic · Reproducible</span>
-              </div>
-              <div>
-                <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block' }}>Governance Status</span>
-                <span style={{ fontSize: '0.8rem', fontFamily: 'monospace', color: '#10B981' }}>✓ Human-in-the-Loop · Auditable</span>
-              </div>
-              <div>
-                <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block' }}>Compliance ID</span>
-                <span style={{ fontSize: '0.8rem', fontFamily: 'monospace' }}>{`watsonx-dec-audit-${incident.id}-${new Date().toISOString().slice(2, 10).replace(/-/g, '')}`}</span>
-              </div>
-            </div>
+                  {/* Decisions timeline */}
+                  <div style={{ background: '#121212', padding: '14px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <span style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', letterSpacing: '0.5px' }}>Human Decision Path</span>
+                    
+                    <div style={{ display: 'flex', gap: '10px', position: 'relative' }}>
+                      <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)', position: 'absolute', left: '7px', top: '10px', bottom: '10px' }} />
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+                        <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                          <div style={{ width: '15px', height: '15px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: '1.5px solid #666', zIndex: 1, marginTop: '2px' }} />
+                          <div>
+                            <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', fontFamily: 'monospace' }}>Initial Intuitive Judgment</span>
+                            <span style={{ fontSize: '0.82rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{decision1}</span>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                          <div style={{ width: '15px', height: '15px', borderRadius: '50%', background: 'rgba(234,179,8,0.1)', border: '1.5px solid #EAB308', zIndex: 1, marginTop: '2px' }} />
+                          <div>
+                            <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', fontFamily: 'monospace' }}>Reflective Post-Disclosure Judgment</span>
+                            <span style={{ fontSize: '0.82rem', fontWeight: 'bold', color: '#EAB308' }}>{decision2}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
-            {/* Buttons */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', flexWrap: 'wrap' }} className="no-print">
-              <button 
-                className="btn-ghost" 
-                onClick={exportAuditReport} 
-                style={{ fontSize: '1.05rem', padding: '12px 24px', border: '1px solid rgba(255,255,255,0.1)' }}
-              >
-                {copied ? "✓ Copied Markdown Memo" : "📥 Export Compliance Memo"}
-              </button>
-              
-              <button 
-                className="btn-ghost" 
-                onClick={() => window.print()} 
-                style={{ fontSize: '1.05rem', padding: '12px 24px', border: '1px solid rgba(255,255,255,0.1)' }}
-              >
-                🖨️ Print Governance Report
-              </button>
-              
-              <button className="btn-primary" onClick={handleNextIncident} style={{ fontSize: '1.05rem', padding: '12px 24px', border: '1px solid #EAB308' }}>
-                Continue
-              </button>
-            </div>
+                    <div style={{ background: 'rgba(255,255,255,0.02)', borderLeft: '3px solid #EAB308', padding: '8px 10px', borderRadius: '0 4px 4px 0', marginTop: '2px' }}>
+                      <span style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: '#EAB308', display: 'block', marginBottom: '2px', fontFamily: 'monospace' }}>Cognitive Shift Critique</span>
+                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontStyle: 'italic', lineHeight: 1.35 }}>"{getCritique()}"</span>
+                    </div>
+                  </div>
 
-          </div>
-        )}
+                  {/* Audit Metadata details */}
+                  <div style={{ background: '#121212', padding: '10px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+                    <div>
+                      <span style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block' }}>Execution Mode</span>
+                      <span style={{ fontSize: '0.7rem', fontFamily: 'monospace', color: '#f5f5f5' }}>Greedy / Deterministic</span>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block', textAlign: 'right' }}>Governance Status</span>
+                      <span style={{ fontSize: '0.7rem', fontFamily: 'monospace', color: '#10B981' }}>✓ Human-in-the-Loop</span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          );
+        })()}
         <div ref={bottomRef} />
       </main>
     </div>

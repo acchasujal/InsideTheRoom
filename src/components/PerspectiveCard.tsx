@@ -9,109 +9,129 @@ interface PerspectiveCardProps {
 }
 
 export const PerspectiveCard: React.FC<PerspectiveCardProps> = ({ persona, text, colorTheme, strength }) => {
-  const themeClass = colorTheme ? `theme-${colorTheme}` : 'theme-default';
-
   const lowerPersona = persona.toLowerCase();
   let displayName = persona.split('—')[0].split('-')[0].trim();
-  let subLabel = "";
+  let subLabel = "Reading";
 
   if (lowerPersona.includes('fan')) {
     displayName = "Fan";
-    subLabel = "Purposive Reading";
+    subLabel = "Purposive";
   } else if (lowerPersona.includes('referee')) {
     displayName = "Referee";
-    subLabel = "Contextual Reading";
+    subLabel = "Contextual";
   } else if (lowerPersona.includes('var')) {
     displayName = "VAR";
-    subLabel = "Procedural Reading";
+    subLabel = "Procedural";
   } else if (lowerPersona.includes('rulebook')) {
     displayName = "Rulebook";
-    subLabel = "Strict Constructionist Reading";
+    subLabel = "Strict Constructionist";
   }
 
-  const getThemeColor = (theme?: string) => {
-    switch (theme) {
-      case 'referee': return '#3B82F6';
-      case 'fan': return '#F97316';
-      case 'var': return '#10B981';
-      case 'rulebook': return '#8B5CF6';
-      default: return 'var(--text-muted)';
+  // Choose Icon SVG
+  const renderIcon = () => {
+    switch (displayName.toLowerCase()) {
+      case 'fan':
+        return (
+          <svg className="card-icon icon-fan" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+        );
+      case 'referee':
+        return (
+          <svg className="card-icon icon-referee" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="5" y="3" width="14" height="18" rx="2" ry="2" fill="currentColor" opacity="0.1"></rect>
+            <path d="M17.5 10.5h3M6.5 10.5h3M12 3v18"></path>
+          </svg>
+        );
+      case 'var':
+        return (
+          <svg className="card-icon icon-var" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        );
+      case 'rulebook':
+        return (
+          <svg className="card-icon icon-rulebook" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+        );
+      default:
+        return null;
     }
   };
 
+  // Determine Verdict and Badge styling
+  const getVerdict = () => {
+    const s = strength ?? 50;
+    const isCorporate = text.toLowerCase().includes('employee') || 
+                        text.toLowerCase().includes('compliance') || 
+                        text.toLowerCase().includes('policy') ||
+                        text.toLowerCase().includes('fiduciary') || 
+                        text.toLowerCase().includes('corporate') ||
+                        text.toLowerCase().includes('disclosure');
+
+    if (s >= 70) {
+      return {
+        label: isCorporate ? 'VIOLATION' : 'FOUL / RED',
+        className: 'verdict-red',
+        color: '#EF4444',
+      };
+    } else if (s <= 35) {
+      return {
+        label: isCorporate ? 'COMPLIANT' : 'PLAY ON',
+        className: 'verdict-green',
+        color: '#10B981',
+      };
+    } else {
+      return {
+        label: isCorporate ? 'WARNING' : 'MARGINAL',
+        className: 'verdict-yellow',
+        color: '#EAB308',
+      };
+    }
+  };
+
+  const verdict = getVerdict();
+
   return (
-    <div 
-      className={`perspective-card glass-panel fade-in ${themeClass}`} 
-      style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        gap: '12px',
-        border: '1px solid rgba(255, 255, 255, 0.05)',
-        borderLeft: `4px solid ${getThemeColor(colorTheme)}`,
-        background: 'rgba(255, 255, 255, 0.01)',
-        padding: '16px',
-        borderRadius: '6px',
-        position: 'relative',
-        overflow: 'hidden',
-        textAlign: 'left'
-      }}
-    >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-          <span style={{ 
-            fontSize: '0.68rem', 
-            fontFamily: 'monospace', 
-            color: 'var(--text-muted)', 
-            textTransform: 'uppercase', 
-            letterSpacing: '1px' 
-          }}>
-            Identity Persona
-          </span>
-          <span style={{ 
-            fontSize: '1rem', 
-            fontWeight: 800, 
-            color: getThemeColor(colorTheme),
-            fontFamily: 'monospace'
-          }}>
-            {displayName}
-          </span>
+    <div className={`perspective-card compact-perspective-card theme-${colorTheme || 'default'} fade-in`}>
+      <div className="card-top-row">
+        <div className="persona-info">
+          <div className="icon-wrapper">
+            {renderIcon()}
+          </div>
+          <div className="persona-meta">
+            <span className="persona-name">{displayName}</span>
+            <span className="reading-type">{subLabel}</span>
+          </div>
         </div>
-        <span style={{ 
-          fontSize: '0.6rem', 
-          fontFamily: 'monospace', 
-          background: 'rgba(255,255,255,0.05)', 
-          color: 'var(--text-muted)', 
-          padding: '2px 6px', 
-          borderRadius: '3px',
-          letterSpacing: '0.5px'
-        }}>
-          AUDITED
-        </span>
+        <div className={`verdict-badge ${verdict.className}`}>
+          {verdict.label}
+        </div>
       </div>
 
-      <div style={{ borderTop: '1px dashed rgba(255,255,255,0.07)', margin: '4px 0' }} />
-
-      <p className="perspective-text" style={{ 
-        margin: 0, 
-        fontSize: '0.92rem', 
-        lineHeight: '1.5',
-        color: 'var(--text-primary)' 
-      }}>
-        {text}
-      </p>
+      <div className="card-middle-row">
+        <p className="concise-summary">{text}</p>
+      </div>
 
       {strength !== undefined && (
-        <div style={{ marginTop: 'auto', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-            <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              {subLabel || 'Perspective Strength'}
-            </span>
-            <span style={{ fontSize: '0.78rem', fontFamily: 'monospace', fontWeight: 'bold', color: getThemeColor(colorTheme) }}>
-              {strength}%
-            </span>
+        <div className="card-bottom-row">
+          <div className="confidence-meter-container">
+            <span className="confidence-label">Confidence</span>
+            <span className="confidence-value" style={{ color: verdict.color }}>{strength}%</span>
           </div>
-          <div style={{ height: '4px', background: 'rgba(255,255,255,0.06)', borderRadius: '2px', overflow: 'hidden' }}>
-            <div style={{ height: '100%', width: `${strength}%`, background: getThemeColor(colorTheme), borderRadius: '2px' }} />
+          <div className="progress-bar-bg">
+            <div 
+              className="progress-bar-fill" 
+              style={{ 
+                width: `${strength}%`, 
+                backgroundColor: verdict.color 
+              }} 
+            />
           </div>
         </div>
       )}

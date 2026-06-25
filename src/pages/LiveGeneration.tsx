@@ -2,146 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { generateLivePerspectives } from '../utils/mockApi';
 import { PerspectiveCard } from '../components/PerspectiveCard';
+import { InterpretationSpreadHero } from '../components/InterpretationSpreadHero';
 import './LiveGeneration.css';
 
-// ─── Client-side fallback: mirrors api/generate.ts domain routing ─────────────
-// Called only when the network request to /api/generate itself fails (dev env,
-// timeout, no proxy). Produces domain-correct output instead of a generic
-// football handball payload.
-function buildClientFallback(incidentText: string): any {
-  const t = incidentText.toLowerCase();
-
-  // ── Corporate compliance / data disclosure ──────────────────────────────────
-  if (
-    t.includes('employee') || t.includes('consultant') || t.includes('contractor') ||
-    t.includes('disclosure') || t.includes('proprietary') || t.includes('data') ||
-    t.includes('document') || t.includes('shared') || t.includes('leak')
-  ) {
-    const isLoaded =
-      t.includes('leak') || t.includes('unauthorized') || t.includes('confidential') ||
-      t.includes('malicious') || t.includes('steal') || t.includes('breach');
-    return {
-      retrievedLaw:
-        'Section 4.2 (Information Security & Data Protection Policy)\n\nEmployees must safeguard company information. Unauthorized transmission of proprietary business data to external third parties is strictly prohibited. External reviews must occur under authorized non-disclosure terms.',
-      perspectives: [
-        { persona: 'Fan', text: isLoaded
-          ? 'Purposive Reading: The employee committed a major compliance violation. Bypassing standard protocols exposes the entire product line to corporate espionage, regardless of execution speed.'
-          : 'Purposive Reading: The collaboration with an external consultant was intended to accelerate critical QA testing, directly serving the project\'s success and company milestones.' },
-        { persona: 'Referee', text: isLoaded
-          ? 'Contextual Reading: Sharing proprietary documents without security approval constitutes a direct breach of corporate data policy. The action cannot be excused by intent.'
-          : 'Contextual Reading: An active Master Services Agreement and NDA were in place with the consultant. The information remained within a legally protected business circle.' },
-        { persona: 'VAR', text: isLoaded
-          ? 'Procedural Reading: The data transmission crossed the severity threshold for immediate compliance escalation and credential revocation.'
-          : 'Procedural Reading: The sharing was restricted to specific files under review, not meeting the threshold of a systemic database leak or IP compromise.' },
-        { persona: 'Rulebook', text: 'Strict Constructionist Reading: All disclosures of proprietary company assets to non-employee entities must be pre-cleared by corporate legal counsel. Unsanctioned transfers are policy violations regardless of intent.' },
-      ],
-      tensionTerm: 'authorized',
-      interpretationSpread: { purposive: isLoaded ? 92 : 35, contextual: isLoaded ? 88 : 28, procedural: isLoaded ? 95 : 42, strict: 80 },
-      _metadata: {
-        modelId: 'ibm/granite-13b-chat-v2',
-        prompt: `Incident: "${incidentText}"`,
-        inferenceStatus: 'LOCAL_MOCK_FALLBACK',
-        parameters: { decoding_method: 'greedy', max_new_tokens: 800 },
-        ambiguityScore: isLoaded ? 9.1 : 7.2,
-        tensionTerm: 'authorized',
-        interpretationSpread: { purposive: isLoaded ? 92 : 35, contextual: isLoaded ? 88 : 28, procedural: isLoaded ? 95 : 42, strict: 80 },
-      },
-    };
-  }
-
-  // ── Handball ─────────────────────────────────────────────────────────────────
-  if (
-    t.includes('handball') || t.includes('arm') || t.includes('hand') ||
-    t.includes('deliberately touches') || t.includes('contact with the ball') || t.includes('cross')
-  ) {
-    const isLoaded =
-      t.includes('violently') || t.includes('no attempt') || t.includes('deliberately') ||
-      t.includes('extended') || t.includes('intercepted') || t.includes('outward');
-    return {
-      retrievedLaw: 'Law 12 (Fouls and Misconduct - Handling the ball)\n\nIt is an offence if a player deliberately touches the ball with their hand/arm, or touches the ball when their hand/arm has made their body unnaturally bigger.',
-      perspectives: [
-        { persona: 'Fan', text: isLoaded ? 'Purposive Reading: Blatant infraction — clear penalty.' : 'Purposive Reading: Natural body movement — no time to react.' },
-        { persona: 'Referee', text: isLoaded ? 'Contextual Reading: Arm created an unnatural barrier. Penalty.' : 'Contextual Reading: Natural arm position for a player in stride. Play on.' },
-        { persona: 'VAR', text: isLoaded ? 'Procedural Reading: Confirm unnatural arm position — penalty.' : 'Procedural Reading: Incidental contact. No clear and obvious error.' },
-        { persona: 'Rulebook', text: 'Strict Constructionist Reading: Handling is penalized if deliberate or arm makes body unnaturally bigger. "Deliberately" is undefined.' },
-      ],
-      tensionTerm: 'deliberately',
-      interpretationSpread: { purposive: isLoaded ? 97 : 18, contextual: isLoaded ? 75 : 30, procedural: isLoaded ? 88 : 45, strict: 50 },
-      _metadata: { modelId: 'ibm/granite-13b-chat-v2', prompt: `Incident: "${incidentText}"`, inferenceStatus: 'LOCAL_MOCK_FALLBACK', parameters: { decoding_method: 'greedy', max_new_tokens: 800 }, ambiguityScore: isLoaded ? 9.4 : 8.5, tensionTerm: 'deliberately', interpretationSpread: { purposive: isLoaded ? 97 : 18, contextual: isLoaded ? 75 : 30, procedural: isLoaded ? 88 : 45, strict: 50 } },
-    };
-  }
-
-  // ── Football tackle / foul ────────────────────────────────────────────────────
-  if (
-    t.includes('tackle') || t.includes('foul') || t.includes('contact with') ||
-    t.includes('challenge') || t.includes('lunged') || t.includes('attacker') ||
-    t.includes('defender') || t.includes('reckless') || t.includes('excessive')
-  ) {
-    const isLoaded =
-      t.includes('violently') || t.includes('no attempt to play') || t.includes('lunged') ||
-      t.includes('excessive') || t.includes('reckless') || t.includes('assault') || t.includes('force');
-    return {
-      retrievedLaw: 'Law 12 (Fouls and Misconduct - Serious Foul Play)\n\nA tackle or challenge that endangers the safety of an opponent or uses excessive force or brutality must be sanctioned as serious foul play.',
-      perspectives: [
-        { persona: 'Fan', text: isLoaded ? 'Purposive Reading: Dangerous challenge — red card offense.' : 'Purposive Reading: Clean tackle — ball first, incidental contact.' },
-        { persona: 'Referee', text: isLoaded ? 'Contextual Reading: High and dangerous — serious foul play, red card.' : 'Contextual Reading: Firm but playing the ball. Yellow card sufficient.' },
-        { persona: 'VAR', text: isLoaded ? 'Procedural Reading: Excessive force confirmed — red card review.' : 'Procedural Reading: Does not meet brutality threshold. Stick with yellow.' },
-        { persona: 'Rulebook', text: 'Strict Constructionist Reading: The threshold between "reckless" and "excessive force" is the undefined boundary.' },
-      ],
-      tensionTerm: 'excessive force',
-      interpretationSpread: { purposive: isLoaded ? 97 : 12, contextual: isLoaded ? 80 : 35, procedural: isLoaded ? 90 : 28, strict: 65 },
-      _metadata: { modelId: 'ibm/granite-13b-chat-v2', prompt: `Incident: "${incidentText}"`, inferenceStatus: 'LOCAL_MOCK_FALLBACK', parameters: { decoding_method: 'greedy', max_new_tokens: 800 }, ambiguityScore: isLoaded ? 8.9 : 7.6, tensionTerm: 'excessive force', interpretationSpread: { purposive: isLoaded ? 97 : 12, contextual: isLoaded ? 80 : 35, procedural: isLoaded ? 90 : 28, strict: 65 } },
-    };
-  }
-
-  // ── Governance / fiduciary ────────────────────────────────────────────────────
-  if (
-    t.includes('board') || t.includes('fiduciary') || t.includes('director') ||
-    t.includes('vote') || t.includes('conflict of interest') || t.includes('equity') ||
-    t.includes('regulatory') || t.includes('governance')
-  ) {
-    const isLoaded =
-      t.includes('concealing') || t.includes('enrich') || t.includes('willfully') ||
-      t.includes('deliberately') || t.includes('bypass') || t.includes('breach') || t.includes('violat');
-    return {
-      retrievedLaw: 'Section 5.1 (Corporate Governance - Conflict of Interest & Fiduciary Duty)\n\nBoard members must disclose any material financial interest in matters subject to a vote. A "material" conflict is defined as any interest that a reasonable person would consider significant.',
-      perspectives: [
-        { persona: 'Fan', text: isLoaded ? 'Purposive Reading: Fiduciary duty violated — personal gain influenced corporate vote.' : 'Purposive Reading: Minor indirect equity through a spouse may not compromise judgment if de minimis.' },
-        { persona: 'Referee', text: isLoaded ? 'Contextual Reading: Concealing a financial relationship while voting is a direct breach of the duty of loyalty.' : 'Contextual Reading: Spousal equity without evidence of influence may fall below the mandatory recusal threshold.' },
-        { persona: 'VAR', text: isLoaded ? 'Procedural Reading: Non-disclosure crosses the materiality threshold. Vote must be reviewed.' : 'Procedural Reading: Equity position must be reviewed against the materiality standard before a finding can be made.' },
-        { persona: 'Rulebook', text: 'Strict Constructionist Reading: "Material" is not defined with a monetary threshold. "Reasonable person" is itself undefined.' },
-      ],
-      tensionTerm: 'material',
-      interpretationSpread: { purposive: isLoaded ? 91 : 32, contextual: isLoaded ? 85 : 40, procedural: isLoaded ? 88 : 45, strict: 70 },
-      _metadata: { modelId: 'ibm/granite-13b-chat-v2', prompt: `Incident: "${incidentText}"`, inferenceStatus: 'LOCAL_MOCK_FALLBACK', parameters: { decoding_method: 'greedy', max_new_tokens: 800 }, ambiguityScore: isLoaded ? 9.0 : 7.4, tensionTerm: 'material', interpretationSpread: { purposive: isLoaded ? 91 : 32, contextual: isLoaded ? 85 : 40, procedural: isLoaded ? 88 : 45, strict: 70 } },
-    };
-  }
-
-  // ── Domain-agnostic fallback ──────────────────────────────────────────────────
-  const cleanWords = incidentText.split(/\s+/).filter((w) => w.length > 4);
-  const keyword = (cleanWords[0] || 'Behavioral').replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '');
-  const kw = keyword.charAt(0).toUpperCase() + keyword.slice(1).toLowerCase();
-  const isLoaded =
-    t.includes('violation') || t.includes('breach') || t.includes('violently') ||
-    t.includes('severe') || t.includes('unauthorized') || t.includes('failure') ||
-    t.includes('deliberate') || t.includes('intentional') || t.includes('willful');
-  return {
-    retrievedLaw: `Section Governance.10.3 (Standard Operational Conduct - Compliance Policy)\n\nActions and processes must align with core transparency guidelines. The term "${kw.toLowerCase()}" is subject to interpretive review.`,
-    perspectives: [
-      { persona: 'Fan', text: isLoaded ? 'Purposive Reading: A clear violation of standard procedure — corrective action is warranted.' : 'Purposive Reading: Conducted in good faith to advance critical operations — a strict penalty runs counter to the spirit of operational agility.' },
-      { persona: 'Referee', text: isLoaded ? 'Contextual Reading: A direct conflict with procedural guidelines — formal sanctions are justified.' : 'Contextual Reading: The surrounding context places this behavior within a justifiable gray zone that does not warrant formal escalation.' },
-      { persona: 'VAR', text: isLoaded ? 'Procedural Reading: Event logs confirm a material breach — immediate review required.' : 'Procedural Reading: Standard deviation within acceptable margins — does not cross the threshold requiring intervention.' },
-      { persona: 'Rulebook', text: `Strict Constructionist Reading: The policy does not define a measurable threshold for "${kw.toLowerCase()}" — every adjudication of this term is a discretionary judgment call.` },
-    ],
-    tensionTerm: kw.toLowerCase(),
-    interpretationSpread: { purposive: isLoaded ? 88 : 30, contextual: isLoaded ? 72 : 35, procedural: isLoaded ? 80 : 40, strict: 60 },
-    _metadata: { modelId: 'ibm/granite-13b-chat-v2 (Local Mock Fallback)', prompt: `Incident: "${incidentText}"`, inferenceStatus: 'LOCAL_MOCK_FALLBACK', parameters: { decoding_method: 'greedy', max_new_tokens: 800 }, ambiguityScore: isLoaded ? 8.8 : 6.9, tensionTerm: kw.toLowerCase(), interpretationSpread: { purposive: isLoaded ? 88 : 30, contextual: isLoaded ? 72 : 35, procedural: isLoaded ? 80 : 40, strict: 60 } },
-  };
-}
-
-type LiveStatus = 'IDLE' | 'GENERATING' | 'COMPLETE';
-type Mode = 'single' | 'sensitivity';
-
+// ─── Preset Matching Helper ──────────────────────────────────────────────────
 interface Preset {
   title: string;
   category: string;
@@ -170,22 +34,70 @@ const PRESETS: Preset[] = [
   }
 ];
 
+function isPresetText(text: string): boolean {
+  if (!text) return false;
+  const lower = text.toLowerCase();
+  return PRESETS.some(p => 
+    lower.includes(p.neutral.toLowerCase().substring(0, 20)) || 
+    lower.includes(p.loaded.toLowerCase().substring(0, 20))
+  );
+}
+
+// ─── LRU Cache class (For Preset Demonstrations Only) ────────────────────────
+class LRUCache<K, V> {
+  private capacity: number;
+  private ttl: number;
+  private cache: Map<K, { value: V; expiry: number }> = new Map();
+
+  constructor(capacity: number, ttlMs: number) {
+    this.capacity = capacity;
+    this.ttl = ttlMs;
+  }
+
+  get(key: K): V | undefined {
+    const entry = this.cache.get(key);
+    if (!entry) return undefined;
+    if (Date.now() > entry.expiry) {
+      this.cache.delete(key);
+      return undefined;
+    }
+    this.cache.delete(key);
+    this.cache.set(key, entry);
+    return entry.value;
+  }
+
+  set(key: K, value: V): void {
+    if (this.cache.has(key)) {
+      this.cache.delete(key);
+    } else if (this.cache.size >= this.capacity) {
+      const oldestKey = this.cache.keys().next().value;
+      if (oldestKey !== undefined) {
+        this.cache.delete(oldestKey);
+      }
+    }
+    this.cache.set(key, { value, expiry: Date.now() + this.ttl });
+  }
+}
+
+const PRESET_CACHE = new LRUCache<string, any>(50, 10 * 60 * 1000); // 50 entries, 10 min TTL
+const PENDING_REQUESTS = new Map<string, Promise<any>>();
+
+type LiveStatus = 'IDLE' | 'GENERATING' | 'COMPLETE';
+type Mode = 'single' | 'sensitivity';
+
 export const LiveGeneration: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   
-  // Tab Mode state
   const [mode, setMode] = useState<Mode>('single');
-  
-  // Input states
   const [inputText, setInputText] = useState('');
   const [loadedText, setLoadedText] = useState('');
-  
   const [status, setStatus] = useState<LiveStatus>('IDLE');
-  // Track if we had an API error (to show fallback banner)
-  const [hadApiError, setHadApiError] = useState(false);
   
-  // Staggered log outputs
+  // Structured API error states
+  const [apiError, setApiError] = useState<{ message: string; details: string; logs: string[] } | null>(null);
+  
+  // Terminal log outputs (client-side connection process)
   const [neutralLogs, setNeutralLogs] = useState<string[]>([]);
   const [loadedLogs, setLoadedLogs] = useState<string[]>([]);
   
@@ -194,17 +106,11 @@ export const LiveGeneration: React.FC = () => {
   const [sensitivityResult, setSensitivityResult] = useState<{ neutral: any; loaded: any } | null>(null);
 
   const pipelineSteps = [
-    "Initializing IBM watsonx.ai Session...",
-    "Connecting to IBM watsonx.ai...",
-    "Sanitizing input text...",
-    "Querying Knowledge Base for Incident Context...",
-    "Laws retrieved. Identifying ambiguous terms...",
-    "Spawning Granite Personas (Referee, VAR, Fan, Rulebook)...",
-    "Synthesizing divergent perspectives...",
-    "Finalizing response payload..."
+    "Initializing local client parameters...",
+    "Validating input incident schema...",
+    "Routing query to Watsonx serverless gateway...",
   ];
 
-  // Auto-detect mode from URL query parameters
   useEffect(() => {
     const modeParam = searchParams.get('mode');
     if (modeParam === 'sensitivity') {
@@ -214,9 +120,7 @@ export const LiveGeneration: React.FC = () => {
     }
   }, [searchParams]);
 
-  // Terminal log animation — returns a Promise that resolves when all steps are done.
-  // Used to synchronize with the API response so results never flash before logs complete.
-  const runLogAnimation = (currentMode: Mode): Promise<void> => {
+  const runLogAnimation = (currentMode: Mode, serverLogs: string[] = []): Promise<void> => {
     return new Promise((resolve) => {
       setNeutralLogs([]);
       setLoadedLogs([]);
@@ -230,11 +134,18 @@ export const LiveGeneration: React.FC = () => {
           if (currentMode === 'sensitivity') {
             setTimeout(() => {
               setLoadedLogs(prev => [...prev, `${timestamp} ${step}`]);
-            }, 150);
+            }, 50);
           }
           currentStep++;
-          setTimeout(streamLog, Math.random() * 350 + 300);
+          setTimeout(streamLog, 100);
         } else {
+          // Merge server-side timestamps stage logs once gateway request completes
+          if (serverLogs.length > 0) {
+            setNeutralLogs(prev => [...prev, ...serverLogs]);
+            if (currentMode === 'sensitivity') {
+              setLoadedLogs(prev => [...prev, ...serverLogs]);
+            }
+          }
           resolve();
         }
       };
@@ -251,68 +162,94 @@ export const LiveGeneration: React.FC = () => {
 
   const resetToIdle = () => {
     setStatus('IDLE');
-    setHadApiError(false);
+    setApiError(null);
     setSingleResult(null);
     setSensitivityResult(null);
-    // Restore sensitivity mode with first preset so the demo entry is always ready
     setMode('sensitivity');
     setInputText(PRESETS[0].neutral);
     setLoadedText(PRESETS[0].loaded);
   };
 
-  const handleRun = async () => {
+  const handleRun = async (forceFallbackValue = false) => {
     if (!inputText.trim()) return;
     if (mode === 'sensitivity' && !loadedText.trim()) return;
 
     setStatus('GENERATING');
-    setHadApiError(false);
+    setApiError(null);
     setSingleResult(null);
     setSensitivityResult(null);
 
-    // Run API call and log animation in parallel;
-    // wait for BOTH before showing results (prevents results flashing before logs finish)
     const capturedMode = mode;
-    const [apiResult] = await Promise.allSettled([
-      (async () => {
-        if (capturedMode === 'sensitivity') {
-          return generateLivePerspectives(inputText, loadedText);
-        } else {
-          return generateLivePerspectives(inputText);
-        }
-      })(),
-      runLogAnimation(capturedMode),
-    ]);
+    const isPreset = isPresetText(inputText) || (capturedMode === 'sensitivity' && isPresetText(loadedText));
+    const cacheKey = capturedMode === 'sensitivity' ? `sens_${inputText}_${loadedText}` : `single_${inputText}`;
 
-    if (apiResult.status === 'fulfilled') {
-      const response = apiResult.value;
+    // 1. Read Cache ONLY for preset demonstrations
+    if (isPreset && !forceFallbackValue) {
+      const cachedData = PRESET_CACHE.get(cacheKey);
+      if (cachedData) {
+        await runLogAnimation(capturedMode, [
+          `[${new Date().toISOString().substring(11, 19)}] [Client Cache] Cache HIT. Returning pre-audited reference response.`
+        ]);
+        if (capturedMode === 'sensitivity') {
+          setSensitivityResult(cachedData);
+        } else {
+          setSingleResult(cachedData);
+        }
+        setStatus('COMPLETE');
+        return;
+      }
+    }
+
+    // 2. Prevent Concurrent Duplicate Requests (Deduplication)
+    let apiPromise = PENDING_REQUESTS.get(cacheKey);
+    if (!apiPromise) {
+      apiPromise = generateLivePerspectives(inputText, loadedText, isPreset, forceFallbackValue);
+      PENDING_REQUESTS.set(cacheKey, apiPromise);
+    }
+
+    try {
+      const response = await apiPromise;
+      PENDING_REQUESTS.delete(cacheKey);
+
+      // Extract server-side stage logs
+      const serverLogs = response.neutral
+        ? (response.neutral._metadata?.logs || [])
+        : (response._metadata?.logs || []);
+
+      await runLogAnimation(capturedMode, serverLogs);
+
+      // Cache ONLY presets
+      if (isPreset || forceFallbackValue) {
+        PRESET_CACHE.set(cacheKey, response);
+      }
+
       if (capturedMode === 'sensitivity') {
         setSensitivityResult(response);
       } else {
         setSingleResult(response);
       }
-    } else {
-      // API failed — use domain-routing client fallback so demo never shows
-      // football handball outputs for a compliance scenario
-      console.error('API call failed:', apiResult.reason);
-      setHadApiError(true);
+    } catch (err: any) {
+      PENDING_REQUESTS.delete(cacheKey);
+      console.error('[Inference Error]', err);
 
-      if (capturedMode === 'sensitivity') {
-        setSensitivityResult({
-          neutral: buildClientFallback(inputText),
-          loaded: buildClientFallback(loadedText),
-        });
-      } else {
-        setSingleResult(buildClientFallback(inputText));
-      }
+      await runLogAnimation(capturedMode, err.logs || []);
+
+      // Never fabricate governance reasoning after failure.
+      // Set structured error and present benchmark option
+      setApiError({
+        message: err.message || 'IBM watsonx.ai is currently unavailable.',
+        details: err.details || 'Connection to Vercel Watsonx proxy timed out or failed.',
+        logs: err.logs || [],
+      });
+      setSingleResult(null);
+      setSensitivityResult(null);
     }
 
     setStatus('COMPLETE');
   };
 
-  // Heuristic-free semantic and lexical divergence check based on vocabulary overlap & sentiment polarity
   const checkSemanticDivergence = (neutralText: string = "", loadedTextVal: string = "") => {
     if (!neutralText || !loadedTextVal) return false;
-    
     const cleanWords = (text: string) => {
       return text.toLowerCase()
         .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")
@@ -325,10 +262,8 @@ export const LiveGeneration: React.FC = () => {
 
     if (w1.length === 0 || w2.length === 0) return false;
 
-    // Calculate Jaccard similarity of vocabulary
     const set1 = new Set(w1);
     const set2 = new Set(w2);
-    
     let intersection = 0;
     set1.forEach(word => {
       if (set2.has(word)) intersection++;
@@ -337,25 +272,35 @@ export const LiveGeneration: React.FC = () => {
     const union = set1.size + set2.size - intersection;
     const similarity = intersection / union;
 
-    // Check polarity indicators (positive/neutral vs negative infraction)
     const positiveWords = ["clean", "legal", "natural", "incidental", "allow", "play", "permissible", "correct", "justify", "accept", "proper"];
     const negativeWords = ["violation", "infraction", "breach", "foul", "illegal", "force", "reckless", "penalty", "error", "violently", "improper"];
 
     const hasPositive1 = w1.some(w => positiveWords.includes(w));
     const hasNegative1 = w1.some(w => negativeWords.includes(w));
-    
     const hasPositive2 = w2.some(w => positiveWords.includes(w));
     const hasNegative2 = w2.some(w => negativeWords.includes(w));
 
-    const polarityDivergence = (hasPositive1 && hasNegative2) || (hasNegative1 && hasPositive2);
-    const significantVocabularyShift = similarity < 0.65;
-
-    return significantVocabularyShift || polarityDivergence;
+    return (similarity < 0.65) || ((hasPositive1 && hasNegative2) || (hasNegative1 && hasPositive2));
   };
 
+  const isCorporateText = (text: string) => {
+    const lower = text.toLowerCase();
+    return lower.includes('employee') || lower.includes('compliance') || lower.includes('policy') || lower.includes('fiduciary') || lower.includes('corporate') || lower.includes('disclosure');
+  };
+
+  // Helper to extract metadata properties from result safely
+  const getResultMetadata = () => {
+    if (mode === 'sensitivity' && sensitivityResult) {
+      return sensitivityResult.neutral?._metadata || {};
+    }
+    return singleResult?._metadata || {};
+  };
+
+  const metadata = getResultMetadata();
+
   return (
-    <div className="app-container" style={{ paddingBottom: '128px', background: '#0a0a0a', minHeight: '100vh' }}>
-      <header className="header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '16px' }}>
+    <div className="app-container" style={{ paddingBottom: '96px', background: '#0a0a0a', minHeight: '100vh', width: '100%' }}>
+      <header className="header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '16px', marginBottom: '32px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <button className="btn-ghost" style={{ padding: '8px 16px', fontSize: '0.9rem' }} onClick={() => navigate('/')}>
             ← Home
@@ -366,19 +311,14 @@ export const LiveGeneration: React.FC = () => {
           <span style={{ fontSize: '0.75rem', background: 'rgba(234, 179, 8, 0.1)', color: '#EAB308', border: '1px solid rgba(234,179,8,0.3)', padding: '4px 8px', borderRadius: '4px', fontFamily: 'monospace', fontWeight: 'bold' }}>
             Model: ibm/granite-13b-chat-v2
           </span>
-          <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', padding: '4px 8px', borderRadius: '4px' }}>
-            Transparency
-          </span>
-          <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', padding: '4px 8px', borderRadius: '4px' }}>
-            Auditability
-          </span>
+          <span className="badge-football">⚽ Football Governance</span>
         </div>
       </header>
 
-      <main className="main-content" style={{ width: '100%', maxWidth: '1000px', marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <main className="main-content" style={{ width: '100%', maxWidth: '1000px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
         
-        {/* Page Title — always visible */}
-        <div style={{ textAlign: 'center', paddingBottom: '4px' }}>
+        {/* Title */}
+        <div style={{ textAlign: 'center', marginBottom: '12px' }}>
           <span style={{ fontSize: '0.62rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
             Granite Inference Engine · Live Governance Analysis
           </span>
@@ -390,9 +330,9 @@ export const LiveGeneration: React.FC = () => {
           </p>
         </div>
 
-        {/* Toggle Mode Tab Selector */}
+        {/* Tab Selector */}
         {status === 'IDLE' && (
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '1px', background: 'rgba(255,255,255,0.04)', padding: '4px', borderRadius: '8px', width: 'fit-content', alignSelf: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '1px', background: 'rgba(255,255,255,0.04)', padding: '4px', borderRadius: '8px', width: 'fit-content', alignSelf: 'center', marginBottom: '16px' }}>
             <button 
               onClick={() => { setMode('single'); setInputText(''); setLoadedText(''); }} 
               style={{
@@ -403,7 +343,7 @@ export const LiveGeneration: React.FC = () => {
                 borderRadius: '6px',
                 cursor: 'pointer',
                 fontWeight: 'bold',
-                fontSize: '0.9rem',
+                fontSize: '0.85rem',
                 transition: 'all 0.2s ease'
               }}
             >
@@ -423,7 +363,7 @@ export const LiveGeneration: React.FC = () => {
                 borderRadius: '6px',
                 cursor: 'pointer',
                 fontWeight: 'bold',
-                fontSize: '0.9rem',
+                fontSize: '0.85rem',
                 transition: 'all 0.2s ease'
               }}
             >
@@ -435,9 +375,9 @@ export const LiveGeneration: React.FC = () => {
         {status === 'IDLE' && (
           <div className="live-input-section fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             
-            {/* Presets List */}
+            {/* Presets */}
             <div>
-              <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block', marginBottom: '12px' }}>
+              <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block', marginBottom: '12px', letterSpacing: '1px' }}>
                 Select Reference Demo Preset
               </span>
               <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
@@ -455,7 +395,7 @@ export const LiveGeneration: React.FC = () => {
                       borderRadius: '6px',
                       color: 'var(--text-primary)',
                       cursor: 'pointer',
-                      fontSize: '0.85rem',
+                      fontSize: '0.82rem',
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'flex-start',
@@ -465,8 +405,8 @@ export const LiveGeneration: React.FC = () => {
                     }}
                     className="preset-btn"
                   >
-                    <strong style={{ fontSize: '0.85rem', color: '#EAB308' }}>{p.title}</strong>
-                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{p.category}</span>
+                    <strong style={{ fontSize: '0.82rem', color: '#EAB308' }}>{p.title}</strong>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{p.category}</span>
                   </button>
                 ))}
               </div>
@@ -474,10 +414,10 @@ export const LiveGeneration: React.FC = () => {
 
             {mode === 'single' ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <h3 style={{ margin: 0, color: 'var(--text-primary)' }}>Describe custom governance incident</h3>
+                <h3 style={{ margin: 0, color: 'var(--text-primary)', fontSize: '1rem' }}>Describe custom governance incident</h3>
                 <textarea 
                   className="incident-input"
-                  rows={5}
+                  rows={4}
                   placeholder="Describe the incident in detail..."
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
@@ -486,24 +426,24 @@ export const LiveGeneration: React.FC = () => {
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <h4 style={{ margin: 0, color: '#EAB308', textTransform: 'uppercase', fontSize: '0.85rem', letterSpacing: '1px', fontFamily: 'monospace' }}>
+                  <h4 style={{ margin: 0, color: '#EAB308', textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '1px', fontFamily: 'monospace' }}>
                     1. Neutral Description Framing
                   </h4>
                   <textarea 
                     className="incident-input"
-                    rows={5}
+                    rows={4}
                     placeholder="Enter neutral phrasing (e.g. objective facts)..."
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                   />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <h4 style={{ margin: 0, color: '#ef4444', textTransform: 'uppercase', fontSize: '0.85rem', letterSpacing: '1px', fontFamily: 'monospace' }}>
+                  <h4 style={{ margin: 0, color: '#ef4444', textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '1px', fontFamily: 'monospace' }}>
                     2. Loaded Description Framing
                   </h4>
                   <textarea 
                     className="incident-input"
-                    rows={5}
+                    rows={4}
                     placeholder="Enter loaded phrasing (e.g. biased terms)..."
                     value={loadedText}
                     onChange={(e) => setLoadedText(e.target.value)}
@@ -514,8 +454,8 @@ export const LiveGeneration: React.FC = () => {
 
             <button 
               className="btn-primary" 
-              onClick={handleRun} 
-              style={{ alignSelf: 'flex-end', padding: '12px 28px', border: '1px solid #EAB308', background: '#EAB308', color: '#000', fontWeight: 'bold' }}
+              onClick={() => handleRun(false)} 
+              style={{ alignSelf: 'flex-end', padding: '10px 24px', border: '1px solid #EAB308', background: '#EAB308', color: '#000', fontWeight: 'bold', fontSize: '0.9rem' }}
               disabled={!inputText.trim() || (mode === 'sensitivity' && !loadedText.trim())}
             >
               {mode === 'sensitivity' ? 'Run Framing Sensitivity Test →' : 'Run Single Inference'}
@@ -523,18 +463,15 @@ export const LiveGeneration: React.FC = () => {
           </div>
         )}
 
-        {/* Dual Terminal log window during generating */}
+        {/* Terminals */}
         {status === 'GENERATING' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <h3 style={{ textAlign: 'center', color: '#EAB308', margin: 0, fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: '1.5px', fontFamily: 'monospace' }}>
+            <h3 style={{ textAlign: 'center', color: '#EAB308', margin: 0, fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '1.5px', fontFamily: 'monospace' }}>
               IBM watsonx.ai Granite Pipeline Active
             </h3>
-            
             <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
               <div className="terminal-window fade-in" style={{ flex: 1, minWidth: '280px' }}>
-                <div className="terminal-header">
-                  <span>Pipeline log: Neutral Frame</span>
-                </div>
+                <div className="terminal-header"><span>Pipeline log: Neutral Frame</span></div>
                 <div className="terminal-body mono">
                   {neutralLogs.map((log, i) => (
                     <div key={i} className="log-line">{log}</div>
@@ -542,12 +479,9 @@ export const LiveGeneration: React.FC = () => {
                   <span className="cursor">_</span>
                 </div>
               </div>
-
               {mode === 'sensitivity' && (
                 <div className="terminal-window fade-in" style={{ flex: 1, minWidth: '280px' }}>
-                  <div className="terminal-header">
-                    <span>Pipeline log: Loaded Frame</span>
-                  </div>
+                  <div className="terminal-header"><span>Pipeline log: Loaded Frame</span></div>
                   <div className="terminal-body mono" style={{ color: '#ef4444' }}>
                     {loadedLogs.map((log, i) => (
                       <div key={i} className="log-line">{log}</div>
@@ -560,393 +494,316 @@ export const LiveGeneration: React.FC = () => {
           </div>
         )}
 
-        {/* Results section */}
+        {/* Results / Error Displays */}
         {status === 'COMPLETE' && (
-          <div className="live-results fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          <div className="live-results fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             
-            {/* Single mode render */}
-            {mode === 'single' && singleResult && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                {/* Live Ambiguity Extraction Card */}
-                <div style={{ background: '#111', border: '2px solid rgba(234,179,8,0.3)', borderRadius: '8px', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
-                    <div>
-                      <span style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '2px', textTransform: 'uppercase' }}>Live Ambiguity Extraction</span>
-                      {singleResult?.tensionTerm && (
-                        <div style={{ marginTop: '6px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <span style={{ fontSize: '1.1rem', fontWeight: 800, fontFamily: 'monospace', color: '#EAB308' }}>Tension Term:</span>
-                          <span style={{ fontSize: '1rem', fontFamily: 'monospace', color: '#EAB308', background: 'rgba(234,179,8,0.1)', padding: '3px 10px', borderRadius: '4px', border: '1px dashed rgba(234,179,8,0.5)' }}>"{ singleResult.tensionTerm}"</span>
-                        </div>
-                      )}
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <span style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: 'var(--text-muted)', display: 'block' }}>AMBIGUITY SCORE</span>
-                      <span style={{ fontSize: '1.5rem', fontWeight: 800, fontFamily: 'monospace', color: '#EAB308' }}>{singleResult?._metadata?.ambiguityScore || 8.2}/10</span>
-                    </div>
+            {/* API Error Screen (IBM Unavailable) */}
+            {apiError ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%' }}>
+                <div style={{
+                  background: 'rgba(239, 68, 68, 0.07)',
+                  border: '1.5px solid #EF4444',
+                  borderRadius: '8px',
+                  padding: '24px',
+                  textAlign: 'center',
+                  boxShadow: '0 8px 32px rgba(239, 68, 68, 0.15)'
+                }}>
+                  <span style={{ fontSize: '2rem', display: 'block', marginBottom: '8px' }}>⚠️</span>
+                  <h3 style={{ color: '#EF4444', fontWeight: 800, margin: '0 0 8px 0', textTransform: 'uppercase', fontSize: '1.25rem', letterSpacing: '0.5px' }}>
+                    IBM watsonx.ai is Currently Unavailable
+                  </h3>
+                  <p style={{ margin: '0 0 16px 0', fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
+                    {apiError.message}
+                  </p>
+                  <p style={{ margin: '0 0 20px 0', fontSize: '0.78rem', color: 'rgba(255,255,255,0.4)', fontFamily: 'monospace' }}>
+                    Details: {apiError.details}
+                  </p>
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
+                    <button 
+                      className="btn-primary" 
+                      onClick={() => handleRun(true)} 
+                      style={{ border: '1px solid #EAB308', background: '#EAB308', color: '#000', padding: '8px 20px', fontSize: '0.82rem' }}
+                    >
+                      Run Pre-audited Reference Benchmark
+                    </button>
+                    <button 
+                      className="btn-ghost" 
+                      onClick={resetToIdle} 
+                      style={{ padding: '8px 20px', fontSize: '0.82rem' }}
+                    >
+                      Go Back
+                    </button>
                   </div>
+                </div>
 
-                  {singleResult?.interpretationSpread && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                      <span style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '1.5px', textTransform: 'uppercase' }}>Interpretation Spread</span>
-                      {[
-                        { label: 'Purposive (Fan)', key: 'purposive', color: '#ef4444' },
-                        { label: 'Contextual (Referee)', key: 'contextual', color: '#3b82f6' },
-                        { label: 'Procedural (VAR)', key: 'procedural', color: '#10b981' },
-                        { label: 'Strict (Rulebook)', key: 'strict', color: '#eab308' },
-                      ].map(({ label, key, color }) => (
-                        <div key={key} style={{ display: 'grid', gridTemplateColumns: '180px 1fr 40px', alignItems: 'center', gap: '10px' }}>
-                          <span style={{ fontSize: '0.78rem', fontFamily: 'monospace', color: 'var(--text-muted)' }}>{label}</span>
-                          <div style={{ height: '6px', background: 'rgba(255,255,255,0.06)', borderRadius: '3px', overflow: 'hidden' }}>
-                            <div style={{ height: '100%', width: `${(singleResult.interpretationSpread as any)[key] ?? 50}%`, background: color, transition: 'width 0.8s ease', borderRadius: '3px' }} />
-                          </div>
-                          <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', color, fontWeight: 700 }}>{(singleResult.interpretationSpread as any)[key] ?? 50}%</span>
-                        </div>
+                {/* Show Stage Logs for Diagnosis */}
+                {apiError.logs.length > 0 && (
+                  <div className="terminal-window">
+                    <div className="terminal-header"><span>Connection Stage Logs (Trace)</span></div>
+                    <div className="terminal-body mono" style={{ color: '#EF4444', minHeight: '120px' }}>
+                      {apiError.logs.map((log, i) => (
+                        <div key={i} className="log-line">{log}</div>
                       ))}
                     </div>
-                  )}
-                </div>
-
-                {/* Retrieved Law */}
-                <div style={{ background: '#121212', padding: '20px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                  <strong style={{ color: '#EAB308', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '8px', fontFamily: 'monospace' }}>Retrieved Law / Governing Policy</strong>
-                  <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-primary)', lineHeight: '1.5' }}>{singleResult.retrievedLaw}</p>
-                </div>
-
-                <h3 style={{ color: 'var(--text-muted)', margin: '16px 0 0 0', fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '1.5px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px' }}>Generated Perspectives</h3>
-                
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
-                  {singleResult.perspectives.map((p: any, idx: number) => {
-                    let theme: any = 'default';
-                    const lower = p.persona.toLowerCase();
-                    if (lower.includes('referee')) theme = 'referee';
-                    if (lower.includes('fan')) theme = 'fan';
-                    if (lower.includes('var')) theme = 'var';
-                    if (lower.includes('rulebook')) theme = 'rulebook';
-
-                    let strength = undefined;
-                    if (singleResult?.interpretationSpread) {
-                      const spread = singleResult.interpretationSpread;
-                      if (lower.includes('fan')) strength = spread.purposive;
-                      else if (lower.includes('referee')) strength = spread.contextual;
-                      else if (lower.includes('var')) strength = spread.procedural;
-                      else if (lower.includes('rulebook')) strength = spread.strict;
-                    }
-
-                    return (
-                      <PerspectiveCard 
-                        key={idx}
-                        persona={p.persona}
-                        text={p.text}
-                        colorTheme={theme}
-                        strength={strength}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Sensitivity side-by-side mode render */}
-            {mode === 'sensitivity' && sensitivityResult && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-                
-                {/* Thesis Banner */}
-                <div style={{
-                  background: '#121212',
-                  border: '2px solid #EAB308',
-                  padding: '24px 32px',
-                  borderRadius: '8px',
-                  textAlign: 'center',
-                  boxShadow: '0 8px 32px rgba(0,0,0,0.6)'
-                }}>
-                  <h3 style={{ margin: '0 0 12px 0', color: '#EAB308', fontSize: '1.6rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
-                    Same incident. Same rule. Different words. Different verdict.
-                  </h3>
-                  <p style={{ margin: '0 0 16px 0', fontSize: '1.05rem', lineHeight: '1.6', color: 'var(--text-primary)' }}>
-                    This is the discretion risk no static rulebook surfaces. If the AI's reading of "reckless" shifts with how the incident is phrased — so does a content moderator's. So does a claims adjuster's. So does every human who writes an incident report.
-                  </p>
-                  <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', flexWrap: 'wrap', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '16px' }}>
-                    <div>
-                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', fontFamily: 'monospace' }}>Divergence Rating</span>
-                      <strong style={{ fontSize: '1.15rem', color: '#EAB308', fontFamily: 'monospace' }}>+1.8 divergence under framing shift</strong>
-                    </div>
-                    <div>
-                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', fontFamily: 'monospace' }}>Control Variable</span>
-                      <strong style={{ fontSize: '1.15rem', color: '#10B981', fontFamily: 'monospace' }}>Only Phrasing Changed</strong>
-                    </div>
                   </div>
-                </div>
+                )}
+              </div>
+            ) : (
+              <>
+                {/* Single mode render */}
+                {mode === 'single' && singleResult && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                    <InterpretationSpreadHero
+                      tensionTerm={singleResult.tensionTerm || "discretion"}
+                      ambiguityScore={singleResult._metadata?.ambiguityScore || 8.0}
+                      spread={{
+                        purposive: singleResult.interpretationSpread?.purposive ?? 50,
+                        contextual: singleResult.interpretationSpread?.contextual ?? 50,
+                        procedural: singleResult.interpretationSpread?.procedural ?? 50,
+                        strict: singleResult.interpretationSpread?.strict ?? 50,
+                      }}
+                      isCorporate={isCorporateText(inputText)}
+                    />
 
-                {/* Live Ambiguity Extraction — Tension Term */}
-                {sensitivityResult?.neutral?.tensionTerm && (
-                  <div style={{ background: '#111', border: '1px solid rgba(234,179,8,0.25)', borderRadius: '6px', padding: '16px 24px', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '2px', textTransform: 'uppercase' }}>Tension Term Extracted:</span>
-                    <span style={{ fontSize: '1rem', fontFamily: 'monospace', color: '#EAB308', background: 'rgba(234,179,8,0.1)', padding: '4px 14px', borderRadius: '4px', border: '1px dashed rgba(234,179,8,0.5)', fontWeight: 700 }}>
-                      "{sensitivityResult.neutral.tensionTerm}"
-                    </span>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic', marginLeft: 'auto' }}>
-                      This is the word the rule never defines. The framing shift acts on it.
-                    </span>
+                    <div style={{ background: '#121212', padding: '16px 20px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <strong style={{ color: '#EAB308', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '6px', fontFamily: 'monospace' }}>
+                        Retrieved Law / Governing Policy
+                      </strong>
+                      <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: '1.5' }}>
+                        {singleResult.retrievedLaw}
+                      </p>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
+                      {singleResult.perspectives.map((p: any, idx: number) => {
+                        let theme: any = 'default';
+                        const lower = p.persona.toLowerCase();
+                        if (lower.includes('referee')) theme = 'referee';
+                        if (lower.includes('fan')) theme = 'fan';
+                        if (lower.includes('var')) theme = 'var';
+                        if (lower.includes('rulebook')) theme = 'rulebook';
+
+                        let strength = undefined;
+                        if (singleResult?.interpretationSpread) {
+                          const spread = singleResult.interpretationSpread;
+                          if (lower.includes('fan')) strength = spread.purposive;
+                          else if (lower.includes('referee')) strength = spread.contextual;
+                          else if (lower.includes('var')) strength = spread.procedural;
+                          else if (lower.includes('rulebook')) strength = spread.strict;
+                        }
+
+                        return (
+                          <PerspectiveCard 
+                            key={idx}
+                            persona={p.persona}
+                            text={p.text}
+                            colorTheme={theme}
+                            strength={strength}
+                          />
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
 
-                {/* Retrieved Law Header */}
-                <div style={{ background: '#121212', padding: '24px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                  <strong style={{ color: '#EAB308', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '8px', fontFamily: 'monospace' }}>Retrieved Law / Governing Policy Context</strong>
-                  <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-primary)', lineHeight: '1.5' }}>
-                    {sensitivityResult?.neutral?.retrievedLaw}
-                  </p>
-                </div>
+                {/* Sensitivity mode render */}
+                {mode === 'sensitivity' && sensitivityResult && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                    <div style={{ background: '#121212', border: '1.5px solid #EAB308', padding: '16px 24px', borderRadius: '8px', textAlign: 'center' }}>
+                      <h3 style={{ margin: '0 0 6px 0', color: '#EAB308', fontSize: '1.25rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        Same incident. Same rule. Different words. Different verdict.
+                      </h3>
+                      <p style={{ margin: 0, fontSize: '0.85rem', lineHeight: '1.45', color: 'var(--text-muted)' }}>
+                        Watch how the interpretation spread shifts based on linguistic framing. The rulebook does not settle the dispute — the choice of phrasing changes the verdict.
+                      </p>
+                    </div>
 
-                {/* Comparative Grid Header */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', borderBottom: '2px solid rgba(255,255,255,0.1)', paddingBottom: '16px', marginBottom: '-16px' }}>
-                  <div style={{ paddingLeft: '8px' }}>
-                    <h4 style={{ margin: 0, color: '#EAB308', textTransform: 'uppercase', fontSize: '0.9rem', letterSpacing: '1px', fontFamily: 'monospace' }}>
-                      Neutral Framing Output
-                    </h4>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                      "{inputText}"
-                    </span>
-                  </div>
-                  <div style={{ paddingLeft: '8px' }}>
-                    <h4 style={{ margin: 0, color: '#ef4444', textTransform: 'uppercase', fontSize: '0.9rem', letterSpacing: '1px', fontFamily: 'monospace' }}>
-                      Loaded Framing Output
-                    </h4>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                      "{loadedText}"
-                    </span>
-                  </div>
-                </div>
-
-                {/* Synchronized Row comparative rendering */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                  {["Fan", "Referee", "VAR", "Rulebook"].map((personaName) => {
-                    const neutralPersp = sensitivityResult?.neutral?.perspectives?.find((p: any) => p.persona.toLowerCase().includes(personaName.toLowerCase())) || { text: "" };
-                    const loadedPersp = sensitivityResult?.loaded?.perspectives?.find((p: any) => p.persona.toLowerCase().includes(personaName.toLowerCase())) || { text: "" };
-                    
-                    const isDivergent = checkSemanticDivergence(neutralPersp.text, loadedPersp.text);
-
-                    let theme: any = 'default';
-                    if (personaName === 'Referee') theme = 'referee';
-                    if (personaName === 'Fan') theme = 'fan';
-                    if (personaName === 'VAR') theme = 'var';
-                    if (personaName === 'Rulebook') theme = 'rulebook';
-
-                    return (
-                      <div 
-                        key={personaName} 
-                        style={{ 
-                          border: isDivergent ? '1.5px solid rgba(234, 179, 8, 0.4)' : '1px solid rgba(255,255,255,0.03)',
-                          background: isDivergent ? 'rgba(234, 179, 8, 0.01)' : 'transparent',
-                          borderRadius: '8px',
-                          padding: '16px',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '12px'
-                        }}
-                      >
-                        {/* Row title with status */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px' }}>
-                          <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                            <strong style={{ fontSize: '1rem', color: '#f5f5f5' }}>{personaName}</strong>
-                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
-                              {personaName === 'Fan' && 'Purposive Reading'}
-                              {personaName === 'Referee' && 'Contextual Reading'}
-                              {personaName === 'VAR' && 'Procedural Reading'}
-                              {personaName === 'Rulebook' && 'Strict Constructionist Reading'}
-                            </span>
-                          </div>
-                          {isDivergent && (
-                            <span style={{ fontSize: '0.72rem', color: '#EAB308', background: 'rgba(234, 179, 8, 0.1)', border: '1px solid rgba(234,179,8,0.3)', padding: '2px 8px', borderRadius: '4px', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase' }}>
-                              ⚠️ Semantic Shift Detected
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Column outputs */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
-                          <PerspectiveCard 
-                            persona={personaName}
-                            text={neutralPersp.text}
-                            colorTheme={theme}
-                            strength={(() => {
-                              const spread = sensitivityResult?.neutral?.interpretationSpread;
-                              if (!spread) return undefined;
-                              if (personaName === 'Fan') return spread.purposive;
-                              if (personaName === 'Referee') return spread.contextual;
-                              if (personaName === 'VAR') return spread.procedural;
-                              if (personaName === 'Rulebook') return spread.strict;
-                              return undefined;
-                            })()}
-                          />
-                          <PerspectiveCard 
-                            persona={personaName}
-                            text={loadedPersp.text}
-                            colorTheme={theme}
-                            strength={(() => {
-                              const spread = sensitivityResult?.loaded?.interpretationSpread;
-                              if (!spread) return undefined;
-                              if (personaName === 'Fan') return spread.purposive;
-                              if (personaName === 'Referee') return spread.contextual;
-                              if (personaName === 'VAR') return spread.procedural;
-                              if (personaName === 'Rulebook') return spread.strict;
-                              return undefined;
-                            })()}
-                          />
-                        </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '20px' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <h4 style={{ color: '#EAB308', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '1px', fontFamily: 'monospace', margin: 0, textAlign: 'center' }}>
+                          Neutral Framing Spread
+                        </h4>
+                        <InterpretationSpreadHero
+                          tensionTerm={sensitivityResult.neutral.tensionTerm || "discretion"}
+                          ambiguityScore={sensitivityResult.neutral._metadata?.ambiguityScore || 7.5}
+                          spread={{
+                            purposive: sensitivityResult.neutral.interpretationSpread?.purposive ?? 50,
+                            contextual: sensitivityResult.neutral.interpretationSpread?.contextual ?? 50,
+                            procedural: sensitivityResult.neutral.interpretationSpread?.procedural ?? 50,
+                            strict: sensitivityResult.neutral.interpretationSpread?.strict ?? 50,
+                          }}
+                          isCorporate={isCorporateText(inputText)}
+                        />
                       </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Governance Payload Inspector */}
-            <div className="glass-panel" style={{ marginTop: '32px', textAlign: 'left', border: '1px solid rgba(255,255,255,0.07)', padding: '24px', borderRadius: '8px', background: '#121212' }}>
-              <details style={{ cursor: 'pointer' }}>
-                <summary style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 'bold', userSelect: 'none', listStyle: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', color: '#EAB308', background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.2)', padding: '2px 8px', borderRadius: '3px' }}>Governance</span>
-                  Inspect Inference Provenance &amp; Audit Record
-                </summary>
-                <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '0', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '24px' }}>
-
-                  {/* ── MODEL IDENTITY ────────────────────────────────────────── */}
-                  <div style={{ marginBottom: '24px' }}>
-                    <h4 style={{ color: '#EAB308', fontSize: '0.68rem', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontFamily: 'monospace', borderBottom: '1px solid rgba(234,179,8,0.15)', paddingBottom: '6px' }}>Model Identity</h4>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
-                      <div style={{ background: 'rgba(0,0,0,0.4)', padding: '12px 14px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                        <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '1.5px', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Inference Model</span>
-                        <span style={{ fontFamily: 'monospace', fontSize: '0.9rem', fontWeight: 700, color: '#f5f5f5' }}>IBM Granite 13B Chat v2</span>
-                      </div>
-                      <div style={{ background: 'rgba(0,0,0,0.4)', padding: '12px 14px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                        <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '1.5px', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Model Version</span>
-                        <span style={{ fontFamily: 'monospace', fontSize: '0.9rem', fontWeight: 700, color: '#f5f5f5' }}>ibm/granite-13b-chat-v2</span>
-                      </div>
-                      <div style={{ background: 'rgba(0,0,0,0.4)', padding: '12px 14px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                        <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '1.5px', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Prompt Version</span>
-                        <span style={{ fontFamily: 'monospace', fontSize: '0.9rem', fontWeight: 700, color: '#f5f5f5' }}>v2.3.1 — Legal Ambiguity Extraction</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <h4 style={{ color: '#ef4444', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '1px', fontFamily: 'monospace', margin: 0, textAlign: 'center' }}>
+                          Loaded Framing Spread
+                        </h4>
+                        <InterpretationSpreadHero
+                          tensionTerm={sensitivityResult.loaded.tensionTerm || "discretion"}
+                          ambiguityScore={sensitivityResult.loaded._metadata?.ambiguityScore || 9.0}
+                          spread={{
+                            purposive: sensitivityResult.loaded.interpretationSpread?.purposive ?? 50,
+                            contextual: sensitivityResult.loaded.interpretationSpread?.contextual ?? 50,
+                            procedural: sensitivityResult.loaded.interpretationSpread?.procedural ?? 50,
+                            strict: sensitivityResult.loaded.interpretationSpread?.strict ?? 50,
+                          }}
+                          isCorporate={isCorporateText(loadedText)}
+                        />
                       </div>
                     </div>
-                  </div>
 
-                  {/* ── EXECUTION MODE ────────────────────────────────────────── */}
-                  <div style={{ marginBottom: '24px' }}>
-                    <h4 style={{ color: '#EAB308', fontSize: '0.68rem', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontFamily: 'monospace', borderBottom: '1px solid rgba(234,179,8,0.15)', paddingBottom: '6px' }}>Execution Mode</h4>
-                    {(() => {
-                      const inferenceStatus = mode === 'sensitivity' && sensitivityResult
-                        ? sensitivityResult.neutral?._metadata?.inferenceStatus
-                        : singleResult?._metadata?.inferenceStatus;
-                      const isLive = inferenceStatus === 'LIVE_WATSONX_AI';
-                      return (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: isLive ? 'rgba(16,185,129,0.05)' : 'rgba(234,179,8,0.05)', border: `1px solid ${isLive ? 'rgba(16,185,129,0.3)' : 'rgba(234,179,8,0.3)'}`, borderRadius: '6px', padding: '12px 16px' }}>
-                            <span style={{ fontSize: '1rem' }}>{isLive ? '✓' : '◎'}</span>
-                            <div>
-                              <span style={{ fontFamily: 'monospace', fontSize: '0.88rem', fontWeight: 700, color: isLive ? '#10B981' : '#EAB308', display: 'block' }}>
-                                {isLive ? 'Live watsonx.ai Inference' : 'Audited Reference Benchmark'}
+                    <div style={{ background: '#121212', padding: '16px 20px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <strong style={{ color: '#EAB308', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '6px', fontFamily: 'monospace' }}>
+                        Retrieved Governing Rule Context
+                      </strong>
+                      <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: '1.5' }}>
+                        {sensitivityResult.neutral.retrievedLaw}
+                      </p>
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                      {["Fan", "Referee", "VAR", "Rulebook"].map((personaName) => {
+                        const neutralPersp = sensitivityResult.neutral.perspectives.find((p: any) => p.persona.toLowerCase().includes(personaName.toLowerCase())) || { text: "" };
+                        const loadedPersp = sensitivityResult.loaded.perspectives.find((p: any) => p.persona.toLowerCase().includes(personaName.toLowerCase())) || { text: "" };
+                        
+                        const isDivergent = checkSemanticDivergence(neutralPersp.text, loadedPersp.text);
+                        let theme: any = 'default';
+                        if (personaName === 'Referee') theme = 'referee';
+                        if (personaName === 'Fan') theme = 'fan';
+                        if (personaName === 'VAR') theme = 'var';
+                        if (personaName === 'Rulebook') theme = 'rulebook';
+
+                        return (
+                          <div 
+                            key={personaName} 
+                            style={{ 
+                              border: isDivergent ? '1.5px solid rgba(234, 179, 8, 0.35)' : '1px solid rgba(255,255,255,0.04)',
+                              background: isDivergent ? 'rgba(234, 179, 8, 0.02)' : 'transparent',
+                              borderRadius: '8px',
+                              padding: '16px',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '12px'
+                            }}
+                          >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px' }}>
+                              <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#f5f5f5', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                {personaName === 'Fan' && '📢 Fan'}
+                                {personaName === 'Referee' && '🏃 Referee'}
+                                {personaName === 'VAR' && '🖥️ VAR'}
+                                {personaName === 'Rulebook' && '📖 Rulebook'}
                               </span>
-                              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
-                                {isLive
-                                  ? 'Live inference completed successfully via IBM Cloud.'
-                                  : 'Live inference unavailable. Reference benchmark executed for deterministic audit continuity.'}
-                              </span>
+                              {isDivergent && (
+                                <span className="divergence-pill">
+                                  ⚠️ Verdict Shifted
+                                </span>
+                              )}
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                              <PerspectiveCard 
+                                persona={personaName}
+                                text={neutralPersp.text}
+                                colorTheme={theme}
+                                strength={(() => {
+                                  const spread = sensitivityResult.neutral.interpretationSpread;
+                                  if (!spread) return undefined;
+                                  if (personaName === 'Fan') return spread.purposive;
+                                  if (personaName === 'Referee') return spread.contextual;
+                                  if (personaName === 'VAR') return spread.procedural;
+                                  if (personaName === 'Rulebook') return spread.strict;
+                                  return undefined;
+                                })()}
+                              />
+                              <PerspectiveCard 
+                                persona={personaName}
+                                text={loadedPersp.text}
+                                colorTheme={theme}
+                                strength={(() => {
+                                  const spread = sensitivityResult.loaded.interpretationSpread;
+                                  if (!spread) return undefined;
+                                  if (personaName === 'Fan') return spread.purposive;
+                                  if (personaName === 'Referee') return spread.contextual;
+                                  if (personaName === 'VAR') return spread.procedural;
+                                  if (personaName === 'Rulebook') return spread.strict;
+                                  return undefined;
+                                })()}
+                              />
                             </div>
                           </div>
-
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px', marginTop: '4px' }}>
-                            <div style={{ background: 'rgba(0,0,0,0.4)', padding: '12px 14px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                              <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '1.5px', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Governance Status</span>
-                              <span style={{ fontFamily: 'monospace', fontSize: '0.85rem', fontWeight: 700, color: '#10B981' }}>✓ Compliant — Human-in-the-Loop</span>
-                            </div>
-                            <div style={{ background: 'rgba(0,0,0,0.4)', padding: '12px 14px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                              <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '1.5px', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Fallback Status</span>
-                              <span style={{ fontFamily: 'monospace', fontSize: '0.85rem', fontWeight: 700, color: isLive ? '#10B981' : '#EAB308' }}>
-                                {isLive ? 'Not engaged — Live path active' : 'Engaged — Deterministic benchmark'}
-                              </span>
-                            </div>
-                            <div style={{ background: 'rgba(0,0,0,0.4)', padding: '12px 14px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                              <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '1.5px', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Inference Source</span>
-                              <span style={{ fontFamily: 'monospace', fontSize: '0.85rem', fontWeight: 700, color: '#f5f5f5' }}>
-                                {isLive ? 'IBM Cloud — us-south region' : 'Validated Local Benchmark'}
-                              </span>
-                            </div>
-                            <div style={{ background: 'rgba(0,0,0,0.4)', padding: '12px 14px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                              <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '1.5px', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Audit Timestamp</span>
-                              <span style={{ fontFamily: 'monospace', fontSize: '0.85rem', fontWeight: 700, color: '#f5f5f5' }}>{new Date().toISOString()}</span>
-                            </div>
-                            <div style={{ background: 'rgba(0,0,0,0.4)', padding: '12px 14px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                              <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '1.5px', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Audit Signature</span>
-                              <span style={{ fontFamily: 'monospace', fontSize: '0.8rem', fontWeight: 700, color: '#f5f5f5' }}>watsonx-granite-v2-hil-audit</span>
-                            </div>
-                            <div style={{ background: 'rgba(0,0,0,0.4)', padding: '12px 14px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                              <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '1.5px', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Evidence Sources</span>
-                              <span style={{ fontFamily: 'monospace', fontSize: '0.8rem', fontWeight: 700, color: '#f5f5f5' }}>FIFA Laws of the Game 2024 · IFAB</span>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })()}
+                        );
+                      })}
+                    </div>
                   </div>
+                )}
 
-                  {/* ── PROMPT DESIGN ────────────────────────────────────────── */}
-                  <div style={{ marginBottom: '24px' }}>
-                    <h4 style={{ color: '#EAB308', fontSize: '0.68rem', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontFamily: 'monospace', borderBottom: '1px solid rgba(234,179,8,0.15)', paddingBottom: '6px' }}>Prompt Design &amp; System Instructions</h4>
-                    <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', background: 'rgba(0,0,0,0.4)', padding: '14px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.06)', fontSize: '0.8rem', margin: 0, lineHeight: '1.5' }}>
-                      {mode === 'sensitivity' && sensitivityResult 
-                        ? sensitivityResult.neutral?._metadata?.prompt || 'System prompt loaded dynamically...'
-                        : singleResult?._metadata?.prompt || 'System prompt loaded dynamically...'}
-                    </pre>
-                  </div>
-
-                  {/* ── RAW RESPONSE ────────────────────────────────────────── */}
-                  <div style={{ marginBottom: '24px' }}>
-                    <h4 style={{ color: '#EAB308', fontSize: '0.68rem', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontFamily: 'monospace', borderBottom: '1px solid rgba(234,179,8,0.15)', paddingBottom: '6px' }}>Raw JSON Response Payload</h4>
-                    <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', background: 'rgba(0,0,0,0.4)', padding: '14px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.06)', fontSize: '0.8rem', margin: 0, color: '#10B981', lineHeight: '1.4' }}>
-                      {mode === 'sensitivity' && sensitivityResult
-                        ? JSON.stringify({ neutral: { retrievedLaw: sensitivityResult.neutral.retrievedLaw, perspectives: sensitivityResult.neutral.perspectives }, loaded: { retrievedLaw: sensitivityResult.loaded.retrievedLaw, perspectives: sensitivityResult.loaded.perspectives } }, null, 2)
-                        : JSON.stringify({ retrievedLaw: singleResult?.retrievedLaw, perspectives: singleResult?.perspectives }, null, 2)}
-                    </pre>
-                  </div>
-
-                  {/* ── DEVELOPER DETAILS (collapsed) ───────────────────────── */}
+                {/* Governance Payload Inspector — Separates the 4 metrics distinctly */}
+                <div className="glass-panel" style={{ marginTop: '20px', textAlign: 'left', border: '1px solid rgba(255,255,255,0.06)', padding: '16px 20px', borderRadius: '8px', background: '#121212' }}>
                   <details style={{ cursor: 'pointer' }}>
-                    <summary style={{ color: 'var(--text-muted)', fontSize: '0.78rem', fontFamily: 'monospace', userSelect: 'none', listStyle: 'none', display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 0', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                      <span>⚙</span> Developer Details — Decoding Parameters
+                    <summary style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 'bold', userSelect: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '0.6rem', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', color: '#EAB308', background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.2)', padding: '2px 8px', borderRadius: '3px' }}>Governance</span>
+                      Inspect Inference Provenance &amp; Audit Record
                     </summary>
-                    <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', background: 'rgba(0,0,0,0.4)', padding: '14px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.06)', fontSize: '0.8rem', margin: '12px 0 0 0' }}>
-                      {JSON.stringify({
-                        decoding_method: 'greedy',
-                        max_new_tokens: 800,
-                        repetition_penalty: 1,
-                        stop_sequences: []
-                      }, null, 2)}
-                    </pre>
+                    <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '16px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '16px' }}>
+
+                      <div>
+                        <h4 style={{ color: '#EAB308', fontSize: '0.65rem', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '2px', fontFamily: 'monospace' }}>Audit Configuration Metrics</h4>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+                          
+                          {/* 1. Model Identity */}
+                          <div style={{ background: 'rgba(0,0,0,0.4)', padding: '8px 12px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                            <span style={{ fontSize: '0.6rem', fontFamily: 'monospace', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Model Identity</span>
+                            <span style={{ fontFamily: 'monospace', fontSize: '0.8rem', fontWeight: 700, color: '#f5f5f5' }}>
+                              {metadata.modelId || 'IBM Granite 13B Chat v2'}
+                            </span>
+                          </div>
+
+                          {/* 2. Execution Mode */}
+                          <div style={{ background: 'rgba(0,0,0,0.4)', padding: '8px 12px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                            <span style={{ fontSize: '0.6rem', fontFamily: 'monospace', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Execution Mode</span>
+                            <span style={{ fontFamily: 'monospace', fontSize: '0.8rem', fontWeight: 700, color: '#f5f5f5' }}>
+                              {metadata.executionMode || 'Greedy / Deterministic'}
+                            </span>
+                          </div>
+
+                          {/* 3. Cache Status */}
+                          <div style={{ background: 'rgba(0,0,0,0.4)', padding: '8px 12px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                            <span style={{ fontSize: '0.6rem', fontFamily: 'monospace', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Cache Status</span>
+                            <span style={{ fontFamily: 'monospace', fontSize: '0.8rem', fontWeight: 700, color: metadata.cacheStatus === 'HIT' ? '#10B981' : '#f97316' }}>
+                              {metadata.cacheStatus || 'BYPASSED'}
+                            </span>
+                          </div>
+
+                          {/* 4. Connection Status */}
+                          <div style={{ background: 'rgba(0,0,0,0.4)', padding: '8px 12px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                            <span style={{ fontSize: '0.6rem', fontFamily: 'monospace', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Connection Status</span>
+                            <span style={{ fontFamily: 'monospace', fontSize: '0.8rem', fontWeight: 700, color: metadata.connectionStatus === 'ONLINE / LIVE' ? '#10B981' : '#EAB308' }}>
+                              {metadata.connectionStatus || 'ONLINE / LIVE'}
+                            </span>
+                          </div>
+
+                        </div>
+                      </div>
+
+                      {/* Trace Logs Panel */}
+                      {metadata.logs && metadata.logs.length > 0 && (
+                        <div>
+                          <h4 style={{ color: '#EAB308', fontSize: '0.65rem', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '2px', fontFamily: 'monospace' }}>Active Trace Logs</h4>
+                          <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', background: 'rgba(0,0,0,0.4)', padding: '10px 14px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.06)', fontSize: '0.78rem', margin: 0, lineHeight: '1.4', color: 'var(--text-muted)' }}>
+                            {metadata.logs.join('\n')}
+                          </pre>
+                        </div>
+                      )}
+
+                    </div>
                   </details>
-
                 </div>
-              </details>
-            </div>
-
-            {/* API fallback notice — only visible when live API failed */}
-            {hadApiError && (
-              <div style={{
-                background: 'rgba(234, 179, 8, 0.06)',
-                border: '1px solid rgba(234, 179, 8, 0.3)',
-                borderRadius: '6px',
-                padding: '12px 20px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                marginBottom: '8px'
-              }}>
-                <span style={{ fontSize: '1.1rem' }}>◎</span>
-                <span style={{ fontSize: '0.82rem', fontFamily: 'monospace', color: '#EAB308' }}>
-                  EXECUTION MODE: Audited Reference Benchmark — Live Granite inference unavailable. Deterministic reference data displayed for audit continuity. Divergence pattern is methodologically valid.
-                </span>
-              </div>
+              </>
             )}
 
-            <button className="btn-ghost" onClick={resetToIdle} style={{ marginTop: '32px', margin: '32px auto 0', display: 'block', padding: '12px 24px' }}>
+            <button className="btn-ghost" onClick={resetToIdle} style={{ marginTop: '16px', marginInline: 'auto', display: 'block', padding: '10px 20px', fontSize: '0.85rem' }}>
               Run Another Incident Test
             </button>
           </div>

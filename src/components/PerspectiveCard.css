@@ -1,46 +1,169 @@
-.perspective-card {
+.compact-perspective-card {
+  background: rgba(20, 20, 20, 0.6) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 10px !important;
+  padding: 14px !important;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  border-left: 4px solid var(--text-muted);
-  width: 100%;
+  height: 100%;
 }
 
-.persona-badge {
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
+.compact-perspective-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Hover highlights by theme */
+.compact-perspective-card.theme-fan:hover {
+  border-color: rgba(249, 115, 22, 0.4) !important;
+}
+.compact-perspective-card.theme-referee:hover {
+  border-color: rgba(59, 130, 246, 0.4) !important;
+}
+.compact-perspective-card.theme-var:hover {
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+.compact-perspective-card.theme-rulebook:hover {
+  border-color: rgba(139, 92, 246, 0.4) !important;
+}
+
+.card-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.persona-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.card-icon.icon-fan {
+  color: #F97316;
+}
+.card-icon.icon-referee {
+  color: #3B82F6;
+}
+.card-icon.icon-var {
+  color: #10B981;
+}
+.card-icon.icon-rulebook {
+  color: #8B5CF6;
+}
+
+.persona-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.persona-name {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #FFFFFF;
+}
+
+.reading-type {
+  font-size: 0.68rem;
   color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--font-mono);
 }
 
-.perspective-text {
+.verdict-badge {
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.verdict-red {
+  background: rgba(239, 68, 68, 0.12);
+  color: #EF4444;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.verdict-green {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.verdict-yellow {
+  background: rgba(234, 179, 8, 0.12);
+  color: #EAB308;
+  border: 1px solid rgba(234, 179, 8, 0.25);
+}
+
+.card-middle-row {
+  margin-bottom: 14px;
+}
+
+.concise-summary {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 0.82rem !important;
   color: var(--text-primary);
+  line-height: 1.45;
+  font-weight: 400;
 }
 
-/* Themes */
-.theme-referee {
-  border-left-color: #3B82F6;
-  background: var(--color-referee);
+.card-bottom-row {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.theme-fan {
-  border-left-color: #F97316;
-  background: var(--color-fan);
+.confidence-meter-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.theme-var {
-  border-left-color: #10B981;
-  background: var(--color-var);
+.confidence-label {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--font-mono);
 }
 
-.theme-rulebook {
-  border-left-color: #8B5CF6;
-  background: var(--color-rulebook);
+.confidence-value {
+  font-size: 0.72rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
 }
 
-.theme-default {
-  border-left-color: var(--text-muted);
+.progress-bar-bg {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }

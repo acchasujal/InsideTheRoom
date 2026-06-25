@@ -76,7 +76,7 @@
   50% { opacity: 0; }
 }
 
-/* Preset selector button hover — was referenced in JSX but had no CSS rule */
+/* Preset selector button hover */
 .preset-btn:hover {
   background: rgba(234, 179, 8, 0.06) !important;
   border-color: rgba(234, 179, 8, 0.35) !important;
@@ -87,4 +87,29 @@
 .preset-btn {
   transition: all 0.15s ease;
 }
+
+.badge-football {
+  font-size: 0.75rem;
+  background: rgba(16, 185, 129, 0.1);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-weight: bold;
+}
+
+.divergence-pill {
+  font-size: 0.65rem;
+  color: #EF4444;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-family: monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 

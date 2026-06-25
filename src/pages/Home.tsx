@@ -12,14 +12,8 @@ export const Home: React.FC = () => {
   const headlineText = "Every rulebook contains words it never defines.";
   const words = headlineText.split(' ');
   const [visibleWordsCount, setVisibleWordsCount] = useState(0);
-  const [showChips, setShowChips] = useState(false);
   const [showBody, setShowBody] = useState(false);
   const [showCTA, setShowCTA] = useState(false);
-
-
-
-  // Live ticking clock state (June 1, 1938 represents consolidation of modern Laws of the Game)
-  const [clockTime, setClockTime] = useState({ years: 0, days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
     // Word-by-word typewriter
@@ -30,43 +24,14 @@ export const Home: React.FC = () => {
       return () => clearTimeout(timer);
     } else {
       // Stagger other sections
-      const t1 = setTimeout(() => setShowChips(true), 400);
-      const t2 = setTimeout(() => setShowBody(true), 1200);
-      const t3 = setTimeout(() => setShowCTA(true), 2000);
+      const t2 = setTimeout(() => setShowBody(true), 600);
+      const t3 = setTimeout(() => setShowCTA(true), 1200);
       return () => {
-        clearTimeout(t1);
         clearTimeout(t2);
         clearTimeout(t3);
       };
     }
   }, [visibleWordsCount, words.length]);
-
-  useEffect(() => {
-    const baseDate = new Date('1938-06-01T00:00:00Z');
-    
-    const updateClock = () => {
-      const now = new Date();
-      const diffMs = now.getTime() - baseDate.getTime();
-      
-      const msPerSecond = 1000;
-      const msPerMinute = msPerSecond * 60;
-      const msPerHour = msPerMinute * 60;
-      const msPerDay = msPerHour * 24;
-      const msPerYear = msPerDay * 365.25;
-      
-      const years = Math.floor(diffMs / msPerYear);
-      const days = Math.floor((diffMs % msPerYear) / msPerDay);
-      const hours = Math.floor((diffMs % msPerDay) / msPerHour);
-      const minutes = Math.floor((diffMs % msPerHour) / msPerMinute);
-      const seconds = Math.floor((diffMs % msPerMinute) / msPerSecond);
-      
-      setClockTime({ years, days, hours, minutes, seconds });
-    };
-
-    updateClock();
-    const interval = setInterval(updateClock, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   const handleStart = () => {
     if (currentIncidentIndex !== 0) {
@@ -76,6 +41,7 @@ export const Home: React.FC = () => {
       navigate(`/incident/${firstIncident.id}`);
     }
   };
+
 
   return (
     <div className="app-container fade-in" style={{ background: '#0a0a0a', minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: 'var(--space-4) var(--space-4) var(--space-12)' }}>
@@ -94,33 +60,6 @@ export const Home: React.FC = () => {
           <h1 style={{ fontSize: '3rem', lineHeight: '1.15', fontWeight: 800, textAlign: 'center', color: '#f5f5f5', margin: 0, minHeight: '4rem' }}>
             {words.slice(0, visibleWordsCount).join(' ')}
           </h1>
-
-          {/* Accent Chips */}
-          <div style={{ 
-            display: 'flex', 
-            gap: '12px', 
-            justifyContent: 'center', 
-            flexWrap: 'wrap', 
-            opacity: showChips ? 1 : 0, 
-            transform: showChips ? 'translateY(0)' : 'translateY(10px)',
-            transition: 'all 0.6s ease'
-          }}>
-            {["deliberate", "reasonable", "reckless", "clear and obvious"].map((word, i) => (
-              <span key={i} style={{
-                background: 'rgba(234, 179, 8, 0.08)',
-                border: '1px solid rgba(234, 179, 8, 0.3)',
-                color: '#EAB308',
-                padding: '6px 14px',
-                borderRadius: '4px',
-                fontFamily: 'monospace',
-                fontSize: '0.9rem',
-                fontWeight: 500,
-                fontStyle: 'italic'
-              }}>
-                "{word}"
-              </span>
-            ))}
-          </div>
         </div>
 
         {/* Real Ambiguity Heatmap (Hero Centerpiece) */}
@@ -156,64 +95,7 @@ export const Home: React.FC = () => {
           <AmbiguityHeatmap mode="full" />
         </div>
 
-        {/* Short Explanation Block */}
-        <div style={{
-          opacity: showBody ? 1 : 0,
-          transform: showBody ? 'translateY(0)' : 'translateY(10px)',
-          transition: 'all 0.6s ease',
-          textAlign: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '10px'
-        }}>
-          <p style={{ fontSize: '1.35rem', color: '#EAB308', fontWeight: 600, margin: 0, lineHeight: '1.4' }}>
-            Where rules stop, human discretion begins.
-          </p>
-          <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', margin: 0, lineHeight: '1.6', maxWidth: '580px' }}>
-            IBM Granite surfaces undefined terms, maps four legitimate reading schools, and generates a transparent audit trail — so you can see exactly where law ends and judgment begins.
-          </p>
-        </div>
 
-        {/* Structured Metric Group (The "Deliberate" Clock) */}
-        <div style={{
-          opacity: showBody ? 1 : 0,
-          transform: showBody ? 'translateY(0)' : 'translateY(15px)',
-          transition: 'all 0.8s ease',
-          width: '100%',
-          background: 'rgba(255,255,255,0.02)',
-          border: '1px solid rgba(255,255,255,0.05)',
-          borderRadius: '8px',
-          padding: '20px 24px',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-          gap: '20px',
-          alignItems: 'center',
-          textAlign: 'left'
-        }}>
-          <div>
-            <span style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', letterSpacing: '1px', display: 'block', marginBottom: '4px' }}>
-              REGULATORY CHRONOLOGY
-            </span>
-            <span style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#EAB308', display: 'block' }}>
-              FIFA Law 12: "Deliberate"
-            </span>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', marginTop: '4px', lineHeight: 1.4 }}>
-              Statutory standard remained undefined since modern laws consolidated.
-            </span>
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            <span style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', letterSpacing: '1px', display: 'block', marginBottom: '4px' }}>
-              ELAPSED DURATION (SINCE JUNE 1, 1938)
-            </span>
-            <div style={{ fontFamily: 'monospace', fontSize: '1.35rem', color: '#EAB308', fontWeight: 'bold', letterSpacing: '0.5px' }}>
-              {clockTime.years}y {clockTime.days}d {clockTime.hours.toString().padStart(2, '0')}h {clockTime.minutes.toString().padStart(2, '0')}m
-            </div>
-            <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', display: 'block', marginTop: '2px' }}>
-              Accumulated ambiguity duration without definition
-            </span>
-          </div>
-        </div>
 
         {/* CTAs */}
         <div style={{
