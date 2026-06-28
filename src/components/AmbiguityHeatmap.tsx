@@ -234,29 +234,32 @@ export const AmbiguityHeatmap: React.FC<AmbiguityHeatmapProps> = ({
   mode = 'full',
   onTermSelect
 }) => {
-  const [selectedTerm, setSelectedTerm] = useState<AmbiguityTerm | null>(null);
   const [animatedBars, setAnimatedBars] = useState(false);
   const [highlightPulse, setHighlightPulse] = useState(false);
   const spreadRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  const [prevActiveTermId, setPrevActiveTermId] = useState<string | undefined>(activeTermId);
+  const [selectedTerm, setSelectedTerm] = useState<AmbiguityTerm | null>(() => {
     if (activeTermId) {
-      const found = terms.find(t => t.incidentId === activeTermId);
-      if (found) {
-        setSelectedTerm(found);
-      }
-    } else if (!selectedTerm && terms.length > 0) {
-      setSelectedTerm(terms[0]);
+      return terms.find(t => t.incidentId === activeTermId) || (terms.length > 0 ? terms[0] : null);
     }
-  }, [activeTermId, terms]);
+    return terms.length > 0 ? terms[0] : null;
+  });
+
+  if (activeTermId !== prevActiveTermId) {
+    setPrevActiveTermId(activeTermId);
+    const found = terms.find(t => t.incidentId === activeTermId);
+    if (found) {
+      setSelectedTerm(found);
+    }
+  }
 
   useEffect(() => {
     if (selectedTerm) {
-      setAnimatedBars(false);
-      setHighlightPulse(true);
-      const t1 = setTimeout(() => setAnimatedBars(true), 80);
+      const t0 = setTimeout(() => setAnimatedBars(false), 0);
+      const t1 = setTimeout(() => { setHighlightPulse(true); setAnimatedBars(true); }, 80);
       const t2 = setTimeout(() => setHighlightPulse(false), 900);
-      return () => { clearTimeout(t1); clearTimeout(t2); };
+      return () => { clearTimeout(t0); clearTimeout(t1); clearTimeout(t2); };
     }
   }, [selectedTerm]);
 

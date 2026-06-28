@@ -1,1 +1,0 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node'; export default function handler(req: VercelRequest, res: VercelResponse) { res.status(200).json({ key: process.env.WATSONX_API_KEY ? 'exists' : 'missing', project: process.env.WATSONX_PROJECT_ID ? 'exists' : 'missing' }); } 

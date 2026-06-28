@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -31,12 +31,12 @@ export const DemoProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('demo_isDemoMode', JSON.stringify(isDemoMode));
   }, [isDemoMode]);
 
-  const resetDemo = () => {
+  const resetDemo = useCallback(() => {
     setCurrentIncidentIndex(0);
     localStorage.removeItem('demo_currentIncidentIndex');
     localStorage.removeItem('demo_isDemoMode');
     navigate('/');
-  };
+  }, [navigate]);
 
   const nextIncident = () => {
     setCurrentIncidentIndex(prev => prev + 1);
@@ -68,7 +68,7 @@ export const DemoProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       window.removeEventListener('keydown', handleKeyDown);
       clearTimeout(escapeTimer);
     };
-  }, [navigate]);
+  }, [navigate, resetDemo]);
 
 
   return (
@@ -78,6 +78,7 @@ export const DemoProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useDemo = () => {
   const context = useContext(DemoContext);
   if (context === undefined) {

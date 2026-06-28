@@ -82,6 +82,7 @@ export const HeatmapDemo: React.FC = () => {
       }, 1800);
       return () => clearTimeout(t);
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAutoPlay(false);
     }
   }, [phase, autoPlay]);

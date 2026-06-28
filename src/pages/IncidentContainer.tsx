@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import incidentsData from '../data/incidents.json';
 import { useDemo } from '../context/DemoContext';
@@ -9,15 +9,38 @@ import { RevealSection } from '../components/RevealSection';
 import { DEFAULT_TERMS } from '../components/AmbiguityHeatmap';
 import { InterpretationSpreadHero } from '../components/InterpretationSpreadHero';
 
-
 type Step = 'SETUP' | 'DECISION_1' | 'PERSPECTIVES' | 'TENSION' | 'DECISION_2' | 'COMPARISON';
+
+interface IncidentData {
+  id: string;
+  title: string;
+  summary: string;
+  evidenceShown: string;
+  theme: string;
+  lawInvolved: string;
+  disputedTerm: string;
+  tensionTerm: string;
+  ambiguityScore: number;
+  structuralTension: string;
+  decision2Prompt: string;
+  reflection: string;
+  perspectives: { persona: string; text: string }[];
+  decision1Options?: string[];
+  decision2Options?: string[];
+  imageFile?: string;
+  altImageFile?: string;
+}
+
+const layer1Steps = [
+  "> Retrieving validated benchmark case from cache...",
+  "> Loading audited perspectives (Fan, Referee, VAR)...",
+  "> Finalizing local compliance payload..."
+] as const;
 
 export const IncidentContainer: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { currentIncidentIndex, nextIncident, isDemoMode, resetDemo } = useDemo();
-  
-  const incident = incidentsData.find(inc => inc.id === id);
 
   const [step, setStep] = useState<Step>('SETUP');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -27,18 +50,47 @@ export const IncidentContainer: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const bottomRef = React.useRef<HTMLDivElement>(null);
 
+  // Scroll to top on mount
   useEffect(() => {
-    setStep('SETUP');
     window.scrollTo(0, 0);
-  }, [id]);
+  }, []);
 
+  // Scroll bottom on step or generating state change
   useEffect(() => {
     if (step !== 'SETUP') {
-      setTimeout(() => {
+      const t = setTimeout(() => {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
       }, 100);
+      return () => clearTimeout(t);
     }
   }, [step, isGenerating]);
+
+  const streamGenerationLogs = useCallback(() => {
+    setGenerationLogs([]);
+    let stepIdx = 0;
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const tick = () => {
+      if (stepIdx < layer1Steps.length) {
+        const stepVal = layer1Steps[stepIdx];
+        setGenerationLogs(prev => [...prev, stepVal]);
+        stepIdx++;
+        timeoutId = setTimeout(tick, Math.random() * 500 + 400);
+      }
+    };
+
+    tick();
+    return () => clearTimeout(timeoutId);
+  }, []);
+
+  useEffect(() => {
+    if (isGenerating) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      return streamGenerationLogs();
+    }
+  }, [isGenerating, streamGenerationLogs]);
+
+  const incident = incidentsData.find(inc => inc.id === id) as IncidentData | undefined;
 
   if (!incident) {
     return <div className="app-container"><h2>Incident not found</h2></div>;
@@ -80,50 +132,17 @@ export const IncidentContainer: React.FC = () => {
     }
   };
 
-  // Robust mapping for highlight terms since simple splitting fails on complex incidents like Suarez
-  let highlightTerms: string[] = [];
-  if (incident.id === 'perisic') {
-    highlightTerms = ['deliberately', 'unnaturally bigger'];
-  } else if (incident.id === 'var_nested') {
-    highlightTerms = ['clear and obvious error'];
-  } else if (incident.id === 'dejong') {
-    highlightTerms = ['reckless', 'excessive force', 'serious foul play'];
-  } else if (incident.id === 'mbappe') {
-    highlightTerms = ['deliberately played'];
-  } else if (incident.id === 'suarez') {
-    highlightTerms = ['sending-off', 'penalty kick'];
-  } else {
-    // Fallback if needed
-    highlightTerms = [incident.disputedTerm.replace(/["']/g, '').split('/')[0].trim()];
-  }
+  // Robust mapping for highlight terms — per-incident to handle complex multi-word terms
+  const highlightTerms: string[] = (() => {
+    if (incident.id === 'perisic') return ['deliberately', 'unnaturally bigger'];
+    if (incident.id === 'var_nested') return ['clear and obvious error'];
+    if (incident.id === 'dejong') return ['reckless', 'excessive force', 'serious foul play'];
+    if (incident.id === 'mbappe') return ['deliberately played'];
+    if (incident.id === 'suarez') return ['sending-off', 'penalty kick'];
+    return [incident.disputedTerm.replace(/["']/g, '').split('/')[0].trim()];
+  })();
 
   const rulebookText = incident.perspectives.find(p => p.persona === 'Rulebook')?.text || "";
-
-  const layer1Steps = [
-    "> Retrieving validated benchmark case from cache...",
-    "> Loading audited perspectives (Fan, Referee, VAR)...",
-    "> Finalizing local compliance payload..."
-  ];
-
-  useEffect(() => {
-    if (isGenerating) {
-      setGenerationLogs([]);
-      let currentStep = 0;
-      let timeoutId: ReturnType<typeof setTimeout>;
-      
-      const streamLog = () => {
-        if (currentStep < layer1Steps.length) {
-          setGenerationLogs(prev => [...prev, layer1Steps[currentStep]]);
-          currentStep++;
-          // Random jitter between 400ms and 900ms for terminal realism
-          timeoutId = setTimeout(streamLog, Math.random() * 500 + 400);
-        }
-      };
-      
-      streamLog();
-      return () => clearTimeout(timeoutId);
-    }
-  }, [isGenerating]);
 
   // P0 Task 3: Shift Reflection Engine
   const getCritique = () => {
@@ -143,9 +162,10 @@ export const IncidentContainer: React.FC = () => {
   // P0 Task 1: Audit Report Export
   const exportAuditReport = () => {
     const timestamp = new Date().toISOString();
+    const modelId = import.meta.env.VITE_WATSONX_MODEL_ID || 'ibm/granite-4-h-small';
     const markdownText = `# INSIDE THE ROOM — DECISION AUDIT REPORT
 Generated: ${timestamp}
-System: IBM watsonx.ai (Model: ibm/granite-13b-chat-v2)
+System: IBM watsonx.ai (Model: ${modelId})
 Pillar Focus: Explainability, Transparency, Auditability
 
 ## 1. INCIDENT ANALYSIS
@@ -165,9 +185,9 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
 * **Cognitive Shift Critique:** "${getCritique()}"
 
 ## 4. SYSTEM COMPLIANCE SIGNATURE
-* **Inference Model:** ibm/granite-13b-chat-v2
+* **Inference Model:** ${modelId}
 * **Decoding Parameters:** greedy (reproducible)
-* **Audit Signature:** watsonx-granite-v2-active-human-in-the-loop
+* **Audit Signature:** watsonx-granite-active-human-in-the-loop
 `;
 
     navigator.clipboard.writeText(markdownText).then(() => {
@@ -259,7 +279,7 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
           <IncidentCard 
             title="Incident Evidence"
             mediaType="image"
-            mediaUrl={`/assets/${(step === 'COMPARISON' || (step === 'PERSPECTIVES' && !isGenerating)) && (incident as any).altImageFile ? (incident as any).altImageFile : ((incident as any).imageFile || incident.id + '.png')}`}
+            mediaUrl={`/assets/${(step === 'COMPARISON' || (step === 'PERSPECTIVES' && !isGenerating)) && incident.altImageFile ? incident.altImageFile : (incident.imageFile || incident.id + '.png')}`}
             description={incident.summary + " " + incident.evidenceShown}
           />
         </div>
@@ -277,7 +297,7 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
             </div>
             <DecisionPanel 
               title="What is the observed judgment call?"
-              options={(incident as any).decision1Options || ["Foul / Penalty / Red", "Play On / Yellow"]}
+              options={incident.decision1Options || ["Foul / Penalty / Red", "Play On / Yellow"]}
               onSelect={handleDecision1}
             />
           </div>
@@ -310,7 +330,7 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
                   </h3>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
                     {incident.perspectives.filter(p => p.persona !== 'Rulebook').map((p, idx) => {
-                      let theme: any = 'default';
+                      let theme: 'referee' | 'fan' | 'var' | 'rulebook' | undefined = undefined;
                       const lower = p.persona.toLowerCase();
                       if (lower.includes('referee')) theme = 'referee';
                       if (lower.includes('fan')) theme = 'fan';
@@ -356,7 +376,7 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
                   </p>
                   <DecisionPanel 
                     title=""
-                    options={(incident as any).decision2Options || ["My call was correct", "The law is ambiguous"]}
+                    options={incident.decision2Options || ["My call was correct", "The law is ambiguous"]}
                     onSelect={handleDecision2}
                   />
                 </div>

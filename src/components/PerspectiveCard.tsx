@@ -15,13 +15,13 @@ export const PerspectiveCard: React.FC<PerspectiveCardProps> = ({ persona, text,
 
   if (lowerPersona.includes('fan')) {
     displayName = "Fan";
-    subLabel = "Purposive";
+    subLabel = "Purposive / Intent-Based";
   } else if (lowerPersona.includes('referee')) {
     displayName = "Referee";
-    subLabel = "Contextual";
+    subLabel = "Contextual / Textualist";
   } else if (lowerPersona.includes('var')) {
     displayName = "VAR";
-    subLabel = "Procedural";
+    subLabel = "Procedural-Threshold";
   } else if (lowerPersona.includes('rulebook')) {
     displayName = "Rulebook";
     subLabel = "Strict Constructionist";

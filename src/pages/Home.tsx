@@ -43,6 +43,17 @@ export const Home: React.FC = () => {
   };
 
 
+  const [secondsSince1938, setSecondsSince1938] = useState(() => 
+    Math.floor((Date.now() - new Date('1938-06-01T00:00:00Z').getTime()) / 1000)
+  );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSecondsSince1938(Math.floor((Date.now() - new Date('1938-06-01T00:00:00Z').getTime()) / 1000));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="app-container fade-in" style={{ background: '#0a0a0a', minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: 'var(--space-4) var(--space-4) var(--space-12)' }}>
       <header className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '16px 0', marginBottom: 'var(--space-6)' }}>
@@ -56,10 +67,139 @@ export const Home: React.FC = () => {
       <main className="main-content" style={{ alignSelf: 'center', maxWidth: '850px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '40px', width: '100%', marginTop: '2vh' }}>
         
         {/* Headline Section */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', width: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', width: '100%', textAlign: 'center' }}>
           <h1 style={{ fontSize: '3rem', lineHeight: '1.15', fontWeight: 800, textAlign: 'center', color: '#f5f5f5', margin: 0, minHeight: '4rem' }}>
             {words.slice(0, visibleWordsCount).join(' ')}
           </h1>
+          
+          {/* Accent Chips */}
+          <div style={{ 
+            display: 'flex', 
+            gap: '12px', 
+            justifyContent: 'center', 
+            flexWrap: 'wrap',
+            opacity: showBody ? 1 : 0,
+            transform: showBody ? 'translateY(0)' : 'translateY(10px)',
+            transition: 'all 0.5s ease',
+            marginTop: '8px'
+          }}>
+            {["deliberate", "reasonable", "reckless", "clear and obvious"].map((word) => (
+              <span key={word} style={{
+                background: 'rgba(234, 179, 8, 0.08)',
+                border: '1px solid rgba(234, 179, 8, 0.25)',
+                color: '#EAB308',
+                padding: '6px 14px',
+                borderRadius: '4px',
+                fontFamily: 'monospace',
+                fontSize: '0.85rem',
+                fontWeight: 'bold',
+                letterSpacing: '0.5px',
+                fontStyle: 'italic'
+              }}>
+                "{word}"
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* The 'Deliberate' Clock & Copy */}
+        <div style={{
+          opacity: showBody ? 1 : 0,
+          transform: showBody ? 'translateY(0)' : 'translateY(15px)',
+          transition: 'all 0.8s ease 0.2s',
+          textAlign: 'center',
+          maxWidth: '640px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px'
+        }}>
+          <p style={{ fontSize: '1.15rem', color: '#f5f5f5', margin: 0, lineHeight: 1.4 }}>
+            Those undefined words are where discretion lives — and where AI systems fail silently.
+          </p>
+          <div style={{ 
+            background: 'rgba(255,255,255,0.02)', 
+            border: '1px solid rgba(255,255,255,0.05)', 
+            borderRadius: '8px', 
+            padding: '12px 20px',
+            display: 'inline-block',
+            alignSelf: 'center'
+          }}>
+            <span style={{ fontSize: '0.7rem', fontFamily: 'monospace', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>
+              FIFA Law 12 Discretion Clock
+            </span>
+            <span style={{ fontSize: '1.25rem', fontFamily: 'monospace', fontWeight: 'bold', color: '#ef4444' }}>
+              {secondsSince1938.toLocaleString()}s
+            </span>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginTop: '4px' }}>
+              elapsed since FIFA introduced the word "deliberate" without defining it.
+            </span>
+          </div>
+          <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.6 }}>
+            Inside the Room uses IBM Granite to find these linguistic tension points, map every legitimate reading, and document exactly where your regulations stop being rules and start being opinion.
+          </p>
+        </div>
+
+        {/* CTAs */}
+        <div style={{
+          opacity: showCTA ? 1 : 0,
+          transform: showCTA ? 'translateY(0)' : 'translateY(15px)',
+          transition: 'all 0.8s ease',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '24px'
+        }}>
+          {/* Swapped Primary CTA: Framing Sensitivity Test */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+            <button 
+              className="btn-primary" 
+              style={{ 
+                fontSize: '1.15rem', 
+                padding: '14px 36px', 
+                border: '2px solid #EAB308', 
+                background: '#EAB308', 
+                color: '#000', 
+                boxShadow: '0 0 24px rgba(234, 179, 8, 0.25)',
+                fontWeight: 800,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                letterSpacing: '0.5px',
+                borderRadius: '6px'
+              }} 
+              onClick={() => navigate('/live?mode=sensitivity')}
+              onMouseOver={e => { e.currentTarget.style.boxShadow = '0 0 40px rgba(234, 179, 8, 0.45)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+              onMouseOut={e => { e.currentTarget.style.boxShadow = '0 0 24px rgba(234, 179, 8, 0.25)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+            >
+              Run the Framing Sensitivity Test →
+            </button>
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
+              Same incident. Same rule. Different words. Watch what happens.
+            </span>
+          </div>
+
+          {/* Secondary CTA: Walk the Review Room */}
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
+            <button
+              style={{
+                fontSize: '0.9rem',
+                padding: '9px 24px',
+                border: '1px solid rgba(255,255,255,0.15)',
+                background: 'transparent',
+                color: 'var(--text-primary)',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                borderRadius: '5px'
+              }}
+              onClick={handleStart}
+              onMouseOver={e => { e.currentTarget.style.borderColor = '#EAB308'; e.currentTarget.style.color = '#EAB308'; }}
+              onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
+            >
+              Walk the Review Room
+            </button>
+          </div>
+
         </div>
 
         {/* Real Ambiguity Heatmap (Hero Centerpiece) */}
@@ -93,85 +233,6 @@ export const Home: React.FC = () => {
             </button>
           </div>
           <AmbiguityHeatmap mode="full" />
-        </div>
-
-
-
-        {/* CTAs */}
-        <div style={{
-          opacity: showCTA ? 1 : 0,
-          transform: showCTA ? 'translateY(0)' : 'translateY(15px)',
-          transition: 'all 0.8s ease',
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '24px'
-        }}>
-          {/* Primary CTA */}
-          <button 
-            className="btn-primary" 
-            style={{ 
-              fontSize: '1.15rem', 
-              padding: '14px 36px', 
-              border: '2px solid #EAB308', 
-              background: '#EAB308', 
-              color: '#000', 
-              boxShadow: '0 0 24px rgba(234, 179, 8, 0.25)',
-              fontWeight: 800,
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-              letterSpacing: '0.5px',
-              borderRadius: '6px'
-            }} 
-            onClick={handleStart}
-            onMouseOver={e => { e.currentTarget.style.boxShadow = '0 0 40px rgba(234, 179, 8, 0.45)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-            onMouseOut={e => { e.currentTarget.style.boxShadow = '0 0 24px rgba(234, 179, 8, 0.25)'; e.currentTarget.style.transform = 'translateY(0)'; }}
-          >
-            Enter the Review Room →
-          </button>
-
-          {/* Secondary CTAs */}
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
-            <button
-              style={{
-                fontSize: '0.9rem',
-                padding: '9px 20px',
-                border: '1px solid rgba(234,179,8,0.35)',
-                background: 'transparent',
-                color: '#EAB308',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                borderRadius: '5px'
-              }}
-              onClick={() => navigate('/heatmap')}
-              onMouseOver={e => e.currentTarget.style.background = 'rgba(234,179,8,0.06)'}
-              onMouseOut={e => e.currentTarget.style.background = 'transparent'}
-            >
-              Explore Ambiguity Map
-            </button>
-
-            <button
-              style={{
-                fontSize: '0.9rem',
-                padding: '9px 20px',
-                border: '1px solid rgba(255,255,255,0.1)',
-                background: 'transparent',
-                color: 'var(--text-muted)',
-                fontWeight: 500,
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                borderRadius: '5px'
-              }}
-              onClick={() => navigate('/live?mode=sensitivity')}
-              onMouseOver={e => { e.currentTarget.style.borderColor = 'rgba(234,179,8,0.3)'; e.currentTarget.style.color = '#EAB308'; }}
-              onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'var(--text-muted)'; }}
-            >
-              Framing Sensitivity Test
-            </button>
-          </div>
-
         </div>
 
         {/* Interactive Demo Selector Grid */}

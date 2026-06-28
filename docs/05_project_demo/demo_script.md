@@ -1,57 +1,31 @@
-# 3-Minute Demo Script: VAR Room
+# The 180-Second Keynote: "Inside the Room"
+**Role Play Alignment:** 
+* 🍎 **Apple Keynote Designer:** Stark visual hierarchy, word-by-word pacing, ruthless deletion of clutter, and the dramatic side-by-side reveal.
+* 🛡️ **IBM Enterprise Designer:** Clear risk labeling, confidence spreads, telemetry tracking, and exportable compliance reports.
+* ⚖️ **Hackathon Judge:** Frontloaded thesis (10s), live execution proof, active developer console logs, and immediate response to "So What?".
 
-**Objective:** Secure judge recall by delivering the core thesis through the two-decision mechanic.
-**Runtime:** 3:00 strictly enforced.
+---
 
-## The 3-Minute Narrative Flow
+## ⏱️ Second-by-Second Demo Choreography
 
-The demo backbone is three beats, fixed in this order, never reduced:
+| Time | On-Screen Visuals | On-Stage Action & Narration | Persona Target |
+| :--- | :--- | :--- | :--- |
+| **0:00 - 0:10** | **Home Screen (Hook Mode)**<br>Pitch-black canvas. A typewriter animation slowly prints in bold white:<br>`Every rulebook contains words it` ...<br>Then highlights in bright amber:<br>`never defines.` | **The Hook**<br>"Every contract, compliance policy, and law in the world has a secret. They contain words they never define. Those blank spaces are where billions of dollars in disputes are decided. Welcome to Inside the Room." | 🍎 **Apple Keynote**<br>Lands the core thesis in under 10 seconds. |
+| **0:10 - 0:40** | **Home Screen (Heatmap)**<br>Presenter clicks "Explore Ambiguity Map". The screen reveals the **Interpretation Spread Analyzer**. 5 undefined terms across 5 benchmark incidents. The presenter clicks **"clear and obvious error"**, prompting the **Governance Knowledge Graph** drawer to slide open from the right. | **Beat 1: Auditing Ambiguity**<br>"This is not a decision engine; it is a Discretion Disclosure Instrument. We map the exact boundary where your rules run out. Take the VAR protocol: it triggers only on a 'clear and obvious error.' Our Granite-powered graph shows this compound term has zero statutory definitions, affects 47 match reviews, and maps its interpretation spread across 4 distinct legal schools." | 🛡️ **IBM Enterprise**<br>Establishes metadata density, risk classifications, and data structures. |
+| **0:40 - 1:15** | **Incident Review Screen (Perišić)**<br>Presenter clicks "Walk the Perišić Incident". A single high-contrast photo of Ivan Perišić's hand contacting the ball in the 2018 World Cup Final is shown. Presenter clicks "Penalty". Three perspective cards generate on-screen (Fan, Referee, VAR). | **Beat 2: The Baseline Human Dilemma**<br>"Let's look at how this plays out. 2018 World Cup Final. Perišić handles the ball. Penalty or not? FIFA Law 12 says penalize 'deliberate' acts, but never defines 'deliberate.' Granite generates three perfectly logical, opposing arguments from the exact same rule. The rules did not decide the World Cup. A word did." | 🍎 **Apple Keynote**<br>Humanizes the complexity with a globally recognized, high-stakes sports dispute. |
+| **1:15 - 2:30** | **Live Generation Screen**<br>Presenter pivots to **Framing Sensitivity Test**. Selects the *Handball Offense* preset. Neutral vs. Loaded framing inputs are shown side-by-side. Presenter clicks **"Run Framing Sensitivity Test"**.<br><br>**Live Terminal Streams Activate:** Dual developer-style logs stream API connections, routing, Watsonx gateway handshakes, schema validation, and complete in **2.1 seconds**.<br><br>**Visual Reveal:** Two polar graphs render side-by-side. Neutral frame shows **23% penalty likelihood**; Loaded frame shows **94%**. | **Beat 3: The Silver Bullet**<br>"Skeptical? You should be. A static dashboard is easy to mock. Let's test the live Granite engine. I'll submit the identical incident in two different descriptions. Under a neutral description, Granite outputs a 23% penalty confidence. Under loaded phrasing, it spikes to 94%. Same rule. Same event. Only the description changed. This is 'description risk'—the ultimate governance threat." | ⚖️ **Hackathon Judge**<br>Explodes skepticism. Proves live execution with developer logs and side-by-side semantic divergence. |
+| **2:30 - 2:50** | **Telemetry Drawer**<br>Presenter scrolls down and expands the **Governance System Diagnostics & Audit Record**. 12 fields are visible: IAM Authentication, Granite Model ID, Latency (2.12s), and cryptographic Audit ID. Presenter clicks **"Export Audit Report"** (button flashes green: `✓ Copied`). | **Beat 4: Compliance-Grade Telemetry**<br>"We do not trust AI to make the decision. We use Watsonx to document the discretion. For every review, we capture compliance telemetry—generating a Discretion Disclosure Report. A signed, reproducible audit trail documenting every undefined term, every interpretation spread, and every reasoning chain." | 🛡️ **IBM Enterprise**<br>Demonstrates deep alignment with watsonx.governance. |
+| **2:50 - 3:00** | **Home Screen (Fade out)**<br>The UI fades back to the dark home canvas, leaving only the primary Amber slogan visible. | **The Close**<br>"The most expensive mistakes in enterprise governance aren't made when people break your rules. They are made in the blank spaces where your rules run out. Inside the Room shows you where those spaces are, before it's too late. Thank you." | 🍎 **Apple Keynote**<br>Delivers a high-impact, memorable closing statement. |
 
-### 0:00 - 0:15 | The Hook
-**Screen:** Home / Hook Screen. Neutral background.
-**Action:** Presenter loads the page.
-**Narration:** "Football's biggest controversies aren't about what happened on the pitch. They're about what a word means. Welcome to the VAR Room."
-**Action:** Presenter clicks "Enter the VAR Room".
+---
 
-### 0:15 - 1:10 | Beat 1 — Perišić
-**Screen:** Incident Setup Screen (Perišić Handball).
-**Action:** Show brief clip/image of the handball.
-**Narration:** "2018 World Cup Final. Perišić's arm blocks the ball. Penalty or no penalty? In your head, make a choice."
-**Screen:** Decision 1 Screen.
-**Action:** Presenter clicks "Penalty".
-**Narration:** "Most say penalty. But let's ask IBM Granite to analyze the incident from different perspectives using the exact FIFA Law."
-**Screen:** Perspectives Screen.
-**Action:** Scroll through Fan vs. Referee vs. VAR perspectives.
-**Narration:** "Granite generates perfectly logical, opposite conclusions from the same video. Why? Let's look at the law."
-**Screen:** Reveal Screen.
-**Action:** Highlight the words "deliberately" and "unnaturally bigger".
-**Narration:** "The rulebook demands we penalize 'deliberate' acts. It never defines what 'deliberate' means. The foundation of the law is blank."
-**Emotional Objective:** Shock that the rulebook lacks basic definitions.
+## 🛠️ Design Philosophy & Ruthless Cuts
 
-### 1:10 - 1:40 | Beat 2 — VAR Nested
-**Screen:** Reveal Screen (VAR Protocol).
-**Narration:** "What about the video referee? VAR overturned the on-field call. But VAR can only intervene for a 'clear and obvious error.'"
-**Action:** Highlight "clear and obvious error".
-**Narration:** "That phrase has no definition either. VAR doesn't remove human ambiguity. It just puts it on a screen."
-**Emotional Objective:** Epiphany about systemic ambiguity.
+### 1. Ruthless Cuts (If time is short)
+* **P0 (Absolute Core):** The Hook (0:00-0:10), the Framing Sensitivity Test (1:15-2:30), and the Telemetry/Close (2:30-3:00).
+* **What to Cut:** If the pitch timer runs fast, skip the **Perišić Incident Card Walkthrough (Beat 2)**. Jump directly from the **Ambiguity Map (Beat 1)** into the **Framing Sensitivity Test (Beat 3)**. The visual shift of the polar graphs side-by-side communicates the core handball problem automatically.
 
-### 1:40 - 2:50 | Beat 3 — Suárez
-**Screen:** Incident Setup Screen (Suárez).
-**Narration:** "The first incident showed undefined words. This last one is different."
-**Action:** Show Suárez handball.
-**Narration:** "Suárez intentionally handles the ball to stop a certain goal for Ghana."
-**Screen:** Decision 1 Screen.
-**Action:** Presenter clicks "Was justice served? No."
-**Screen:** Reveal Screen.
-**Narration:** "Every rule was followed perfectly. The maximum punishment was given. But the law only guarantees procedure, not justice. The cheater advanced, and Ghana went home."
-**Emotional Objective:** Deep sense of unfairness regarding the limits of the law.
-
-### 2:50 - 3:00 | The Close
-**Screen:** Home / Hook Screen (Return).
-**Narration:** "Football law doesn't need better data. It was designed to need better judgment. And it put that judgment in a room where the people making the call are using words that have no definitions. That's what we built."
-*(Note: Mention, do not demo, that De Jong and Mbappé exist in the product as two further categories of the same phenomenon, explorable after the formal demo or during Q&A.)*
-**Action:** Fade to black. End of demo.
-
-## The Ruthless Cut Hierarchy
-
-**Cut hierarchy (single tier):** If time is short, cut Layer 2 (Live Generation / `/live`) entirely — do not open that page. The 3-beat backbone is never cut. If genuinely desperate, compress Beat 2 (VAR Nested) to a single spoken sentence instead of a full perspectives/reveal cycle — do not skip it outright, since it is the project's most distinctive insight, not a disposable extra.
+### 2. Design Aesthetics & Visual Polish (What the Audience Sees)
+* **Color System:** Absolute dark background (`#0a0a0a`) to keep contrast high. High-priority interactive elements leverage IBM Amber (`#EAB308`) and Crimson (`#ef4444`) to mark governance risk thresholds.
+* **Micro-Animations:** Word-by-word landing headlines, pulsing network connection indicators in the telemetry panel, and live typewriter console inputs to keep the audience visually engaged.
+* **Technical Integrity:** The live console logs are NOT fake. They track real Vercel/Watsonx API handshakes, schema structures, and parse validations, proving production readiness under the hood.

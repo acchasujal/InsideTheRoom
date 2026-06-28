@@ -3,6 +3,8 @@ import path from 'path';
 import healthHandler from '../../api/health';
 import generateHandler from '../../api/generate';
 
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+
 // Parse .env manually
 const envPath = path.resolve(process.cwd(), '.env');
 if (fs.existsSync(envPath)) {
@@ -17,27 +19,45 @@ if (fs.existsSync(envPath)) {
   });
 }
 
-function mockResponse() {
-  const res: any = {
+interface TestMetadata {
+  cacheStatus?: string;
+  connectionStatus?: string;
+  modelId?: string;
+}
+
+interface TestResponseBody {
+  _metadata?: TestMetadata;
+  tensionTerm?: string;
+  ambiguityScore?: number;
+}
+
+interface MockRes extends VercelResponse {
+  statusCode: number;
+  headers: Record<string, string>;
+  body: TestResponseBody | null;
+}
+
+function mockResponse(): MockRes {
+  const res = {
     statusCode: 200,
     headers: {},
     body: null,
     setHeader(name: string, value: string) {
-      this.headers[name] = value;
+      (this as MockRes).headers[name] = value;
       return this;
     },
     status(code: number) {
-      this.statusCode = code;
+      (this as MockRes).statusCode = code;
       return this;
     },
-    json(obj: any) {
-      this.body = obj;
+    json(obj: TestResponseBody | null) {
+      (this as MockRes).body = obj;
       return this;
     },
     end() {
       return this;
     }
-  };
+  } as unknown as MockRes;
   return res;
 }
 
@@ -50,7 +70,7 @@ async function runTests() {
 
   // Test 1: Health Validation
   console.log('[TEST 1] Executing End-to-End Health Check (api/health.ts)...');
-  const req1: any = { method: 'GET' };
+  const req1 = { method: 'GET' } as unknown as VercelRequest;
   const res1 = mockResponse();
   await healthHandler(req1, res1);
   console.log(`HTTP Status: ${res1.statusCode}`);
@@ -59,12 +79,12 @@ async function runTests() {
 
   // Test 2: Preset Incident Caching and Retrieval
   console.log('[TEST 2] Executing Preset Incident Request (api/generate.ts)...');
-  const req2: any = {
+  const req2 = {
     method: 'POST',
     body: {
       text: "The defender made contact with the attacker's leg while attempting to play the ball."
     }
-  };
+  } as unknown as VercelRequest;
   const res2 = mockResponse();
   await generateHandler(req2, res2);
   console.log(`HTTP Status: ${res2.statusCode}`);
@@ -84,12 +104,12 @@ async function runTests() {
 
   // Test 4: Custom Incident Live IBM Inference
   console.log('[TEST 4] Executing Custom Live Incident (api/generate.ts - should bypass cache)...');
-  const req4: any = {
+  const req4 = {
     method: 'POST',
     body: {
       text: "A player kicked the referee's drink container in frustration after receiving a warning."
     }
-  };
+  } as unknown as VercelRequest;
   const res4 = mockResponse();
   await generateHandler(req4, res4);
   console.log(`HTTP Status: ${res4.statusCode}`);
