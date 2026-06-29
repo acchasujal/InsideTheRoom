@@ -642,7 +642,7 @@ export const LiveGeneration: React.FC = () => {
                         background: 'linear-gradient(90deg, #EAB308 0%, #EF4444 100%)',
                       }} />
                       <span style={{ fontSize: '0.6rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
-                        IBM Granite · Framing Sensitivity Audit
+                        IBM Granite · ibm/granite-4-h-small · Framing Sensitivity Audit
                       </span>
                       <h3 style={{ margin: '0 0 8px 0', color: '#EAB308', fontSize: '1.35rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', textShadow: '0 0 20px rgba(234,179,8,0.3)' }}>
                         Framing Sensitivity Audit: Narrative Bias Shifts AI Decision Verdict

@@ -45,11 +45,25 @@ export const Home: React.FC = () => {
 
   return (
     <div className="app-container fade-in" style={{ background: '#0a0a0a', minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: '0 var(--space-4) var(--space-8)' }}>
-      <main className="main-content" style={{ alignSelf: 'center', maxWidth: '1280px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px', width: '100%', marginTop: '1vh' }}>
+      <main className="main-content" style={{ alignSelf: 'center', maxWidth: '1280px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '28px', width: '100%', marginTop: '24px' }}>
         
         {/* Headline Section */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', width: '100%', textAlign: 'center' }}>
-          <h1 style={{ fontSize: '2.5rem', lineHeight: '1.2', fontWeight: 800, textAlign: 'center', color: '#f5f5f5', margin: 0, minHeight: '3rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', width: '100%', textAlign: 'center' }}>
+
+          {/* Governance category pill */}
+          <div style={{
+            opacity: showBody ? 1 : 0,
+            transition: 'opacity 0.5s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            <span style={{ fontSize: '0.62rem', fontFamily: 'monospace', color: '#10B981', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', padding: '3px 10px', borderRadius: '20px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: 700 }}>
+              IBM watsonx.governance · Discretion Disclosure
+            </span>
+          </div>
+
+          <h1 style={{ fontSize: '2.6rem', lineHeight: '1.18', fontWeight: 800, textAlign: 'center', color: '#f5f5f5', margin: 0, minHeight: '3.2rem' }}>
             {words.slice(0, visibleWordsCount).join(' ')}
           </h1>
           
@@ -62,7 +76,6 @@ export const Home: React.FC = () => {
             opacity: showBody ? 1 : 0,
             transform: showBody ? 'translateY(0)' : 'translateY(10px)',
             transition: 'all 0.5s ease',
-            marginTop: '4px'
           }}>
             {["deliberate", "reasonable", "reckless", "clear and obvious"].map((word) => (
               <span key={word} style={{
@@ -93,9 +106,9 @@ export const Home: React.FC = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '12px'
+          gap: '16px'
         }}>
-          <p style={{ fontSize: '1.05rem', color: '#f5f5f5', margin: 0, lineHeight: 1.35, maxWidth: '650px' }}>
+          <p style={{ fontSize: '1.08rem', color: '#f5f5f5', margin: 0, lineHeight: 1.4, maxWidth: '640px' }}>
             Those undefined words are where discretion lives — and where AI systems fail silently.
           </p>
           <div style={{ 
@@ -215,35 +228,61 @@ export const Home: React.FC = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '12px'
+          gap: '16px'
         }}>
-          {/* Swapped Primary CTA: Framing Sensitivity Test */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-            <button 
-              className="btn-primary" 
-              style={{ 
-                fontSize: '1.05rem', 
-                padding: '12px 32px', 
-                border: '2px solid #EAB308', 
-                background: '#EAB308', 
-                color: '#000', 
-                boxShadow: '0 0 20px rgba(234, 179, 8, 0.2)',
-                fontWeight: 800,
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                letterSpacing: '0.5px',
-                borderRadius: '6px'
-              }} 
-              onClick={() => navigate('/live?mode=sensitivity')}
-              onMouseOver={e => { e.currentTarget.style.boxShadow = '0 0 32px rgba(234, 179, 8, 0.4)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-              onMouseOut={e => { e.currentTarget.style.boxShadow = '0 0 20px rgba(234, 179, 8, 0.2)'; e.currentTarget.style.transform = 'translateY(0)'; }}
-            >
-              Run the Framing Sensitivity Test →
-            </button>
-            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
-              Same incident. Same rule. Different words. Watch what happens.
-            </span>
+          {/* HERO STATEMENT — the core demo insight */}
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(234,179,8,0.06) 0%, rgba(239,68,68,0.04) 100%)',
+            border: '1px solid rgba(234,179,8,0.2)',
+            borderRadius: '10px',
+            padding: '18px 28px',
+            textAlign: 'center',
+            maxWidth: '680px',
+            width: '100%',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #EAB308 0%, #ef4444 100%)' }} />
+            <p style={{
+              margin: 0,
+              fontSize: '1.35rem',
+              fontWeight: 800,
+              color: '#f5f5f5',
+              lineHeight: 1.35,
+              letterSpacing: '-0.01em'
+            }}>
+              Same replay.{' '}
+              <span style={{ color: '#EAB308' }}>Same rule.</span>{' '}
+              Different words.{' '}
+              <span style={{ color: '#ef4444' }}>Different verdict.</span>
+            </p>
+            <p style={{ margin: '10px 0 0 0', fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+              The Framing Sensitivity Test proves that AI governance decisions shift based on <em>how</em> the incident is described — not just <em>what</em> happened.
+            </p>
           </div>
+
+          {/* Primary CTA: Framing Sensitivity Test */}
+          <button 
+            className="btn-primary" 
+            style={{ 
+              fontSize: '1.1rem', 
+              padding: '14px 40px', 
+              border: '2px solid #EAB308', 
+              background: '#EAB308', 
+              color: '#000', 
+              boxShadow: '0 0 24px rgba(234, 179, 8, 0.25)',
+              fontWeight: 800,
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              letterSpacing: '0.5px',
+              borderRadius: '6px'
+            }} 
+            onClick={() => navigate('/live?mode=sensitivity')}
+            onMouseOver={e => { e.currentTarget.style.boxShadow = '0 0 40px rgba(234, 179, 8, 0.45)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+            onMouseOut={e => { e.currentTarget.style.boxShadow = '0 0 24px rgba(234, 179, 8, 0.25)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+          >
+            Run the Framing Sensitivity Test →
+          </button>
 
           {/* Secondary CTA: Walk the Review Room */}
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>

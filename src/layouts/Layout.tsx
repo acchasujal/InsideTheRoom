@@ -89,15 +89,16 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               Inside the Room
             </h2>
             <span style={{ 
-              fontSize: '0.55rem', 
+              fontSize: '0.6rem', 
               fontFamily: 'monospace', 
-              background: 'rgba(234,179,8,0.08)', 
+              background: 'rgba(234,179,8,0.1)', 
               color: '#EAB308', 
-              border: '1px solid rgba(234,179,8,0.2)', 
-              padding: '2px 6px', 
+              border: '1px solid rgba(234,179,8,0.3)', 
+              padding: '3px 8px', 
               borderRadius: '3px', 
               letterSpacing: '0.5px', 
-              textTransform: 'uppercase' 
+              textTransform: 'uppercase',
+              fontWeight: 700
             }}>
               IBM SkillsBuild 2026
             </span>
@@ -184,8 +185,9 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         </nav>
 
         {/* Model Identifier Status Badge */}
-        <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontFamily: 'monospace', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', padding: '4px 8px', borderRadius: '4px' }}>
-          ibm/granite-13b-chat-v2
+        <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontFamily: 'monospace', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', padding: '4px 8px', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10B981', display: 'inline-block', animation: 'livePulse 2s ease-in-out infinite', flexShrink: 0 }} />
+          ibm/granite-4-h-small
         </span>
       </header>
 
@@ -199,7 +201,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       {/* Persistent Footer */}
       <footer style={{ width: '100%', borderTop: '1px solid rgba(255,255,255,0.05)', padding: '16px 24px', textAlign: 'center', fontSize: '0.65rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
-        Inside the Room © 2026 · Powered by IBM watsonx.ai & Granite small language models
+        Inside the Room © 2026 · Powered by <span style={{ color: '#EAB308' }}>IBM watsonx.ai</span> · Model: <span style={{ color: '#f5f5f5' }}>ibm/granite-4-h-small</span> · Governance Instrument for Discretion Disclosure
       </footer>
 
       {/* About Modal */}

@@ -422,8 +422,8 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
               {/* KPI Cards Bar */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '20px' }}>
                 <div className="glass-panel" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '4px', borderLeft: '3px solid #10b981', background: 'rgba(255,255,255,0.01)' }}>
-                  <span style={{ fontSize: '0.58rem', color: 'var(--text-muted)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '1px' }}>IBM Watsonx Model</span>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#f5f5f5', fontFamily: 'monospace' }}>Granite 4-H Small</span>
+                  <span style={{ fontSize: '0.58rem', color: 'var(--text-muted)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '1px' }}>IBM watsonx.ai Model</span>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#10b981', fontFamily: 'monospace' }}>ibm/granite-4-h-small</span>
                 </div>
                 <div className="glass-panel" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '4px', borderLeft: '3px solid #EAB308', background: 'rgba(255,255,255,0.01)' }}>
                   <span style={{ fontSize: '0.58rem', color: 'var(--text-muted)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '1px' }}>Discretion Risk Level</span>
