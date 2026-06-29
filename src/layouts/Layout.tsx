@@ -135,34 +135,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           >
             Framing Test
           </Link>
-          <Link 
-            to="/heatmap" 
-            style={{ 
-              fontSize: '0.8rem', 
-              textDecoration: 'none', 
-              color: isHeatmap ? '#EAB308' : 'var(--text-muted)', 
-              fontWeight: isHeatmap ? 700 : 500,
-              fontFamily: 'monospace',
-              letterSpacing: '0.5px',
-              transition: 'color 0.2s'
-            }}
-          >
-            Knowledge Graph
-          </Link>
-          <Link 
-            to={id ? `/incident/${id}` : "/incident/perisic"} 
-            style={{ 
-              fontSize: '0.8rem', 
-              textDecoration: 'none', 
-              color: isIncident ? '#EAB308' : 'var(--text-muted)', 
-              fontWeight: isIncident ? 700 : 500,
-              fontFamily: 'monospace',
-              letterSpacing: '0.5px',
-              transition: 'color 0.2s'
-            }}
-          >
-            Incident Review
-          </Link>
           <button 
             onClick={() => setIsAboutOpen(true)}
             style={{ 

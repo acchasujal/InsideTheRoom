@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { generateLivePerspectives, type LiveGenerationResponse, type GeneratedPerspective } from '../utils/mockApi';
 import { PerspectiveCard } from '../components/PerspectiveCard';
 import { InterpretationSpreadHero } from '../components/InterpretationSpreadHero';
@@ -81,13 +80,10 @@ type LiveStatus = 'IDLE' | 'GENERATING' | 'COMPLETE';
 type Mode = 'single' | 'sensitivity';
 
 export const LiveGeneration: React.FC = () => {
-  const [searchParams] = useSearchParams();
-  
-  const initialMode = searchParams.get('mode') === 'sensitivity' ? 'sensitivity' : 'single';
-  const [mode, setMode] = useState<Mode>(initialMode);
-  const [inputText, setInputText] = useState(initialMode === 'sensitivity' ? PRESETS[0].neutral : '');
-  const [loadedText, setLoadedText] = useState(initialMode === 'sensitivity' ? PRESETS[0].loaded : '');
-  const [selectedPresetId, setSelectedPresetId] = useState<string | null>(initialMode === 'sensitivity' ? PRESETS[0].id : null);
+  const mode = 'sensitivity';
+  const [inputText, setInputText] = useState(PRESETS[0].neutral);
+  const [loadedText, setLoadedText] = useState(PRESETS[0].loaded);
+  const [selectedPresetId, setSelectedPresetId] = useState<string | null>(PRESETS[0].id);
   const [status, setStatus] = useState<LiveStatus>('IDLE');
   
   // Structured API error states
@@ -98,7 +94,6 @@ export const LiveGeneration: React.FC = () => {
   const [loadedLogs, setLoadedLogs] = useState<string[]>([]);
   
   // Results
-  const [singleResult, setSingleResult] = useState<LiveGenerationResponse | null>(null);
   const [sensitivityResult, setSensitivityResult] = useState<{ neutral: LiveGenerationResponse; loaded: LiveGenerationResponse } | null>(null);
 
   const pipelineSteps = [
@@ -145,49 +140,39 @@ export const LiveGeneration: React.FC = () => {
     setInputText(preset.neutral);
     setLoadedText(preset.loaded);
     setSelectedPresetId(preset.id);
-    if (mode !== 'sensitivity') setMode('sensitivity');
   };
 
   const resetToIdle = () => {
     setStatus('IDLE');
     setApiError(null);
-    setSingleResult(null);
     setSensitivityResult(null);
-    setMode('sensitivity');
     setInputText(PRESETS[0].neutral);
     setLoadedText(PRESETS[0].loaded);
     setSelectedPresetId(PRESETS[0].id);
   };
 
-  const handleRun = async (forceFallbackValue = false) => {
+  const handleRun = async () => {
     if (!inputText.trim()) return;
-    if (mode === 'sensitivity' && !loadedText.trim()) return;
+    if (!loadedText.trim()) return;
 
     setStatus('GENERATING');
     setApiError(null);
-    setSingleResult(null);
     setSensitivityResult(null);
 
     const capturedMode = mode;
-    const modeToSend = selectedPresetId && !forceFallbackValue ? 'preset' : forceFallbackValue ? 'preset' : 'live';
-    const presetIdToSend = forceFallbackValue ? (selectedPresetId || 'football_tackle') : selectedPresetId;
-    const cacheKey = capturedMode === 'sensitivity' ? `sens_${inputText}_${loadedText}` : `single_${inputText}`;
+    const modeToSend = 'preset';
+    const presetIdToSend = selectedPresetId || 'football_tackle';
+    const cacheKey = `sens_${inputText}_${loadedText}`;
 
     // 1. Read Cache ONLY for preset demonstrations
-    if (modeToSend === 'preset' && !forceFallbackValue) {
-      const cachedData = PRESET_CACHE.get(cacheKey);
-      if (cachedData) {
-        await runLogAnimation(capturedMode, [
-          `[${new Date().toISOString().substring(11, 19)}] [Client Cache] Cache HIT. Returning pre-audited reference response.`
-        ]);
-        if (capturedMode === 'sensitivity') {
-          setSensitivityResult(cachedData as { neutral: LiveGenerationResponse; loaded: LiveGenerationResponse });
-        } else {
-          setSingleResult(cachedData as LiveGenerationResponse);
-        }
-        setStatus('COMPLETE');
-        return;
-      }
+    const cachedData = PRESET_CACHE.get(cacheKey);
+    if (cachedData) {
+      await runLogAnimation(capturedMode, [
+        `[${new Date().toISOString().substring(11, 19)}] [Client Cache] Cache HIT. Returning pre-audited reference response.`
+      ]);
+      setSensitivityResult(cachedData as { neutral: LiveGenerationResponse; loaded: LiveGenerationResponse });
+      setStatus('COMPLETE');
+      return;
     }
 
     // 2. Prevent Concurrent Duplicate Requests (Deduplication)
@@ -204,20 +189,12 @@ export const LiveGeneration: React.FC = () => {
       // Extract server-side stage logs
       const serverLogs = 'neutral' in response
         ? ((response as { neutral: LiveGenerationResponse }).neutral._metadata?.logs || [])
-        : ((response as LiveGenerationResponse)._metadata?.logs || []);
+        : [];
 
       await runLogAnimation(capturedMode, serverLogs);
 
-      // Cache ONLY presets
-      if (modeToSend === 'preset' || forceFallbackValue) {
-        PRESET_CACHE.set(cacheKey, response);
-      }
-
-      if (capturedMode === 'sensitivity') {
-        setSensitivityResult(response as { neutral: LiveGenerationResponse; loaded: LiveGenerationResponse });
-      } else {
-        setSingleResult(response as LiveGenerationResponse);
-      }
+      PRESET_CACHE.set(cacheKey, response);
+      setSensitivityResult(response as { neutral: LiveGenerationResponse; loaded: LiveGenerationResponse });
     } catch (err: unknown) {
       PENDING_REQUESTS.delete(cacheKey);
       console.error('[Inference Error]', err);
@@ -229,15 +206,12 @@ export const LiveGeneration: React.FC = () => {
 
       await runLogAnimation(capturedMode, errorLogs);
 
-      // Never fabricate governance reasoning after failure.
-      // Set structured error and present benchmark option
       setApiError({
         message: errorMessage || 'IBM watsonx.ai is currently unavailable.',
         details: errorDetails || 'Connection to Vercel Watsonx proxy timed out or failed.',
         logs: errorLogs,
         requestId: errorRequestId,
       });
-      setSingleResult(null);
       setSensitivityResult(null);
     }
 
@@ -309,10 +283,10 @@ export const LiveGeneration: React.FC = () => {
 
   // Helper to extract metadata properties from result safely
   const getResultMetadata = (): Partial<NonNullable<LiveGenerationResponse['_metadata']>> => {
-    if (mode === 'sensitivity' && sensitivityResult) {
+    if (sensitivityResult) {
       return sensitivityResult.neutral?._metadata || {};
     }
-    return singleResult?._metadata || {};
+    return {};
   };
 
   const metadata = getResultMetadata();
@@ -321,7 +295,7 @@ export const LiveGeneration: React.FC = () => {
     <div className="app-container" style={{ paddingBottom: '96px', background: '#0a0a0a', minHeight: '100vh', width: '100%' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', padding: '8px var(--space-4)', background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '6px', marginBottom: '16px' }}>
         <span style={{ fontSize: '0.72rem', fontFamily: 'monospace', color: 'var(--text-muted)' }}>
-          Mode: {mode === 'sensitivity' ? 'Framing Sensitivity Test' : 'Single Query Analysis'}
+          Mode: Framing Sensitivity Test
         </span>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           {selectedPresetId === 'compliance_data' ? (
@@ -346,47 +320,7 @@ export const LiveGeneration: React.FC = () => {
           </p>
         </div>
 
-        {/* Tab Selector */}
-        {status === 'IDLE' && (
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '1px', background: 'rgba(255,255,255,0.04)', padding: '4px', borderRadius: '8px', width: 'fit-content', alignSelf: 'center', marginBottom: '16px' }}>
-            <button 
-              onClick={() => { setMode('single'); setInputText(''); setLoadedText(''); }} 
-              style={{
-                background: mode === 'single' ? '#EAB308' : 'transparent',
-                color: mode === 'single' ? '#000' : 'var(--text-muted)',
-                border: 'none',
-                padding: '8px 24px',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                fontSize: '0.85rem',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              Single Incident
-            </button>
-            <button 
-              onClick={() => { 
-                setMode('sensitivity'); 
-                setInputText(PRESETS[0].neutral); 
-                setLoadedText(PRESETS[0].loaded); 
-              }} 
-              style={{
-                background: mode === 'sensitivity' ? '#EAB308' : 'transparent',
-                color: mode === 'sensitivity' ? '#000' : 'var(--text-muted)',
-                border: 'none',
-                padding: '8px 24px',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                fontSize: '0.85rem',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              Framing Sensitivity Test
-            </button>
-          </div>
-        )}
+        {/* Preset scenario selection and form details */}
 
         {status === 'IDLE' && (
           <div className="live-input-section fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -464,7 +398,7 @@ export const LiveGeneration: React.FC = () => {
               </span>
               <button 
                 className="btn-primary" 
-                onClick={() => handleRun(false)} 
+                onClick={() => handleRun()} 
                 style={{ padding: '10px 24px', border: '1px solid #EAB308', background: '#EAB308', color: '#000', fontWeight: 'bold', fontSize: '0.9rem' }}
                 disabled={!inputText.trim() || !loadedText.trim()}
               >
@@ -538,7 +472,7 @@ export const LiveGeneration: React.FC = () => {
                   <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
                     <button 
                       className="btn-primary" 
-                      onClick={() => handleRun(true)} 
+                      onClick={() => handleRun()} 
                       style={{ border: '1px solid #EAB308', background: '#EAB308', color: '#000', padding: '8px 20px', fontSize: '0.82rem' }}
                     >
                       Run Pre-audited Reference Benchmark
@@ -565,66 +499,8 @@ export const LiveGeneration: React.FC = () => {
                   </div>
                 )}
               </div>
-            ) : (
+            ) : sensitivityResult && (
               <>
-                {/* Single mode render */}
-                {mode === 'single' && singleResult && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                    <InterpretationSpreadHero
-                      tensionTerm={singleResult.tensionTerm || "discretion"}
-                      ambiguityScore={singleResult._metadata?.ambiguityScore || 8.0}
-                      spread={{
-                        purposive: singleResult.interpretationSpread?.purposive ?? 50,
-                        contextual: singleResult.interpretationSpread?.contextual ?? 50,
-                        procedural: singleResult.interpretationSpread?.procedural ?? 50,
-                        strict: singleResult.interpretationSpread?.strict ?? 50,
-                      }}
-                      isCorporate={isCorporateText(inputText)}
-                    />
-
-                    <div style={{ background: '#121212', padding: '16px 20px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                      <strong style={{ color: '#EAB308', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '6px', fontFamily: 'monospace' }}>
-                        Retrieved Law / Governing Policy
-                      </strong>
-                      <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: '1.5' }}>
-                        {singleResult.retrievedLaw}
-                      </p>
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
-                      {singleResult.perspectives.map((p: GeneratedPerspective, idx: number) => {
-                        let theme: 'referee' | 'fan' | 'var' | 'rulebook' | undefined = undefined;
-                        const lower = p.persona.toLowerCase();
-                        if (lower.includes('referee')) theme = 'referee';
-                        if (lower.includes('fan')) theme = 'fan';
-                        if (lower.includes('var')) theme = 'var';
-                        if (lower.includes('rulebook')) theme = 'rulebook';
-
-                        let strength = undefined;
-                        if (singleResult?.interpretationSpread) {
-                          const spread = singleResult.interpretationSpread;
-                          if (lower.includes('fan')) strength = spread.purposive;
-                          else if (lower.includes('referee')) strength = spread.contextual;
-                          else if (lower.includes('var')) strength = spread.procedural;
-                          else if (lower.includes('rulebook')) strength = spread.strict;
-                        }
-
-                        return (
-                          <PerspectiveCard 
-                            key={idx}
-                            persona={p.persona}
-                            text={p.text}
-                            colorTheme={theme}
-                            strength={strength}
-                          />
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* Sensitivity mode render */}
-                {mode === 'sensitivity' && sensitivityResult && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                     <div style={{
                       background: 'linear-gradient(135deg, rgba(234,179,8,0.06) 0%, rgba(239,68,68,0.04) 100%)',
@@ -793,7 +669,6 @@ export const LiveGeneration: React.FC = () => {
                       })}
                     </div>
                   </div>
-                )}
 
                 {/* Governance Payload Inspector — Separates the 4 metrics distinctly */}
                 <div className="glass-panel" style={{ marginTop: '20px', textAlign: 'left', border: '1px solid rgba(255,255,255,0.06)', padding: '16px 20px', borderRadius: '8px', background: '#121212' }}>
