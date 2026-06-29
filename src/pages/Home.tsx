@@ -43,55 +43,36 @@ export const Home: React.FC = () => {
   };
 
 
-  const [secondsSince1938, setSecondsSince1938] = useState(() => 
-    Math.floor((Date.now() - new Date('1938-06-01T00:00:00Z').getTime()) / 1000)
-  );
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSecondsSince1938(Math.floor((Date.now() - new Date('1938-06-01T00:00:00Z').getTime()) / 1000));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <div className="app-container fade-in" style={{ background: '#0a0a0a', minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: 'var(--space-4) var(--space-4) var(--space-12)' }}>
-      <header className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '16px 0', marginBottom: 'var(--space-6)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <h2 style={{ margin: 0, fontWeight: 700, fontSize: '1.25rem', letterSpacing: '1px', textTransform: 'uppercase' }}>Inside the Room</h2>
-          <span style={{ fontSize: '0.6rem', fontFamily: 'monospace', background: 'rgba(234,179,8,0.08)', color: '#EAB308', border: '1px solid rgba(234,179,8,0.2)', padding: '2px 8px', borderRadius: '3px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>IBM SkillsBuild 2025</span>
-        </div>
-        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>ibm/granite-13b-chat-v2</span>
-      </header>
-      
-      <main className="main-content" style={{ alignSelf: 'center', maxWidth: '850px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '40px', width: '100%', marginTop: '2vh' }}>
+    <div className="app-container fade-in" style={{ background: '#0a0a0a', minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: '0 var(--space-4) var(--space-8)' }}>
+      <main className="main-content" style={{ alignSelf: 'center', maxWidth: '1280px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px', width: '100%', marginTop: '1vh' }}>
         
         {/* Headline Section */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', width: '100%', textAlign: 'center' }}>
-          <h1 style={{ fontSize: '3rem', lineHeight: '1.15', fontWeight: 800, textAlign: 'center', color: '#f5f5f5', margin: 0, minHeight: '4rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', width: '100%', textAlign: 'center' }}>
+          <h1 style={{ fontSize: '2.5rem', lineHeight: '1.2', fontWeight: 800, textAlign: 'center', color: '#f5f5f5', margin: 0, minHeight: '3rem' }}>
             {words.slice(0, visibleWordsCount).join(' ')}
           </h1>
           
           {/* Accent Chips */}
           <div style={{ 
             display: 'flex', 
-            gap: '12px', 
+            gap: '8px', 
             justifyContent: 'center', 
             flexWrap: 'wrap',
             opacity: showBody ? 1 : 0,
             transform: showBody ? 'translateY(0)' : 'translateY(10px)',
             transition: 'all 0.5s ease',
-            marginTop: '8px'
+            marginTop: '4px'
           }}>
             {["deliberate", "reasonable", "reckless", "clear and obvious"].map((word) => (
               <span key={word} style={{
                 background: 'rgba(234, 179, 8, 0.08)',
                 border: '1px solid rgba(234, 179, 8, 0.25)',
                 color: '#EAB308',
-                padding: '6px 14px',
+                padding: '4px 10px',
                 borderRadius: '4px',
                 fontFamily: 'monospace',
-                fontSize: '0.85rem',
+                fontSize: '0.8rem',
                 fontWeight: 'bold',
                 letterSpacing: '0.5px',
                 fontStyle: 'italic'
@@ -105,62 +86,148 @@ export const Home: React.FC = () => {
         {/* The 'Deliberate' Clock & Copy */}
         <div style={{
           opacity: showBody ? 1 : 0,
-          transform: showBody ? 'translateY(0)' : 'translateY(15px)',
-          transition: 'all 0.8s ease 0.2s',
+          transform: showBody ? 'translateY(0)' : 'translateY(10px)',
+          transition: 'all 0.8s ease 0.1s',
           textAlign: 'center',
-          maxWidth: '640px',
+          maxWidth: '800px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '16px'
+          alignItems: 'center',
+          gap: '12px'
         }}>
-          <p style={{ fontSize: '1.15rem', color: '#f5f5f5', margin: 0, lineHeight: 1.4 }}>
+          <p style={{ fontSize: '1.05rem', color: '#f5f5f5', margin: 0, lineHeight: 1.35, maxWidth: '650px' }}>
             Those undefined words are where discretion lives — and where AI systems fail silently.
           </p>
           <div style={{ 
             background: 'rgba(255,255,255,0.02)', 
             border: '1px solid rgba(255,255,255,0.05)', 
-            borderRadius: '8px', 
-            padding: '12px 20px',
+            borderRadius: '6px', 
+            padding: '8px 16px',
             display: 'inline-block',
-            alignSelf: 'center'
+            textAlign: 'center'
           }}>
-            <span style={{ fontSize: '0.7rem', fontFamily: 'monospace', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>
-              FIFA Law 12 Discretion Clock
+            <span style={{ fontSize: '0.62rem', fontFamily: 'monospace', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '2px' }}>
+              FIFA Law 12 Discretion Metric
             </span>
-            <span style={{ fontSize: '1.25rem', fontFamily: 'monospace', fontWeight: 'bold', color: '#ef4444' }}>
-              {secondsSince1938.toLocaleString()}s
+            <span style={{ fontSize: '1.15rem', fontFamily: 'monospace', fontWeight: 'bold', color: '#ef4444', display: 'block' }}>
+              Undefined since 1938 (87 years)
             </span>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginTop: '4px' }}>
-              elapsed since FIFA introduced the word "deliberate" without defining it.
+            <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', display: 'block', marginTop: '2px' }}>
+              since FIFA introduced the word "deliberate" without a formal definition.
             </span>
           </div>
-          <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.6 }}>
+          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5, maxWidth: '700px' }}>
             Inside the Room uses IBM Granite to find these linguistic tension points, map every legitimate reading, and document exactly where your regulations stop being rules and start being opinion.
           </p>
+        </div>
+
+        {/* Subtle Onboarding Tracker */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+          gap: '16px',
+          width: '100%',
+          maxWidth: '1000px',
+          textAlign: 'left',
+          background: 'rgba(255, 255, 255, 0.01)',
+          border: '1px solid rgba(255, 255, 255, 0.05)',
+          borderRadius: '8px',
+          padding: '16px',
+          opacity: showCTA ? 1 : 0,
+          transform: showCTA ? 'translateY(0)' : 'translateY(10px)',
+          transition: 'all 0.8s ease 0.2s',
+          marginTop: '4px'
+        }}>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <div style={{
+              fontSize: '0.85rem',
+              fontWeight: 'bold',
+              color: '#EAB308',
+              background: 'rgba(234, 179, 8, 0.1)',
+              width: '24px',
+              height: '24px',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: '1px solid rgba(234, 179, 8, 0.3)',
+              flexShrink: 0
+            }}>1</div>
+            <div>
+              <h4 style={{ margin: '0 0 4px 0', fontSize: '0.82rem', fontWeight: 700, color: '#f5f5f5', letterSpacing: '0.5px' }}>① Framing Test</h4>
+              <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1.35' }}>
+                Test how loaded vs. neutral phrasing impacts Granite's evaluation.
+              </p>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '12px', borderLeft: '1px solid rgba(255, 255, 255, 0.06)', paddingLeft: '16px' }}>
+            <div style={{
+              fontSize: '0.85rem',
+              fontWeight: 'bold',
+              color: '#EAB308',
+              background: 'rgba(234, 179, 8, 0.1)',
+              width: '24px',
+              height: '24px',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: '1px solid rgba(234, 179, 8, 0.3)',
+              flexShrink: 0
+            }}>2</div>
+            <div>
+              <h4 style={{ margin: '0 0 4px 0', fontSize: '0.82rem', fontWeight: 700, color: '#f5f5f5', letterSpacing: '0.5px' }}>② Incident Review</h4>
+              <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1.35' }}>
+                Audit four diverse semantic readings (Fan, Referee, VAR, Rulebook).
+              </p>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '12px', borderLeft: '1px solid rgba(255, 255, 255, 0.06)', paddingLeft: '16px' }}>
+            <div style={{
+              fontSize: '0.85rem',
+              fontWeight: 'bold',
+              color: '#EAB308',
+              background: 'rgba(234, 179, 8, 0.1)',
+              width: '24px',
+              height: '24px',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: '1px solid rgba(234, 179, 8, 0.3)',
+              flexShrink: 0
+            }}>3</div>
+            <div>
+              <h4 style={{ margin: '0 0 4px 0', fontSize: '0.82rem', fontWeight: 700, color: '#f5f5f5', letterSpacing: '0.5px' }}>③ Governance Report</h4>
+              <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1.35' }}>
+                Analyze compliance-grade system logs, response schema, and latency.
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* CTAs */}
         <div style={{
           opacity: showCTA ? 1 : 0,
-          transform: showCTA ? 'translateY(0)' : 'translateY(15px)',
-          transition: 'all 0.8s ease',
+          transform: showCTA ? 'translateY(0)' : 'translateY(10px)',
+          transition: 'all 0.8s ease 0.3s',
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '24px'
+          gap: '12px'
         }}>
           {/* Swapped Primary CTA: Framing Sensitivity Test */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
             <button 
               className="btn-primary" 
               style={{ 
-                fontSize: '1.15rem', 
-                padding: '14px 36px', 
+                fontSize: '1.05rem', 
+                padding: '12px 32px', 
                 border: '2px solid #EAB308', 
                 background: '#EAB308', 
                 color: '#000', 
-                boxShadow: '0 0 24px rgba(234, 179, 8, 0.25)',
+                boxShadow: '0 0 20px rgba(234, 179, 8, 0.2)',
                 fontWeight: 800,
                 cursor: 'pointer',
                 transition: 'all 0.2s',
@@ -168,12 +235,12 @@ export const Home: React.FC = () => {
                 borderRadius: '6px'
               }} 
               onClick={() => navigate('/live?mode=sensitivity')}
-              onMouseOver={e => { e.currentTarget.style.boxShadow = '0 0 40px rgba(234, 179, 8, 0.45)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-              onMouseOut={e => { e.currentTarget.style.boxShadow = '0 0 24px rgba(234, 179, 8, 0.25)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+              onMouseOver={e => { e.currentTarget.style.boxShadow = '0 0 32px rgba(234, 179, 8, 0.4)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+              onMouseOut={e => { e.currentTarget.style.boxShadow = '0 0 20px rgba(234, 179, 8, 0.2)'; e.currentTarget.style.transform = 'translateY(0)'; }}
             >
               Run the Framing Sensitivity Test →
             </button>
-            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
               Same incident. Same rule. Different words. Watch what happens.
             </span>
           </div>
@@ -182,8 +249,8 @@ export const Home: React.FC = () => {
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
             <button
               style={{
-                fontSize: '0.9rem',
-                padding: '9px 24px',
+                fontSize: '0.85rem',
+                padding: '8px 20px',
                 border: '1px solid rgba(255,255,255,0.15)',
                 background: 'transparent',
                 color: 'var(--text-primary)',

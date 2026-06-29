@@ -4,6 +4,7 @@ import { Home } from './pages/Home';
 import { IncidentContainer } from './pages/IncidentContainer';
 import { LiveGeneration } from './pages/LiveGeneration';
 import { HeatmapDemo } from './pages/HeatmapDemo';
+import { Layout } from './layouts/Layout';
 import './App.css';
 
 const IncidentContainerWrapper = () => {
@@ -15,12 +16,14 @@ function App() {
   return (
     <Router>
       <DemoProvider>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/incident/:id" element={<IncidentContainerWrapper />} />
-          <Route path="/live" element={<LiveGeneration />} />
-          <Route path="/heatmap" element={<HeatmapDemo />} />
-        </Routes>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/incident/:id" element={<IncidentContainerWrapper />} />
+            <Route path="/live" element={<LiveGeneration />} />
+            <Route path="/heatmap" element={<HeatmapDemo />} />
+          </Routes>
+        </Layout>
       </DemoProvider>
     </Router>
   );

@@ -55,15 +55,6 @@ export const IncidentContainer: React.FC = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Scroll bottom on step or generating state change
-  useEffect(() => {
-    if (step !== 'SETUP') {
-      const t = setTimeout(() => {
-        bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-      }, 100);
-      return () => clearTimeout(t);
-    }
-  }, [step, isGenerating]);
 
   const streamGenerationLogs = useCallback(() => {
     setGenerationLogs([]);
@@ -104,7 +95,7 @@ export const IncidentContainer: React.FC = () => {
     // Simulate Granite API thinking/generation delay
     setTimeout(() => {
       setIsGenerating(false);
-    }, 2500);
+    }, 1200);
   };
 
   const handleDecision2 = (decision: string) => {
@@ -198,36 +189,31 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
 
   return (
     <div className="app-container" style={{ paddingBottom: '128px' }}>
-      <header className="header" style={{ position: 'sticky', top: 0, background: 'var(--bg-color)', zIndex: 10, padding: '16px 0', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <button className="btn-ghost" style={{ padding: '8px 16px', fontSize: '0.9rem' }} onClick={() => navigate('/')}>
-            ← Home
-          </button>
-          <h2 style={{ margin: 0 }}>{incident.title}</h2>
+      <main className="main-content" style={{ width: '100%', maxWidth: '1280px', marginTop: '10px' }}>
+        <div style={{ textAlign: 'left', width: '100%', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+          <div>
+            <span style={{ fontSize: '0.62rem', fontFamily: 'monospace', color: '#EAB308', background: 'rgba(234,179,8,0.08)', padding: '2px 8px', borderRadius: '3px', border: '1px solid rgba(234,179,8,0.2)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              {incident.theme.split('/')[0].trim()}
+            </span>
+            <h1 style={{ fontSize: '1.8rem', fontWeight: 800, margin: '8px 0 4px 0', color: '#f5f5f5' }}>
+              {incident.title}
+            </h1>
+            <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--text-muted)' }}>
+              Disputed Term: <strong style={{ color: '#EAB308', fontFamily: 'monospace' }}>{incident.disputedTerm}</strong>
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.75rem', background: 'rgba(234, 179, 8, 0.1)', color: 'var(--accent-color)', border: '1px solid rgba(234,179,8,0.3)', padding: '4px 8px', borderRadius: '4px', fontFamily: 'monospace', fontWeight: 'bold' }}>
+              Ambiguity: {incident.ambiguityScore} / 10
+            </span>
+            <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', padding: '4px 8px', borderRadius: '4px' }}>
+              Transparency
+            </span>
+            <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', padding: '4px 8px', borderRadius: '4px' }}>
+              Auditability
+            </span>
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <button
-            onClick={() => navigate('/heatmap')}
-            style={{ background: 'transparent', border: '1px solid rgba(234,179,8,0.3)', color: '#EAB308', padding: '4px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem', fontFamily: 'monospace', fontWeight: 600 }}
-          >
-            ⬛ Heatmap
-          </button>
-          <span style={{ fontSize: '0.75rem', background: 'rgba(234, 179, 8, 0.1)', color: 'var(--accent-color)', border: '1px solid rgba(234,179,8,0.3)', padding: '4px 8px', borderRadius: '4px', fontFamily: 'monospace', fontWeight: 'bold' }}>
-            Ambiguity: {incident.ambiguityScore} / 10
-          </span>
-          <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', padding: '4px 8px', borderRadius: '4px', fontFamily: 'monospace' }}>
-            Model: ibm/granite-13b-chat-v2
-          </span>
-          <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', padding: '4px 8px', borderRadius: '4px' }}>
-            Transparency
-          </span>
-          <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', padding: '4px 8px', borderRadius: '4px' }}>
-            Auditability
-          </span>
-        </div>
-      </header>
-      
-      <main className="main-content" style={{ width: '100%', maxWidth: '900px', marginTop: '20px' }}>
         
         {/* Step Progress Indicator */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0', marginBottom: '28px', width: '100%' }}>
@@ -396,70 +382,71 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
 
           return (
             <div className="fade-in print-container" style={{ 
-              marginTop: '24px', 
+              marginTop: '16px', 
               width: '100%', 
               textAlign: 'left', 
               padding: '24px', 
-              background: '#0a0a0a', 
+              background: 'rgba(20,20,20,0.6)', 
               borderRadius: '12px', 
               border: '1px solid rgba(255,255,255,0.06)',
-              boxShadow: '0 16px 48px rgba(0,0,0,0.6)'
+              boxShadow: '0 20px 50px rgba(0,0,0,0.7)',
+              backdropFilter: 'blur(12px)'
             }}>
               {/* Dashboard Header */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '16px', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 850, color: '#f5f5f5', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
-                    Governance Audit Console
-                  </h3>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
-                    ID: {`watsonx-dec-audit-${incident.id}-${new Date().toISOString().slice(2, 10).replace(/-/g, '')}`}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981', display: 'inline-block' }} />
+                    <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800, color: '#f5f5f5', letterSpacing: '0.5px', textTransform: 'uppercase', fontFamily: 'monospace' }}>
+                      Governance Audit Console
+                    </h3>
+                  </div>
+                  <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
+                    AUDIT RECORD: {`watsonx-dec-audit-${incident.id}-${new Date().toISOString().slice(2, 10).replace(/-/g, '')}`}
                   </span>
                 </div>
                 
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }} className="no-print">
-                  <button className="btn-ghost" onClick={exportAuditReport} style={{ fontSize: '0.8rem', padding: '6px 12px', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    {copied ? "✓ Copied" : "📥 Export"}
+                  <button className="btn-ghost" onClick={exportAuditReport} style={{ fontSize: '0.78rem', padding: '8px 16px', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, borderRadius: '4px', cursor: 'pointer' }}>
+                    {copied ? "✓ Copied" : "📥 Export Markdown"}
                   </button>
-                  <button className="btn-ghost" onClick={() => window.print()} style={{ fontSize: '0.8rem', padding: '6px 12px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                    🖨️ Print
+                  <button className="btn-ghost" onClick={() => window.print()} style={{ fontSize: '0.78rem', padding: '8px 16px', border: '1px solid rgba(255,255,255,0.1)', fontWeight: 600, borderRadius: '4px', cursor: 'pointer' }}>
+                    🖨️ Print Report
                   </button>
-                  <button className="btn-primary" onClick={handleNextIncident} style={{ fontSize: '0.8rem', padding: '6px 12px', border: '1px solid #EAB308', background: '#EAB308', color: '#000' }}>
-                    Continue →
+                  <button className="btn-primary" onClick={handleNextIncident} style={{ fontSize: '0.78rem', padding: '8px 18px', border: '1.5px solid #EAB308', background: '#EAB308', color: '#000', fontWeight: 800, borderRadius: '4px', cursor: 'pointer' }}>
+                    Next Incident →
                   </button>
                 </div>
               </div>
 
               {/* KPI Cards Bar */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px', marginBottom: '20px' }}>
-                <div className="glass-panel" style={{ padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: '2px', borderLeft: '3px solid #10b981' }}>
-                  <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Model Status</span>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10B981', display: 'inline-block', animation: 'pulse 1.5s infinite' }} />
-                    <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#f5f5f5', fontFamily: 'monospace' }}>Granite 13B</span>
-                  </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '20px' }}>
+                <div className="glass-panel" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '4px', borderLeft: '3px solid #10b981', background: 'rgba(255,255,255,0.01)' }}>
+                  <span style={{ fontSize: '0.58rem', color: 'var(--text-muted)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '1px' }}>IBM Watsonx Model</span>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#f5f5f5', fontFamily: 'monospace' }}>Granite 4-H Small</span>
                 </div>
-                <div className="glass-panel" style={{ padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: '2px', borderLeft: '3px solid #EAB308' }}>
-                  <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Discretion Risk</span>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#EAB308', fontFamily: 'monospace' }}>{incident.ambiguityScore >= 8.5 ? 'HIGH RISK' : 'MODERATE RISK'}</span>
+                <div className="glass-panel" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '4px', borderLeft: '3px solid #EAB308', background: 'rgba(255,255,255,0.01)' }}>
+                  <span style={{ fontSize: '0.58rem', color: 'var(--text-muted)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '1px' }}>Discretion Risk Level</span>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#EAB308', fontFamily: 'monospace' }}>{incident.ambiguityScore >= 8.5 ? 'CRITICAL DISCRETION' : 'MODERATE RISK'}</span>
                 </div>
-                <div className="glass-panel" style={{ padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: '2px', borderLeft: '3px solid #EF4444' }}>
-                  <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Human Alignment</span>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: isShifted ? '#EAB308' : '#10B981', fontFamily: 'monospace' }}>
-                    {isShifted ? '⚠️ SHIFT DETECTED' : '✓ STABLE'}
+                <div className="glass-panel" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '4px', borderLeft: '3px solid #ef4444', background: 'rgba(255,255,255,0.01)' }}>
+                  <span style={{ fontSize: '0.58rem', color: 'var(--text-muted)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '1px' }}>Human Alignment Shift</span>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: isShifted ? '#ef4444' : '#10B981', fontFamily: 'monospace' }}>
+                    {isShifted ? '⚠️ SHIFT DETECTED' : '✓ CONSISTENT'}
                   </span>
                 </div>
-                <div className="glass-panel" style={{ padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: '2px', borderLeft: '3px solid #3b82f6' }}>
-                  <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Compliance Pillar</span>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#3b82f6', fontFamily: 'monospace' }}>EXPLAINABLE AI</span>
+                <div className="glass-panel" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '4px', borderLeft: '3px solid #3b82f6', background: 'rgba(255,255,255,0.01)' }}>
+                  <span style={{ fontSize: '0.58rem', color: 'var(--text-muted)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '1px' }}>Pillar Focus</span>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#3b82f6', fontFamily: 'monospace' }}>EXPLAINABILITY / AUDIT</span>
                 </div>
               </div>
 
               {/* Columns Layout */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '20px', alignItems: 'start' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '24px', alignItems: 'start' }}>
                 
                 {/* Left Column: Spread Hero Infographic */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <span style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', letterSpacing: '1px' }}>Interpretation Spread Infographic</span>
+                  <span style={{ fontSize: '0.62rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', letterSpacing: '1px', fontWeight: 'bold' }}>Interpretation Spread Infographic</span>
                   <InterpretationSpreadHero
                     tensionTerm={incident.tensionTerm}
                     ambiguityScore={incident.ambiguityScore}
@@ -472,55 +459,55 @@ ${incident.perspectives.map(p => `* **${p.persona}:** "${p.text}"`).join('\n')}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   
                   {/* Governing Rule context */}
-                  <div style={{ background: '#121212', padding: '14px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ background: 'rgba(255,255,255,0.01)', padding: '14px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.04)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                      <span style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', letterSpacing: '0.5px' }}>Policy / Rule Focus</span>
-                      <span style={{ fontSize: '0.6rem', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: '4px', color: '#f5f5f5' }}>{incident.title}</span>
+                      <span style={{ fontSize: '0.58rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', letterSpacing: '0.5px' }}>Governing Policy Focus</span>
+                      <span style={{ fontSize: '0.58rem', background: 'rgba(255,255,255,0.04)', padding: '2px 6px', borderRadius: '4px', color: '#EAB308', fontFamily: 'monospace' }}>{incident.disputedTerm}</span>
                     </div>
-                    <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-primary)', lineHeight: 1.4 }}>
+                    <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-primary)', lineHeight: 1.45 }}>
                       {incident.lawInvolved}
                     </p>
                   </div>
 
                   {/* Decisions timeline */}
-                  <div style={{ background: '#121212', padding: '14px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <span style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', letterSpacing: '0.5px' }}>Human Decision Path</span>
+                  <div style={{ background: 'rgba(255,255,255,0.01)', padding: '14px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.04)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <span style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', letterSpacing: '0.5px' }}>Human Decision Pathway</span>
                     
                     <div style={{ display: 'flex', gap: '10px', position: 'relative' }}>
-                      <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)', position: 'absolute', left: '7px', top: '10px', bottom: '10px' }} />
+                      <div style={{ width: '1px', background: 'rgba(255,255,255,0.08)', position: 'absolute', left: '7px', top: '10px', bottom: '10px' }} />
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
                         <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                          <div style={{ width: '15px', height: '15px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: '1.5px solid #666', zIndex: 1, marginTop: '2px' }} />
+                          <div style={{ width: '15px', height: '15px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', border: '1.5px solid #555', zIndex: 1, marginTop: '2px' }} />
                           <div>
-                            <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', fontFamily: 'monospace' }}>Initial Intuitive Judgment</span>
-                            <span style={{ fontSize: '0.82rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{decision1}</span>
+                            <span style={{ fontSize: '0.58rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', fontFamily: 'monospace' }}>Initial Baseline Call</span>
+                            <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{decision1}</span>
                           </div>
                         </div>
                         <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
                           <div style={{ width: '15px', height: '15px', borderRadius: '50%', background: 'rgba(234,179,8,0.1)', border: '1.5px solid #EAB308', zIndex: 1, marginTop: '2px' }} />
                           <div>
-                            <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', fontFamily: 'monospace' }}>Reflective Post-Disclosure Judgment</span>
-                            <span style={{ fontSize: '0.82rem', fontWeight: 'bold', color: '#EAB308' }}>{decision2}</span>
+                            <span style={{ fontSize: '0.58rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', fontFamily: 'monospace' }}>Reflective Decision (Post-Disclosure)</span>
+                            <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#EAB308' }}>{decision2}</span>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <div style={{ background: 'rgba(255,255,255,0.02)', borderLeft: '3px solid #EAB308', padding: '8px 10px', borderRadius: '0 4px 4px 0', marginTop: '2px' }}>
-                      <span style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: '#EAB308', display: 'block', marginBottom: '2px', fontFamily: 'monospace' }}>Cognitive Shift Critique</span>
-                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontStyle: 'italic', lineHeight: 1.35 }}>"{getCritique()}"</span>
+                    <div style={{ background: 'rgba(255,255,255,0.02)', borderLeft: '3px solid #EAB308', padding: '8px 12px', borderRadius: '0 4px 4px 0', marginTop: '4px' }}>
+                      <span style={{ fontSize: '0.58rem', textTransform: 'uppercase', color: '#EAB308', display: 'block', marginBottom: '2px', fontFamily: 'monospace' }}>Shift Logic Critique</span>
+                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontStyle: 'italic', lineHeight: 1.4 }}>"{getCritique()}"</span>
                     </div>
                   </div>
 
-                  {/* Audit Metadata details */}
-                  <div style={{ background: '#121212', padding: '10px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+                  {/* System & Audit Provenance footer */}
+                  <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.04)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
                     <div>
-                      <span style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block' }}>Execution Mode</span>
-                      <span style={{ fontSize: '0.7rem', fontFamily: 'monospace', color: '#f5f5f5' }}>Greedy / Deterministic</span>
+                      <span style={{ fontSize: '0.58rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block' }}>Provenance Signature</span>
+                      <span style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: '#EAB308' }}>watsonx-granite-reproducible-greedy</span>
                     </div>
                     <div>
-                      <span style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block', textAlign: 'right' }}>Governance Status</span>
-                      <span style={{ fontSize: '0.7rem', fontFamily: 'monospace', color: '#10B981' }}>✓ Human-in-the-Loop</span>
+                      <span style={{ fontSize: '0.58rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block', textAlign: 'right' }}>Security Status</span>
+                      <span style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: '#10B981' }}>✓ Audit Verified</span>
                     </div>
                   </div>
 

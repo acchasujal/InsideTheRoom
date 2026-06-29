@@ -1,7 +1,8 @@
 .app-container {
-  max-width: 1200px;
+  max-width: 1440px;
+  width: 100%;
   margin: 0 auto;
-  padding: var(--space-8) var(--space-4);
+  padding: var(--space-2) var(--space-4);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,7 +13,7 @@
   width: 100%;
   display: flex;
   justify-content: flex-start;
-  margin-bottom: var(--space-12);
+  margin-bottom: var(--space-4);
 }
 
 .header h2 {
@@ -27,7 +28,7 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 800px;
+  max-width: 1360px;
 }
 
 .demo-panel {

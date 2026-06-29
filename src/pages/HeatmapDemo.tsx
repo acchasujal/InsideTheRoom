@@ -125,40 +125,7 @@ export const HeatmapDemo: React.FC = () => {
 
   return (
     <div style={{ background: '#0a0a0a', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Header */}
-      <header style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '16px 48px',
-        borderBottom: '1px solid rgba(255,255,255,0.05)',
-        background: '#0a0a0a',
-        position: 'sticky',
-        top: 0,
-        zIndex: 20
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <button
-            onClick={() => navigate('/')}
-            style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-muted)', padding: '6px 14px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.85rem' }}
-          >
-            ← Home
-          </button>
-          <span style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#f5f5f5' }}>
-            Inside the Room
-          </span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ fontSize: '0.72rem', fontFamily: 'monospace', color: '#EAB308', background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.2)', padding: '3px 8px', borderRadius: '3px' }}>
-            AMBIGUITY HEATMAP
-          </span>
-          <span style={{ fontSize: '0.72rem', fontFamily: 'monospace', color: 'var(--text-muted)' }}>
-            ibm/granite-13b-chat-v2
-          </span>
-        </div>
-      </header>
-
-      <main style={{ flex: 1, padding: '40px 48px', maxWidth: '1200px', margin: '0 auto', width: '100%', display: 'flex', flexDirection: 'column', gap: '32px' }}>
+      <main style={{ flex: 1, padding: '20px 48px', maxWidth: '1360px', margin: '0 auto', width: '100%', display: 'flex', flexDirection: 'column', gap: '32px' }}>
 
         {/* Hero Block */}
         <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center', paddingBottom: '8px' }}>

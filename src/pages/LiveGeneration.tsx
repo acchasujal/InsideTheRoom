@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { generateLivePerspectives, type LiveGenerationResponse, type GeneratedPerspective } from '../utils/mockApi';
 import { PerspectiveCard } from '../components/PerspectiveCard';
 import { InterpretationSpreadHero } from '../components/InterpretationSpreadHero';
@@ -81,7 +81,6 @@ type LiveStatus = 'IDLE' | 'GENERATING' | 'COMPLETE';
 type Mode = 'single' | 'sensitivity';
 
 export const LiveGeneration: React.FC = () => {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   
   const initialMode = searchParams.get('mode') === 'sensitivity' ? 'sensitivity' : 'single';
@@ -320,26 +319,19 @@ export const LiveGeneration: React.FC = () => {
 
   return (
     <div className="app-container" style={{ paddingBottom: '96px', background: '#0a0a0a', minHeight: '100vh', width: '100%' }}>
-      <header className="header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '16px', marginBottom: '32px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <button className="btn-ghost" style={{ padding: '8px 16px', fontSize: '0.9rem' }} onClick={() => navigate('/')}>
-            ← Home
-          </button>
-          <h2 style={{ margin: 0, fontSize: '1.25rem', letterSpacing: '1px', textTransform: 'uppercase' }}>Inside the Room</h2>
-        </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', padding: '8px var(--space-4)', background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '6px', marginBottom: '16px' }}>
+        <span style={{ fontSize: '0.72rem', fontFamily: 'monospace', color: 'var(--text-muted)' }}>
+          Mode: {mode === 'sensitivity' ? 'Framing Sensitivity Test' : 'Single Query Analysis'}
+        </span>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <span style={{ fontSize: '0.75rem', background: 'rgba(234, 179, 8, 0.1)', color: '#EAB308', border: '1px solid rgba(234,179,8,0.3)', padding: '4px 8px', borderRadius: '4px', fontFamily: 'monospace', fontWeight: 'bold' }}>
-            {metadata.modelId ? `Model: ${metadata.modelId}` : 'Model: Ready'}
-          </span>
           {selectedPresetId === 'compliance_data' ? (
-            <span className="badge-football" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.3)' }}>🏢 Compliance Governance</span>
+            <span className="badge-football" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.3)', margin: 0 }}>🏢 Compliance Governance</span>
           ) : (
-            <span className="badge-football">⚽ Football Governance</span>
+            <span className="badge-football" style={{ margin: 0 }}>⚽ Football Governance</span>
           )}
         </div>
-      </header>
-
-      <main className="main-content" style={{ width: '100%', maxWidth: '1000px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      </div>
+      <main className="main-content" style={{ width: '100%', maxWidth: '1280px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
         
         {/* Title */}
         <div style={{ textAlign: 'center', marginBottom: '12px' }}>
@@ -402,7 +394,7 @@ export const LiveGeneration: React.FC = () => {
             {/* Presets */}
             <div>
               <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block', marginBottom: '12px', letterSpacing: '1px' }}>
-                Select Reference Demo Preset
+                Select Demo Scenario
               </span>
               <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                 {PRESETS.map((p, idx) => {
@@ -411,7 +403,6 @@ export const LiveGeneration: React.FC = () => {
                     <button 
                       key={idx}
                       onClick={() => {
-                        if (mode !== 'sensitivity') setMode('sensitivity');
                         loadPreset(p);
                       }}
                       style={{
@@ -440,54 +431,46 @@ export const LiveGeneration: React.FC = () => {
               </div>
             </div>
 
-            {mode === 'single' ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <h3 style={{ margin: 0, color: 'var(--text-primary)', fontSize: '1rem' }}>Describe custom governance incident</h3>
+                <h4 style={{ margin: 0, color: '#EAB308', textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '1px', fontFamily: 'monospace' }}>
+                  1. Neutral Description Framing
+                </h4>
                 <textarea 
                   className="incident-input"
                   rows={4}
-                  placeholder="Describe the incident in detail..."
                   value={inputText}
-                  onChange={(e) => { setInputText(e.target.value); setSelectedPresetId(null); }}
+                  readOnly
+                  style={{ background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-muted)', cursor: 'not-allowed' }}
                 />
               </div>
-            ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <h4 style={{ margin: 0, color: '#EAB308', textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '1px', fontFamily: 'monospace' }}>
-                    1. Neutral Description Framing
-                  </h4>
-                  <textarea 
-                    className="incident-input"
-                    rows={4}
-                    placeholder="Enter neutral phrasing (e.g. objective facts)..."
-                    value={inputText}
-                    onChange={(e) => { setInputText(e.target.value); setSelectedPresetId(null); }}
-                  />
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <h4 style={{ margin: 0, color: '#ef4444', textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '1px', fontFamily: 'monospace' }}>
-                    2. Loaded Description Framing
-                  </h4>
-                  <textarea 
-                    className="incident-input"
-                    rows={4}
-                    placeholder="Enter loaded phrasing (e.g. biased terms)..."
-                    value={loadedText}
-                    onChange={(e) => { setLoadedText(e.target.value); setSelectedPresetId(null); }}
-                  />
-                </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <h4 style={{ margin: 0, color: '#ef4444', textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '1px', fontFamily: 'monospace' }}>
+                  2. Loaded Description Framing
+                </h4>
+                <textarea 
+                  className="incident-input"
+                  rows={4}
+                  value={loadedText}
+                  readOnly
+                  style={{ background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-muted)', cursor: 'not-allowed' }}
+                />
               </div>
-            )}
+            </div>
 
-            <button 
-              className="btn-primary" 
-              onClick={() => handleRun(false)} 
-              style={{ alignSelf: 'flex-end', padding: '10px 24px', border: '1px solid #EAB308', background: '#EAB308', color: '#000', fontWeight: 'bold', fontSize: '0.9rem' }}
-              disabled={!inputText.trim() || (mode === 'sensitivity' && !loadedText.trim())}
-            >
-              {mode === 'sensitivity' ? 'Run Framing Sensitivity Test →' : 'Run Single Inference'}
-            </button>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginTop: '12px' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'monospace' }}>
+                🔒 Pre-audited scenario loaded. Results are reproducible and cached.
+              </span>
+              <button 
+                className="btn-primary" 
+                onClick={() => handleRun(false)} 
+                style={{ padding: '10px 24px', border: '1px solid #EAB308', background: '#EAB308', color: '#000', fontWeight: 'bold', fontSize: '0.9rem' }}
+                disabled={!inputText.trim() || !loadedText.trim()}
+              >
+                Run Framing Sensitivity Test →
+              </button>
+            </div>
           </div>
         )}
 
@@ -659,20 +642,20 @@ export const LiveGeneration: React.FC = () => {
                         background: 'linear-gradient(90deg, #EAB308 0%, #EF4444 100%)',
                       }} />
                       <span style={{ fontSize: '0.6rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
-                        IBM Granite · Framing Sensitivity Analysis
+                        IBM Granite · Framing Sensitivity Audit
                       </span>
                       <h3 style={{ margin: '0 0 8px 0', color: '#EAB308', fontSize: '1.35rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', textShadow: '0 0 20px rgba(234,179,8,0.3)' }}>
-                        Same incident. Same rule. Different words. Different verdict.
+                        Framing Sensitivity Audit: Narrative Bias Shifts AI Decision Verdict
                       </h3>
                       <p style={{ margin: 0, fontSize: '0.88rem', lineHeight: '1.5', color: 'rgba(255,255,255,0.6)' }}>
-                        Word choice alone shifted how each AI persona reads the governing rule. The Interpretation Spread below quantifies the divergence.
+                        Variances in semantic input structure alter model interpretation metrics for the identical governing regulation. Results below quantify the framing delta.
                       </p>
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '20px' }}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                         <h4 style={{ color: '#EAB308', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '1px', fontFamily: 'monospace', margin: 0, textAlign: 'center' }}>
-                          Neutral Framing Spread
+                          Baseline Framing Interpretation Spread
                         </h4>
                         <InterpretationSpreadHero
                           tensionTerm={sensitivityResult.neutral.tensionTerm || "discretion"}
@@ -688,7 +671,7 @@ export const LiveGeneration: React.FC = () => {
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                         <h4 style={{ color: '#ef4444', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '1px', fontFamily: 'monospace', margin: 0, textAlign: 'center' }}>
-                          Loaded Framing Spread
+                          Adversarial Framing Interpretation Spread
                         </h4>
                         <InterpretationSpreadHero
                           tensionTerm={sensitivityResult.loaded.tensionTerm || "discretion"}
@@ -706,7 +689,7 @@ export const LiveGeneration: React.FC = () => {
 
                     <div style={{ background: '#121212', padding: '16px 20px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
                       <strong style={{ color: '#EAB308', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '6px', fontFamily: 'monospace' }}>
-                        Retrieved Governing Rule Context
+                        Governing Policy / Regulatory Reference
                       </strong>
                       <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: '1.5' }}>
                         {sensitivityResult.neutral.retrievedLaw}
@@ -753,7 +736,7 @@ export const LiveGeneration: React.FC = () => {
                               </span>
                               {isDivergent && (
                                 <span className="divergence-pill">
-                                  ⚠️ Verdict Shifted
+                                  ⚠️ Variance Detected
                                 </span>
                               )}
                             </div>
@@ -771,7 +754,7 @@ export const LiveGeneration: React.FC = () => {
                                 letterSpacing: '0.5px',
                                 textTransform: 'uppercase',
                               }}>
-                                🔀 FRAMING CHANGED THE VERDICT — Same incident. Same rule. Different outcome.
+                                🔀 NARRATIVE FRAME DRIFT — Model interpretation output shifted under subjective phrasing.
                               </div>
                             )}
 
@@ -940,7 +923,7 @@ export const LiveGeneration: React.FC = () => {
             )}
 
             <button className="btn-ghost" onClick={resetToIdle} style={{ marginTop: '16px', marginInline: 'auto', display: 'block', padding: '10px 20px', fontSize: '0.85rem' }}>
-              Run Another Incident Test
+              Test Another Demo Scenario
             </button>
           </div>
         )}
