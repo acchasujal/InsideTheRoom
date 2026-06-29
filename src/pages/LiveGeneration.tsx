@@ -580,11 +580,20 @@ export const LiveGeneration: React.FC = () => {
                       </div>
                     </div>
 
-                    <div style={{ background: '#121212', padding: '16px 20px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                      <strong style={{ color: '#EAB308', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '6px', fontFamily: 'monospace' }}>
+                    <div style={{ 
+                      background: '#121212', 
+                      padding: '20px 28px', 
+                      borderRadius: '8px', 
+                      border: '1px solid rgba(255,255,255,0.06)',
+                      textAlign: 'center',
+                      maxWidth: '800px',
+                      margin: '0 auto 16px auto',
+                      width: '100%'
+                    }}>
+                      <strong style={{ color: '#EAB308', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1.5px', display: 'block', marginBottom: '8px', fontFamily: 'monospace' }}>
                         Governing Policy / Regulatory Reference
                       </strong>
-                      <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: '1.5' }}>
+                      <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-primary)', lineHeight: '1.6', maxWidth: '700px', marginInline: 'auto' }}>
                         {sensitivityResult.neutral.retrievedLaw}
                       </p>
                     </div>
@@ -634,6 +643,9 @@ export const LiveGeneration: React.FC = () => {
                         })();
 
                         const verdictChanged = getVerdictLabel(s1) !== getVerdictLabel(s2);
+                        const confidenceShift = !verdictChanged && (s1 !== s2);
+                        const interpretationShift = !verdictChanged && !confidenceShift && isDivergent;
+                        const shiftType = verdictChanged ? 'verdict' : confidenceShift ? 'confidence' : interpretationShift ? 'interpretation' : undefined;
 
                         return (
                           <div 
@@ -650,10 +662,10 @@ export const LiveGeneration: React.FC = () => {
                           >
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '10px' }}>
                               <span style={{ fontSize: '0.92rem', fontWeight: 800, color: '#EAB308', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-                                {personaName === 'Fan' && '🎯 Purposive Reading'}
-                                {personaName === 'Referee' && '⚖️ Contextual Reading'}
-                                {personaName === 'VAR' && '⚙️ Procedural Reading'}
-                                {personaName === 'Rulebook' && '📖 Strict Constructionist'}
+                                {personaName === 'Fan' && '🎯 Purposive Reading (Human Intent Lens)'}
+                                {personaName === 'Referee' && '⚖️ Contextual Reading (Context Lens)'}
+                                {personaName === 'VAR' && '⚙️ Procedural Reading (Process Lens)'}
+                                {personaName === 'Rulebook' && '📖 Strict Constructionist (Literal Rule Lens)'}
                               </span>
                               {isDivergent && (
                                 <span className="divergence-pill" style={{ background: 'rgba(234,179,8,0.1)', color: '#EAB308', border: '1px solid rgba(234,179,8,0.3)', fontSize: '0.72rem', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold' }}>
@@ -677,9 +689,9 @@ export const LiveGeneration: React.FC = () => {
                             )}
 
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-                              <div>
-                                <div style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '8px', paddingLeft: '4px' }}>
-                                  [ Baseline Interpretation ]
+                              <div style={{ borderTop: '2px solid rgba(16, 185, 129, 0.25)', paddingTop: '10px' }}>
+                                <div style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: '#10B981', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '8px', paddingLeft: '4px', fontWeight: 700 }}>
+                                  ● [ Baseline Interpretation ]
                                 </div>
                                 <PerspectiveCard 
                                   persona={personaName}
@@ -689,16 +701,16 @@ export const LiveGeneration: React.FC = () => {
                                   strength={s1}
                                 />
                               </div>
-                              <div>
-                                <div style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: '#ef4444', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '8px', paddingLeft: '4px', fontWeight: 600 }}>
-                                  [ Adversarial Interpretation ]
+                              <div style={{ borderTop: '2px solid rgba(239, 68, 68, 0.25)', paddingTop: '10px' }}>
+                                <div style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: '#ef4444', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '8px', paddingLeft: '4px', fontWeight: 700 }}>
+                                  ● [ Adversarial Interpretation ]
                                 </div>
                                 <PerspectiveCard 
                                   persona={personaName}
                                   text={loadedPersp.text}
                                   colorTheme={theme}
                                   isGovernance={true}
-                                  verdictChanged={verdictChanged}
+                                  shiftType={shiftType}
                                   strength={s2}
                                 />
                               </div>

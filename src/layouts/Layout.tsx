@@ -11,6 +11,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const { id } = useParams<{ id: string }>();
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isJourneyOpen, setIsJourneyOpen] = useState(false);
 
   // Get active incident title if on incident page
   const activeIncident = id ? incidentsData.find(inc => inc.id === id) : null;
@@ -84,69 +85,98 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       { num: 1, label: 'Framing Test', path: '/live' },
       { num: 2, label: 'Knowledge Graph', path: '/heatmap' },
       { num: 3, label: 'Incident Review', path: '/incident/perisic' },
-      { num: 4, label: 'Governance Summary', path: '/live?show_diagnostics=true' }
+      { num: 4, label: 'Governance Report', path: '/live?show_diagnostics=true' }
     ];
+
+    const activeStepObj = steps.find(s => s.num === activeStep);
 
     return (
       <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '4px',
-        padding: '12px 24px',
-        background: 'rgba(255, 255, 255, 0.01)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
+        maxWidth: '1280px',
         width: '100%',
         margin: '0 auto 12px auto',
-        flexWrap: 'wrap',
-        maxWidth: '1280px'
+        padding: '0 24px',
+        alignSelf: 'center'
       }}>
-        {steps.map((step, idx) => {
-          const isActive = activeStep === step.num;
-          const isCompleted = activeStep > step.num;
-          return (
-            <React.Fragment key={step.num}>
-              {idx > 0 && (
-                <div style={{ 
-                  height: '1px', 
-                  width: '24px', 
-                  background: isCompleted ? '#10B981' : 'rgba(255,255,255,0.06)',
-                  margin: '0 8px' 
-                }} />
-              )}
-              <Link 
-                to={step.path}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  textDecoration: 'none',
-                  color: isActive ? '#EAB308' : isCompleted ? '#10B981' : 'var(--text-muted)',
-                  fontSize: '0.78rem',
-                  fontWeight: isActive ? 700 : 500,
-                  fontFamily: 'monospace',
-                  transition: 'all 0.2s'
-                }}
-              >
-                <span style={{
-                  width: '18px',
-                  height: '18px',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: `1.5px solid ${isActive ? '#EAB308' : isCompleted ? '#10B981' : 'rgba(255,255,255,0.15)'}`,
-                  background: isActive ? 'rgba(234,179,8,0.1)' : isCompleted ? 'rgba(16,185,129,0.1)' : 'transparent',
-                  fontSize: '0.68rem',
-                  fontWeight: 'bold'
-                }}>
-                  {isCompleted ? '✓' : step.num}
-                </span>
-                {step.label}
-              </Link>
-            </React.Fragment>
-          );
-        })}
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.02)',
+          border: '1px solid rgba(255, 255, 255, 0.05)',
+          borderRadius: '6px',
+          padding: '8px 12px',
+          transition: 'all 0.2s ease',
+          overflow: 'hidden'
+        }}>
+          <div 
+            onClick={() => setIsJourneyOpen(!isJourneyOpen)}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              cursor: 'pointer',
+              userSelect: 'none'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '0.72rem', fontFamily: 'monospace', color: '#EAB308', fontWeight: 700, letterSpacing: '0.5px' }}>
+                🧭 HOW TO EXPLORE
+              </span>
+              <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
+                (Active: Step {activeStep} — {activeStepObj?.label || 'Overview'} · ≈2 min)
+              </span>
+            </div>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
+              {isJourneyOpen ? '[ Collapse - ]' : '[ Expand + ]'}
+            </span>
+          </div>
+
+          {isJourneyOpen && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              gap: '12px',
+              marginTop: '10px',
+              paddingTop: '10px',
+              borderTop: '1px solid rgba(255, 255, 255, 0.04)',
+              flexWrap: 'wrap'
+            }}>
+              {steps.map((step, idx) => {
+                const isActive = activeStep === step.num;
+                const isCompleted = activeStep > step.num;
+                return (
+                  <React.Fragment key={step.num}>
+                    {idx > 0 && (
+                      <span style={{ color: 'rgba(255,255,255,0.1)', fontSize: '0.7rem' }}>→</span>
+                    )}
+                    <Link 
+                      to={step.path}
+                      onClick={() => setIsJourneyOpen(false)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        textDecoration: 'none',
+                        color: isActive ? '#EAB308' : isCompleted ? '#10B981' : 'var(--text-muted)',
+                        fontSize: '0.75rem',
+                        fontWeight: isActive ? 700 : 500,
+                        fontFamily: 'monospace',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      <span>
+                        {step.num === 1 && '①'}
+                        {step.num === 2 && '②'}
+                        {step.num === 3 && '③'}
+                        {step.num === 4 && '④'}
+                      </span>
+                      {step.label}
+                    </Link>
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
     );
   };

@@ -327,7 +327,7 @@ export const AmbiguityHeatmap: React.FC<AmbiguityHeatmapProps> = ({
         <div className="heatmap-sidebar-label">
           <span>AMBIGUITY INDEX</span>
           <span style={{ fontSize: '0.62rem', color: '#EAB308', margin: '4px 0 2px 0', display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'monospace', fontWeight: 600 }}>
-            🖱️ Click term to explore spread
+            🖱️ Select an ambiguity term to inspect its interpretation profile.
           </span>
           <span className="heatmap-sidebar-sub">5 undefined terms · 5 incidents</span>
         </div>

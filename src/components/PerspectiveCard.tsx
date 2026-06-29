@@ -7,10 +7,10 @@ interface PerspectiveCardProps {
   colorTheme?: 'referee' | 'fan' | 'var' | 'rulebook';
   strength?: number;
   isGovernance?: boolean;
-  verdictChanged?: boolean;
+  shiftType?: 'verdict' | 'confidence' | 'interpretation';
 }
 
-export const PerspectiveCard: React.FC<PerspectiveCardProps> = ({ persona, text, colorTheme, strength, isGovernance, verdictChanged }) => {
+export const PerspectiveCard: React.FC<PerspectiveCardProps> = ({ persona, text, colorTheme, strength, isGovernance, shiftType }) => {
   const lowerPersona = persona.toLowerCase();
   let displayName = persona.split('—')[0].split('-')[0].trim();
   let subLabel = "Reading";
@@ -18,16 +18,16 @@ export const PerspectiveCard: React.FC<PerspectiveCardProps> = ({ persona, text,
   if (isGovernance) {
     if (lowerPersona.includes('fan') || lowerPersona.includes('purposive')) {
       displayName = "Purposive Reading";
-      subLabel = "Intent-Based Interpretations";
+      subLabel = "Human Intent Lens";
     } else if (lowerPersona.includes('referee') || lowerPersona.includes('contextual')) {
       displayName = "Contextual Reading";
-      subLabel = "Textual & Contextual Facts";
+      subLabel = "Context Lens";
     } else if (lowerPersona.includes('var') || lowerPersona.includes('procedural')) {
       displayName = "Procedural Reading";
-      subLabel = "Process & Severity Thresholds";
+      subLabel = "Process Lens";
     } else if (lowerPersona.includes('rulebook') || lowerPersona.includes('strict')) {
       displayName = "Strict Constructionist";
-      subLabel = "Literal Word Construction";
+      subLabel = "Literal Rule Lens";
     }
   } else {
     if (lowerPersona.includes('fan')) {
@@ -138,7 +138,7 @@ export const PerspectiveCard: React.FC<PerspectiveCardProps> = ({ persona, text,
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          {verdictChanged && (
+          {shiftType === 'verdict' && (
             <span style={{
               fontSize: '0.6rem',
               fontWeight: 800,
@@ -152,7 +152,41 @@ export const PerspectiveCard: React.FC<PerspectiveCardProps> = ({ persona, text,
               fontFamily: 'monospace',
               display: 'inline-block'
             }}>
-              ⚠️ Verdict Shift
+              ⚠️ Verdict Changed
+            </span>
+          )}
+          {shiftType === 'confidence' && (
+            <span style={{
+              fontSize: '0.6rem',
+              fontWeight: 800,
+              background: 'rgba(234, 179, 8, 0.1)',
+              color: '#EAB308',
+              border: '1.5px solid #EAB308',
+              padding: '2px 6px',
+              borderRadius: '4px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              fontFamily: 'monospace',
+              display: 'inline-block'
+            }}>
+              🔄 Confidence Shift
+            </span>
+          )}
+          {shiftType === 'interpretation' && (
+            <span style={{
+              fontSize: '0.6rem',
+              fontWeight: 800,
+              background: 'rgba(59, 130, 246, 0.1)',
+              color: '#3B82F6',
+              border: '1.5px solid #3B82F6',
+              padding: '2px 6px',
+              borderRadius: '4px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              fontFamily: 'monospace',
+              display: 'inline-block'
+            }}>
+              🔀 Interpretation Shift
             </span>
           )}
           <div className={`verdict-badge ${verdict.className}`}>
