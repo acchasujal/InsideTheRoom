@@ -343,11 +343,11 @@ export const LiveGeneration: React.FC = () => {
           <div className="live-input-section fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             
             {/* Presets */}
-            <div>
-              <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block', marginBottom: '12px', letterSpacing: '1px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+              <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'monospace', display: 'block', marginBottom: '12px', letterSpacing: '1px', textAlign: 'center' }}>
                 Select Demo Scenario
               </span>
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
                 {PRESETS.map((p, idx) => {
                     const isActive = selectedPresetId === p.id;
                     return (
@@ -589,7 +589,7 @@ export const LiveGeneration: React.FC = () => {
                       </p>
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                       {["Fan", "Referee", "VAR", "Rulebook"].map((personaName) => {
                         const neutralPersp = sensitivityResult.neutral.perspectives.find((p: GeneratedPerspective) => p.persona.toLowerCase().includes(personaName.toLowerCase())) || { text: "" };
                         const loadedPersp = sensitivityResult.loaded.perspectives.find((p: GeneratedPerspective) => p.persona.toLowerCase().includes(personaName.toLowerCase())) || { text: "" };
@@ -607,6 +607,34 @@ export const LiveGeneration: React.FC = () => {
                         if (personaName === 'VAR') theme = 'var';
                         if (personaName === 'Rulebook') theme = 'rulebook';
 
+                        const getVerdictLabel = (strength: number) => {
+                          if (strength >= 70) return 'VIOLATION';
+                          if (strength <= 35) return 'COMPLIANT';
+                          return 'WARNING';
+                        };
+
+                        const s1 = (() => {
+                          const spread = sensitivityResult.neutral.interpretationSpread;
+                          if (!spread) return 50;
+                          if (personaName === 'Fan') return spread.purposive;
+                          if (personaName === 'Referee') return spread.contextual;
+                          if (personaName === 'VAR') return spread.procedural;
+                          if (personaName === 'Rulebook') return spread.strict;
+                          return 50;
+                        })();
+
+                        const s2 = (() => {
+                          const spread = sensitivityResult.loaded.interpretationSpread;
+                          if (!spread) return 50;
+                          if (personaName === 'Fan') return spread.purposive;
+                          if (personaName === 'Referee') return spread.contextual;
+                          if (personaName === 'VAR') return spread.procedural;
+                          if (personaName === 'Rulebook') return spread.strict;
+                          return 50;
+                        })();
+
+                        const verdictChanged = getVerdictLabel(s1) !== getVerdictLabel(s2);
+
                         return (
                           <div 
                             key={personaName} 
@@ -614,72 +642,66 @@ export const LiveGeneration: React.FC = () => {
                               border: isDivergent ? '1.5px solid rgba(234, 179, 8, 0.35)' : '1px solid rgba(255,255,255,0.04)',
                               background: isDivergent ? 'rgba(234, 179, 8, 0.02)' : 'transparent',
                               borderRadius: '8px',
-                              padding: '16px',
+                              padding: '20px',
                               display: 'flex',
                               flexDirection: 'column',
-                              gap: '12px'
+                              gap: '16px'
                             }}
                           >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px' }}>
-                              <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#f5f5f5', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                {personaName === 'Fan' && '📢 Fan'}
-                                {personaName === 'Referee' && '🏃 Referee'}
-                                {personaName === 'VAR' && '🖥️ VAR'}
-                                {personaName === 'Rulebook' && '📖 Rulebook'}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '10px' }}>
+                              <span style={{ fontSize: '0.92rem', fontWeight: 800, color: '#EAB308', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'monospace', letterSpacing: '0.5px' }}>
+                                {personaName === 'Fan' && '🎯 Purposive Reading'}
+                                {personaName === 'Referee' && '⚖️ Contextual Reading'}
+                                {personaName === 'VAR' && '⚙️ Procedural Reading'}
+                                {personaName === 'Rulebook' && '📖 Strict Constructionist'}
                               </span>
                               {isDivergent && (
-                                <span className="divergence-pill">
+                                <span className="divergence-pill" style={{ background: 'rgba(234,179,8,0.1)', color: '#EAB308', border: '1px solid rgba(234,179,8,0.3)', fontSize: '0.72rem', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold' }}>
                                   ⚠️ Variance Detected
                                 </span>
                               )}
                             </div>
                             {isDivergent && (
                               <div style={{
-                                background: 'linear-gradient(90deg, rgba(239,68,68,0.12) 0%, rgba(234,179,8,0.12) 100%)',
-                                border: '1px solid rgba(234,179,8,0.4)',
+                                background: 'linear-gradient(90deg, rgba(239,68,68,0.1) 0%, rgba(234,179,8,0.08) 100%)',
+                                border: '1px solid rgba(234,179,8,0.3)',
                                 borderLeft: '3px solid #EF4444',
                                 borderRadius: '4px',
-                                padding: '6px 12px',
-                                fontSize: '0.75rem',
-                                color: '#EAB308',
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                letterSpacing: '0.5px',
-                                textTransform: 'uppercase',
+                                padding: '8px 14px',
+                                fontSize: '0.78rem',
+                                color: '#f5f5f5',
+                                lineHeight: '1.4'
                               }}>
-                                🔀 NARRATIVE FRAME DRIFT — Model interpretation output shifted under subjective phrasing.
+                                <strong style={{ color: '#EAB308' }}>Narrative Frame Drift:</strong> Model interpretation output shifted under subjective phrasing.
                               </div>
                             )}
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                              <PerspectiveCard 
-                                persona={personaName}
-                                text={neutralPersp.text}
-                                colorTheme={theme}
-                                strength={(() => {
-                                  const spread = sensitivityResult.neutral.interpretationSpread;
-                                  if (!spread) return undefined;
-                                  if (personaName === 'Fan') return spread.purposive;
-                                  if (personaName === 'Referee') return spread.contextual;
-                                  if (personaName === 'VAR') return spread.procedural;
-                                  if (personaName === 'Rulebook') return spread.strict;
-                                  return undefined;
-                                })()}
-                              />
-                              <PerspectiveCard 
-                                persona={personaName}
-                                text={loadedPersp.text}
-                                colorTheme={theme}
-                                strength={(() => {
-                                  const spread = sensitivityResult.loaded.interpretationSpread;
-                                  if (!spread) return undefined;
-                                  if (personaName === 'Fan') return spread.purposive;
-                                  if (personaName === 'Referee') return spread.contextual;
-                                  if (personaName === 'VAR') return spread.procedural;
-                                  if (personaName === 'Rulebook') return spread.strict;
-                                  return undefined;
-                                })()}
-                              />
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+                              <div>
+                                <div style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '8px', paddingLeft: '4px' }}>
+                                  [ Baseline Interpretation ]
+                                </div>
+                                <PerspectiveCard 
+                                  persona={personaName}
+                                  text={neutralPersp.text}
+                                  colorTheme={theme}
+                                  isGovernance={true}
+                                  strength={s1}
+                                />
+                              </div>
+                              <div>
+                                <div style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: '#ef4444', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '8px', paddingLeft: '4px', fontWeight: 600 }}>
+                                  [ Adversarial Interpretation ]
+                                </div>
+                                <PerspectiveCard 
+                                  persona={personaName}
+                                  text={loadedPersp.text}
+                                  colorTheme={theme}
+                                  isGovernance={true}
+                                  verdictChanged={verdictChanged}
+                                  strength={s2}
+                                />
+                              </div>
                             </div>
                           </div>
                         );

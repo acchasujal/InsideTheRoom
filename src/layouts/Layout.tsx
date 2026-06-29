@@ -66,6 +66,91 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     );
   };
 
+  // Step indicator matching current path
+  const renderProgressIndicator = () => {
+    if (isHome) return null;
+
+    let activeStep = 0;
+    if (isLive) {
+      const showDiag = new URLSearchParams(location.search).get('show_diagnostics') === 'true';
+      activeStep = showDiag ? 4 : 1;
+    } else if (isHeatmap) {
+      activeStep = 2;
+    } else if (isIncident) {
+      activeStep = 3;
+    }
+
+    const steps = [
+      { num: 1, label: 'Framing Test', path: '/live' },
+      { num: 2, label: 'Knowledge Graph', path: '/heatmap' },
+      { num: 3, label: 'Incident Review', path: '/incident/perisic' },
+      { num: 4, label: 'Governance Summary', path: '/live?show_diagnostics=true' }
+    ];
+
+    return (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '4px',
+        padding: '12px 24px',
+        background: 'rgba(255, 255, 255, 0.01)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
+        width: '100%',
+        margin: '0 auto 12px auto',
+        flexWrap: 'wrap',
+        maxWidth: '1280px'
+      }}>
+        {steps.map((step, idx) => {
+          const isActive = activeStep === step.num;
+          const isCompleted = activeStep > step.num;
+          return (
+            <React.Fragment key={step.num}>
+              {idx > 0 && (
+                <div style={{ 
+                  height: '1px', 
+                  width: '24px', 
+                  background: isCompleted ? '#10B981' : 'rgba(255,255,255,0.06)',
+                  margin: '0 8px' 
+                }} />
+              )}
+              <Link 
+                to={step.path}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  textDecoration: 'none',
+                  color: isActive ? '#EAB308' : isCompleted ? '#10B981' : 'var(--text-muted)',
+                  fontSize: '0.78rem',
+                  fontWeight: isActive ? 700 : 500,
+                  fontFamily: 'monospace',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <span style={{
+                  width: '18px',
+                  height: '18px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: `1.5px solid ${isActive ? '#EAB308' : isCompleted ? '#10B981' : 'rgba(255,255,255,0.15)'}`,
+                  background: isActive ? 'rgba(234,179,8,0.1)' : isCompleted ? 'rgba(16,185,129,0.1)' : 'transparent',
+                  fontSize: '0.68rem',
+                  fontWeight: 'bold'
+                }}>
+                  {isCompleted ? '✓' : step.num}
+                </span>
+                {step.label}
+              </Link>
+            </React.Fragment>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <div style={{ background: '#0a0a0a', minHeight: '100vh', display: 'flex', flexDirection: 'column', width: '100%' }}>
       {/* Persistent Navigation Header */}
@@ -197,8 +282,11 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       </header>
 
       {/* Main Layout Area */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%', padding: '16px 0 0 0' }}>
-        {renderBreadcrumbs()}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%', padding: '0 0 0 0' }}>
+        {renderProgressIndicator()}
+        <div style={{ padding: '16px 24px 0 24px', maxWidth: '1280px', width: '100%', alignSelf: 'center' }}>
+          {renderBreadcrumbs()}
+        </div>
         <div className="fade-in" style={{ width: '100%', flex: 1 }}>
           {children}
         </div>

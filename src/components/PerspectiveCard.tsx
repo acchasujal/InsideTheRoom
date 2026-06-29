@@ -6,30 +6,58 @@ interface PerspectiveCardProps {
   text: string;
   colorTheme?: 'referee' | 'fan' | 'var' | 'rulebook';
   strength?: number;
+  isGovernance?: boolean;
+  verdictChanged?: boolean;
 }
 
-export const PerspectiveCard: React.FC<PerspectiveCardProps> = ({ persona, text, colorTheme, strength }) => {
+export const PerspectiveCard: React.FC<PerspectiveCardProps> = ({ persona, text, colorTheme, strength, isGovernance, verdictChanged }) => {
   const lowerPersona = persona.toLowerCase();
   let displayName = persona.split('—')[0].split('-')[0].trim();
   let subLabel = "Reading";
 
-  if (lowerPersona.includes('fan')) {
-    displayName = "Fan";
-    subLabel = "Purposive / Intent-Based";
-  } else if (lowerPersona.includes('referee')) {
-    displayName = "Referee";
-    subLabel = "Contextual / Textualist";
-  } else if (lowerPersona.includes('var')) {
-    displayName = "VAR";
-    subLabel = "Procedural-Threshold";
-  } else if (lowerPersona.includes('rulebook')) {
-    displayName = "Rulebook";
-    subLabel = "Strict Constructionist";
+  if (isGovernance) {
+    if (lowerPersona.includes('fan') || lowerPersona.includes('purposive')) {
+      displayName = "Purposive Reading";
+      subLabel = "Intent-Based Interpretations";
+    } else if (lowerPersona.includes('referee') || lowerPersona.includes('contextual')) {
+      displayName = "Contextual Reading";
+      subLabel = "Textual & Contextual Facts";
+    } else if (lowerPersona.includes('var') || lowerPersona.includes('procedural')) {
+      displayName = "Procedural Reading";
+      subLabel = "Process & Severity Thresholds";
+    } else if (lowerPersona.includes('rulebook') || lowerPersona.includes('strict')) {
+      displayName = "Strict Constructionist";
+      subLabel = "Literal Word Construction";
+    }
+  } else {
+    if (lowerPersona.includes('fan')) {
+      displayName = "Fan";
+      subLabel = "Purposive / Intent-Based";
+    } else if (lowerPersona.includes('referee')) {
+      displayName = "Referee";
+      subLabel = "Contextual / Textualist";
+    } else if (lowerPersona.includes('var')) {
+      displayName = "VAR";
+      subLabel = "Procedural-Threshold";
+    } else if (lowerPersona.includes('rulebook')) {
+      displayName = "Rulebook";
+      subLabel = "Strict Constructionist";
+    }
   }
+
+  // Choose Icon SVG type based on persona name
+  const getIconType = () => {
+    const lower = persona.toLowerCase();
+    if (lower.includes('fan') || lower.includes('purposive')) return 'fan';
+    if (lower.includes('referee') || lower.includes('contextual')) return 'referee';
+    if (lower.includes('var') || lower.includes('procedural')) return 'var';
+    if (lower.includes('rulebook') || lower.includes('strict')) return 'rulebook';
+    return lower;
+  };
 
   // Choose Icon SVG
   const renderIcon = () => {
-    switch (displayName.toLowerCase()) {
+    switch (getIconType()) {
       case 'fan':
         return (
           <svg className="card-icon icon-fan" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -109,8 +137,27 @@ export const PerspectiveCard: React.FC<PerspectiveCardProps> = ({ persona, text,
             <span className="reading-type">{subLabel}</span>
           </div>
         </div>
-        <div className={`verdict-badge ${verdict.className}`}>
-          {verdict.label}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {verdictChanged && (
+            <span style={{
+              fontSize: '0.6rem',
+              fontWeight: 800,
+              background: 'rgba(239, 68, 68, 0.1)',
+              color: '#EF4444',
+              border: '1.5px solid #EF4444',
+              padding: '2px 6px',
+              borderRadius: '4px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              fontFamily: 'monospace',
+              display: 'inline-block'
+            }}>
+              ⚠️ Verdict Shift
+            </span>
+          )}
+          <div className={`verdict-badge ${verdict.className}`}>
+            {verdict.label}
+          </div>
         </div>
       </div>
 

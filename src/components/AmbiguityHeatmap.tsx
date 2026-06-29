@@ -326,6 +326,9 @@ export const AmbiguityHeatmap: React.FC<AmbiguityHeatmapProps> = ({
       <div className="heatmap-sidebar">
         <div className="heatmap-sidebar-label">
           <span>AMBIGUITY INDEX</span>
+          <span style={{ fontSize: '0.62rem', color: '#EAB308', margin: '4px 0 2px 0', display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'monospace', fontWeight: 600 }}>
+            🖱️ Click term to explore spread
+          </span>
           <span className="heatmap-sidebar-sub">5 undefined terms · 5 incidents</span>
         </div>
         <div className="heatmap-term-list">
@@ -335,9 +338,21 @@ export const AmbiguityHeatmap: React.FC<AmbiguityHeatmapProps> = ({
               className={`heatmap-term-row ${selectedTerm?.incidentId === t.incidentId ? 'active' : ''}`}
               onClick={() => handleSelect(t)}
             >
-              <div className="heatmap-term-row-left">
-                <span className="heatmap-term-word">"{t.term}"</span>
-                <span className="heatmap-term-incident">{t.incidentTitle}</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: '4px' }}>
+                <div className="heatmap-term-row-left">
+                  <span className="heatmap-term-word">"{t.term}"</span>
+                  <span className="heatmap-term-incident">{t.incidentTitle}</span>
+                </div>
+                <span style={{ 
+                  color: selectedTerm?.incidentId === t.incidentId ? '#EAB308' : 'var(--text-muted)', 
+                  fontSize: '0.9rem', 
+                  fontFamily: 'monospace',
+                  transition: 'transform 0.2s',
+                  transform: selectedTerm?.incidentId === t.incidentId ? 'translateX(2px)' : 'none',
+                  marginLeft: '8px'
+                }}>
+                  {selectedTerm?.incidentId === t.incidentId ? '●' : '›'}
+                </span>
               </div>
               <div className="heatmap-score-bar-wrap">
                 <div

@@ -64,19 +64,22 @@
   background: transparent;
   border: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-left: 3px solid transparent;
   cursor: pointer;
   text-align: left;
-  transition: background 0.18s ease;
+  transition: all 0.2s ease;
 }
 
 .heatmap-term-row:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(234, 179, 8, 0.02);
+  border-left-color: rgba(234, 179, 8, 0.3);
+  padding-left: 20px;
 }
 
 .heatmap-term-row.active {
   background: rgba(234, 179, 8, 0.05);
-  border-left: 3px solid #EAB308;
-  padding-left: 17px;
+  border-left-color: #EAB308;
+  padding-left: 20px;
 }
 
 .heatmap-term-row-left {
