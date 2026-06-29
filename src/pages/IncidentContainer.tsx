@@ -101,6 +101,7 @@ export const IncidentContainer: React.FC = () => {
   const handleDecision2 = (decision: string) => {
     setDecision2(decision);
     setStep('COMPARISON');
+    localStorage.setItem('checklist_incident_review', 'true');
   };
 
   const handleNextIncident = () => {

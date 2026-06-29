@@ -109,6 +109,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         <nav style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           <Link 
             to="/" 
+            title="Return to the dashboard home page."
             style={{ 
               fontSize: '0.8rem', 
               textDecoration: 'none', 
@@ -123,6 +124,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           </Link>
           <Link 
             to="/live" 
+            title="Analyze how word framing changes model decisions."
             style={{ 
               fontSize: '0.8rem', 
               textDecoration: 'none', 
@@ -135,8 +137,39 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           >
             Framing Test
           </Link>
+          <Link 
+            to="/heatmap" 
+            title="Explore undefined terms, ambiguity hotspots and interpretation spread."
+            style={{ 
+              fontSize: '0.8rem', 
+              textDecoration: 'none', 
+              color: isHeatmap ? '#EAB308' : 'var(--text-muted)', 
+              fontWeight: isHeatmap ? 700 : 500,
+              fontFamily: 'monospace',
+              letterSpacing: '0.5px',
+              transition: 'color 0.2s'
+            }}
+          >
+            Knowledge Graph
+          </Link>
+          <Link 
+            to={id ? `/incident/${id}` : "/incident/perisic"} 
+            title="Walk through historic World Cup controversies using Granite reasoning."
+            style={{ 
+              fontSize: '0.8rem', 
+              textDecoration: 'none', 
+              color: isIncident ? '#EAB308' : 'var(--text-muted)', 
+              fontWeight: isIncident ? 700 : 500,
+              fontFamily: 'monospace',
+              letterSpacing: '0.5px',
+              transition: 'color 0.2s'
+            }}
+          >
+            Incident Review
+          </Link>
           <button 
             onClick={() => setIsAboutOpen(true)}
+            title="Learn about Inside the Room and its alignment with IBM watsonx.governance."
             style={{ 
               background: 'transparent',
               border: 'none',

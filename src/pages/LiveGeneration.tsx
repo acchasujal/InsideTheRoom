@@ -96,6 +96,22 @@ export const LiveGeneration: React.FC = () => {
   // Results
   const [sensitivityResult, setSensitivityResult] = useState<{ neutral: LiveGenerationResponse; loaded: LiveGenerationResponse } | null>(null);
 
+  React.useEffect(() => {
+    const showDiagnostics = new URLSearchParams(window.location.search).get('show_diagnostics') === 'true';
+    if (showDiagnostics) {
+      localStorage.setItem('checklist_governance_diagnostics', 'true');
+      // Scroll to diagnostics section after render
+      setTimeout(() => {
+        const diagElement = document.getElementById('governance-diagnostics-panel');
+        if (diagElement) {
+          diagElement.scrollIntoView({ behavior: 'smooth' });
+          const detailsElem = diagElement.querySelector('details');
+          if (detailsElem) detailsElem.open = true;
+        }
+      }, 500);
+    }
+  }, []);
+
   const pipelineSteps = [
     "Initializing local client parameters...",
     "Validating input incident schema...",
@@ -195,6 +211,7 @@ export const LiveGeneration: React.FC = () => {
 
       PRESET_CACHE.set(cacheKey, response);
       setSensitivityResult(response as { neutral: LiveGenerationResponse; loaded: LiveGenerationResponse });
+      localStorage.setItem('checklist_framing_test', 'true');
     } catch (err: unknown) {
       PENDING_REQUESTS.delete(cacheKey);
       console.error('[Inference Error]', err);
@@ -671,8 +688,11 @@ export const LiveGeneration: React.FC = () => {
                   </div>
 
                 {/* Governance Payload Inspector — Separates the 4 metrics distinctly */}
-                <div className="glass-panel" style={{ marginTop: '20px', textAlign: 'left', border: '1px solid rgba(255,255,255,0.06)', padding: '16px 20px', borderRadius: '8px', background: '#121212' }}>
-                  <details style={{ cursor: 'pointer' }}>
+                <div id="governance-diagnostics-panel" className="glass-panel" style={{ marginTop: '20px', textAlign: 'left', border: '1px solid rgba(255,255,255,0.06)', padding: '16px 20px', borderRadius: '8px', background: '#121212' }}>
+                  <details 
+                    style={{ cursor: 'pointer' }}
+                    onToggle={(e) => { if (e.currentTarget.open) { localStorage.setItem('checklist_governance_diagnostics', 'true'); } }}
+                  >
                     <summary style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 'bold', userSelect: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <span style={{ fontSize: '0.6rem', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', color: '#EAB308', background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.2)', padding: '2px 8px', borderRadius: '3px' }}>Governance</span>
                       System Diagnostics &amp; Audit Record

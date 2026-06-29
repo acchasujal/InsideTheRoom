@@ -266,6 +266,7 @@ export const AmbiguityHeatmap: React.FC<AmbiguityHeatmapProps> = ({
   const handleSelect = (term: AmbiguityTerm) => {
     setSelectedTerm(term);
     onTermSelect?.(term);
+    localStorage.setItem('checklist_knowledge_graph', 'true');
   };
 
   const getHeatColor = (score: number) => {

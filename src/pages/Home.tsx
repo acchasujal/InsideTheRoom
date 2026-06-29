@@ -8,6 +8,20 @@ export const Home: React.FC = () => {
   const navigate = useNavigate();
   const { currentIncidentIndex, resetDemo } = useDemo();
 
+  // Onboarding Checklist state
+  const [checklist, setChecklist] = useState(() => ({
+    framingTest: localStorage.getItem('checklist_framing_test') === 'true',
+    knowledgeGraph: localStorage.getItem('checklist_knowledge_graph') === 'true',
+    incidentReview: localStorage.getItem('checklist_incident_review') === 'true',
+    governanceDiagnostics: localStorage.getItem('checklist_governance_diagnostics') === 'true'
+  }));
+
+  const toggleChecklistItem = (key: keyof typeof checklist) => {
+    const newVal = !checklist[key];
+    setChecklist(prev => ({ ...prev, [key]: newVal }));
+    localStorage.setItem(`checklist_${key.replace(/([A-Z])/g, '_$1').toLowerCase()}`, newVal ? 'true' : 'false');
+  };
+
   // Animation States
   const headlineText = "Every rulebook contains words it never defines.";
   const words = headlineText.split(' ');
@@ -96,7 +110,7 @@ export const Home: React.FC = () => {
           </div>
         </div>
 
-        {/* The 'Deliberate' Clock & Copy */}
+        {/* The 'Deliberate' Clock & Copy -> Replaced with value-first hero copy */}
         <div style={{
           opacity: showBody ? 1 : 0,
           transform: showBody ? 'translateY(0)' : 'translateY(10px)',
@@ -108,129 +122,7 @@ export const Home: React.FC = () => {
           alignItems: 'center',
           gap: '16px'
         }}>
-          <p style={{ fontSize: '1.08rem', color: '#f5f5f5', margin: 0, lineHeight: 1.4, maxWidth: '640px' }}>
-            Those undefined words are where discretion lives — and where AI systems fail silently.
-          </p>
-          <div style={{ 
-            background: 'rgba(255,255,255,0.02)', 
-            border: '1px solid rgba(255,255,255,0.05)', 
-            borderRadius: '6px', 
-            padding: '8px 16px',
-            display: 'inline-block',
-            textAlign: 'center'
-          }}>
-            <span style={{ fontSize: '0.62rem', fontFamily: 'monospace', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '2px' }}>
-              FIFA Law 12 Discretion Metric
-            </span>
-            <span style={{ fontSize: '1.15rem', fontFamily: 'monospace', fontWeight: 'bold', color: '#ef4444', display: 'block' }}>
-              Undefined since 1938 (87 years)
-            </span>
-            <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', display: 'block', marginTop: '2px' }}>
-              since FIFA introduced the word "deliberate" without a formal definition.
-            </span>
-          </div>
-          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5, maxWidth: '700px' }}>
-            Inside the Room uses IBM Granite to find these linguistic tension points, map every legitimate reading, and document exactly where your regulations stop being rules and start being opinion.
-          </p>
-        </div>
-
-        {/* Subtle Onboarding Tracker */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: '16px',
-          width: '100%',
-          maxWidth: '1000px',
-          textAlign: 'left',
-          background: 'rgba(255, 255, 255, 0.01)',
-          border: '1px solid rgba(255, 255, 255, 0.05)',
-          borderRadius: '8px',
-          padding: '16px',
-          opacity: showCTA ? 1 : 0,
-          transform: showCTA ? 'translateY(0)' : 'translateY(10px)',
-          transition: 'all 0.8s ease 0.2s',
-          marginTop: '4px'
-        }}>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <div style={{
-              fontSize: '0.85rem',
-              fontWeight: 'bold',
-              color: '#EAB308',
-              background: 'rgba(234, 179, 8, 0.1)',
-              width: '24px',
-              height: '24px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: '1px solid rgba(234, 179, 8, 0.3)',
-              flexShrink: 0
-            }}>1</div>
-            <div>
-              <h4 style={{ margin: '0 0 4px 0', fontSize: '0.82rem', fontWeight: 700, color: '#f5f5f5', letterSpacing: '0.5px' }}>① Framing Test</h4>
-              <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1.35' }}>
-                Test how loaded vs. neutral phrasing impacts Granite's evaluation.
-              </p>
-            </div>
-          </div>
-          <div style={{ display: 'flex', gap: '12px', borderLeft: '1px solid rgba(255, 255, 255, 0.06)', paddingLeft: '16px' }}>
-            <div style={{
-              fontSize: '0.85rem',
-              fontWeight: 'bold',
-              color: '#EAB308',
-              background: 'rgba(234, 179, 8, 0.1)',
-              width: '24px',
-              height: '24px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: '1px solid rgba(234, 179, 8, 0.3)',
-              flexShrink: 0
-            }}>2</div>
-            <div>
-              <h4 style={{ margin: '0 0 4px 0', fontSize: '0.82rem', fontWeight: 700, color: '#f5f5f5', letterSpacing: '0.5px' }}>② Incident Review</h4>
-              <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1.35' }}>
-                Audit four diverse semantic readings (Fan, Referee, VAR, Rulebook).
-              </p>
-            </div>
-          </div>
-          <div style={{ display: 'flex', gap: '12px', borderLeft: '1px solid rgba(255, 255, 255, 0.06)', paddingLeft: '16px' }}>
-            <div style={{
-              fontSize: '0.85rem',
-              fontWeight: 'bold',
-              color: '#EAB308',
-              background: 'rgba(234, 179, 8, 0.1)',
-              width: '24px',
-              height: '24px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: '1px solid rgba(234, 179, 8, 0.3)',
-              flexShrink: 0
-            }}>3</div>
-            <div>
-              <h4 style={{ margin: '0 0 4px 0', fontSize: '0.82rem', fontWeight: 700, color: '#f5f5f5', letterSpacing: '0.5px' }}>③ Governance Report</h4>
-              <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1.35' }}>
-                Analyze compliance-grade system logs, response schema, and latency.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* CTAs */}
-        <div style={{
-          opacity: showCTA ? 1 : 0,
-          transform: showCTA ? 'translateY(0)' : 'translateY(10px)',
-          transition: 'all 0.8s ease 0.3s',
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '16px'
-        }}>
-          {/* HERO STATEMENT — the core demo insight */}
+          {/* Core Demo Insight */}
           <div style={{
             background: 'linear-gradient(135deg, rgba(234,179,8,0.06) 0%, rgba(239,68,68,0.04) 100%)',
             border: '1px solid rgba(234,179,8,0.2)',
@@ -245,7 +137,7 @@ export const Home: React.FC = () => {
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #EAB308 0%, #ef4444 100%)' }} />
             <p style={{
               margin: 0,
-              fontSize: '1.35rem',
+              fontSize: '1.45rem',
               fontWeight: 800,
               color: '#f5f5f5',
               lineHeight: 1.35,
@@ -256,11 +148,207 @@ export const Home: React.FC = () => {
               Different words.{' '}
               <span style={{ color: '#ef4444' }}>Different verdict.</span>
             </p>
-            <p style={{ margin: '10px 0 0 0', fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
-              The Framing Sensitivity Test proves that AI governance decisions shift based on <em>how</em> the incident is described — not just <em>what</em> happened.
-            </p>
           </div>
 
+          <p style={{ fontSize: '1.05rem', color: '#f5f5f5', margin: '8px 0 0 0', lineHeight: 1.4, maxWidth: '680px', fontWeight: 500 }}>
+            Inside the Room leverages IBM Granite to extract open-textured regulatory terms, map alternative semantic readings, and audit AI decision sensitivity automatically.
+          </p>
+
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5, maxWidth: '640px' }}>
+            Open-textured words are where discretion lives—and where enterprise automation fails silently. We prove and govern narrative bias to make high-stakes automated decisions auditable.
+          </p>
+        </div>
+
+        {/* Explore Inside the Room Cards Grid */}
+        <div style={{
+          width: '100%',
+          maxWidth: '1000px',
+          opacity: showCTA ? 1 : 0,
+          transform: showCTA ? 'translateY(0)' : 'translateY(10px)',
+          transition: 'all 0.8s ease 0.2s',
+          marginTop: '16px',
+          textAlign: 'left'
+        }}>
+          <h3 style={{ fontSize: '0.85rem', fontFamily: 'monospace', color: '#EAB308', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '16px', fontWeight: 700 }}>
+            🧭 Explore Inside the Room
+          </h3>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: '16px',
+            width: '100%'
+          }}>
+            {[
+              {
+                id: 'framingTest',
+                icon: '⚖️',
+                title: '① Framing Test',
+                desc: "Test how loaded vs. neutral phrasing impacts Granite's evaluation.",
+                est: '2 min',
+                path: '/live'
+              },
+              {
+                id: 'knowledgeGraph',
+                icon: '🕸️',
+                title: '② Knowledge Graph',
+                desc: 'Explore undefined terms, ambiguity hotspots and interpretation spread.',
+                est: '2 min',
+                path: '/heatmap'
+              },
+              {
+                id: 'incidentReview',
+                icon: '⚽',
+                title: '③ Incident Review',
+                desc: 'Walk through historic World Cup controversies using Granite reasoning.',
+                est: '3 min',
+                path: '/incident/perisic'
+              },
+              {
+                id: 'governanceDiagnostics',
+                icon: '📊',
+                title: '④ Governance Diagnostics',
+                desc: 'Analyze compliance-grade system logs, response schema, and latency.',
+                est: '1 min',
+                path: '/live?show_diagnostics=true'
+              }
+            ].map(card => (
+              <div 
+                key={card.id}
+                onClick={() => navigate(card.path)}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.02)',
+                  border: '1px solid rgba(255, 255, 255, 0.06)',
+                  borderRadius: '8px',
+                  padding: '16px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                  justifyContent: 'space-between',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                }}
+                onMouseOver={e => {
+                  e.currentTarget.style.borderColor = 'rgba(234, 179, 8, 0.4)';
+                  e.currentTarget.style.background = 'rgba(234, 179, 8, 0.02)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseOut={e => {
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.06)';
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                    <span style={{ fontSize: '1.25rem' }}>{card.icon}</span>
+                    <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: '4px' }}>
+                      {card.est}
+                    </span>
+                  </div>
+                  <h4 style={{ margin: '4px 0', fontSize: '0.9rem', color: '#f5f5f5', fontWeight: 700 }}>{card.title}</h4>
+                  <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>{card.desc}</p>
+                </div>
+                <span style={{ fontSize: '0.7rem', color: '#EAB308', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600, marginTop: '12px' }}>
+                  Launch →
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Interactive Demo Checklist */}
+        <div style={{
+          width: '100%',
+          maxWidth: '1000px',
+          background: 'linear-gradient(180deg, rgba(234,179,8,0.02) 0%, rgba(0,0,0,0) 100%)',
+          border: '1px solid rgba(234, 179, 8, 0.2)',
+          borderRadius: '8px',
+          padding: '20px',
+          marginTop: '16px',
+          opacity: showCTA ? 1 : 0,
+          transform: showCTA ? 'translateY(0)' : 'translateY(10px)',
+          transition: 'all 0.8s ease 0.25s',
+          textAlign: 'left'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+            <h3 style={{ margin: 0, fontSize: '0.85rem', fontFamily: 'monospace', color: '#EAB308', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: 700 }}>
+              🏆 Judge Demo Checklist
+            </h3>
+            <span style={{ fontSize: '0.7rem', fontFamily: 'monospace', color: '#10B981', background: 'rgba(16,185,129,0.08)', padding: '2px 8px', borderRadius: '4px', border: '1px solid rgba(16,185,129,0.2)' }}>
+              Progress: {Object.values(checklist).filter(Boolean).length} / 4 Completed
+            </span>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
+            {[
+              { key: 'framingTest' as const, label: 'Run a Framing Sensitivity Test', desc: 'Observe decision outcome shifts.' },
+              { key: 'knowledgeGraph' as const, label: 'Audit terms in Knowledge Graph', desc: 'Inspect the interpretation spread.' },
+              { key: 'incidentReview' as const, label: 'Complete an Incident Review', desc: 'Confirm human post-disclosure alignment.' },
+              { key: 'governanceDiagnostics' as const, label: 'Inspect Governance Payload Logs', desc: 'Review compliance-grade trace logs.' }
+            ].map(item => (
+              <div 
+                key={item.key}
+                onClick={() => toggleChecklistItem(item.key)}
+                style={{
+                  display: 'flex',
+                  gap: '10px',
+                  alignItems: 'flex-start',
+                  cursor: 'pointer',
+                  padding: '8px 12px',
+                  borderRadius: '6px',
+                  background: checklist[item.key] ? 'rgba(16,185,129,0.02)' : 'rgba(255,255,255,0.01)',
+                  border: checklist[item.key] ? '1px solid rgba(16,185,129,0.15)' : '1px solid rgba(255,255,255,0.03)',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <div style={{
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '3px',
+                  border: checklist[item.key] ? '1.5px solid #10B981' : '1.5px solid var(--text-muted)',
+                  background: checklist[item.key] ? '#10B981' : 'transparent',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: '2px',
+                  flexShrink: 0,
+                  fontSize: '0.65rem',
+                  color: '#000',
+                  fontWeight: 'bold'
+                }}>
+                  {checklist[item.key] ? '✓' : ''}
+                </div>
+                <div>
+                  <span style={{ 
+                    fontSize: '0.8rem', 
+                    fontWeight: 600, 
+                    color: checklist[item.key] ? 'rgba(255,255,255,0.85)' : '#f5f5f5',
+                    textDecoration: checklist[item.key] ? 'line-through' : 'none',
+                    transition: 'all 0.2s'
+                  }}>
+                    {item.label}
+                  </span>
+                  <span style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+                    {item.desc}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* CTAs */}
+        <div style={{
+          opacity: showCTA ? 1 : 0,
+          transform: showCTA ? 'translateY(0)' : 'translateY(10px)',
+          transition: 'all 0.8s ease 0.3s',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '12px',
+          marginTop: '8px'
+        }}>
           {/* Primary CTA: Framing Sensitivity Test */}
           <button 
             className="btn-primary" 
@@ -277,11 +365,11 @@ export const Home: React.FC = () => {
               letterSpacing: '0.5px',
               borderRadius: '6px'
             }} 
-            onClick={() => navigate('/live?mode=sensitivity')}
+            onClick={() => navigate('/live')}
             onMouseOver={e => { e.currentTarget.style.boxShadow = '0 0 40px rgba(234, 179, 8, 0.45)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
             onMouseOut={e => { e.currentTarget.style.boxShadow = '0 0 24px rgba(234, 179, 8, 0.25)'; e.currentTarget.style.transform = 'translateY(0)'; }}
           >
-            Run the Framing Sensitivity Test →
+            Launch the Framing Sensitivity Test →
           </button>
 
           {/* Secondary CTA: Walk the Review Room */}
@@ -305,7 +393,6 @@ export const Home: React.FC = () => {
               Walk the Review Room
             </button>
           </div>
-
         </div>
 
         {/* Real Ambiguity Heatmap (Hero Centerpiece) */}
