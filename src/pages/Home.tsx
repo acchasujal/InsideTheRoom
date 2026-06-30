@@ -205,11 +205,11 @@ export const Home: React.FC = () => {
               },
               {
                 id: 'governanceDiagnostics',
-                icon: '📊',
+                icon: '🛡️',
                 title: '④ Governance Diagnostics',
-                desc: 'Analyze compliance-grade system logs, response schema, and latency.',
+                desc: 'View the full enterprise audit trail — confidence scores, model info, compliance metadata and reproducibility.',
                 est: '1 min',
-                path: '/live?show_diagnostics=true'
+                path: '/governance'
               }
             ].map(card => (
               <div 

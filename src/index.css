@@ -117,3 +117,8 @@ p {
   0%, 100% { opacity: 1; box-shadow: 0 0 4px #10B981; }
   50% { opacity: 0.5; box-shadow: 0 0 8px #10B981; }
 }
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

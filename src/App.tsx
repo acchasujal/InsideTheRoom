@@ -4,6 +4,7 @@ import { Home } from './pages/Home';
 import { IncidentContainer } from './pages/IncidentContainer';
 import { LiveGeneration } from './pages/LiveGeneration';
 import { HeatmapDemo } from './pages/HeatmapDemo';
+import { GovernanceDiagnostics } from './pages/GovernanceDiagnostics';
 import { Layout } from './layouts/Layout';
 import './App.css';
 
@@ -22,6 +23,7 @@ function App() {
             <Route path="/incident/:id" element={<IncidentContainerWrapper />} />
             <Route path="/live" element={<LiveGeneration />} />
             <Route path="/heatmap" element={<HeatmapDemo />} />
+            <Route path="/governance" element={<GovernanceDiagnostics />} />
           </Routes>
         </Layout>
       </DemoProvider>

@@ -21,6 +21,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const isLive = location.pathname.startsWith('/live');
   const isHeatmap = location.pathname.startsWith('/heatmap');
   const isIncident = location.pathname.startsWith('/incident');
+  const isGovernance = location.pathname.startsWith('/governance');
 
   // Breadcrumbs generator
   const renderBreadcrumbs = () => {
@@ -37,6 +38,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     } else if (isIncident && activeIncident) {
       breadcrumbs.push({ label: 'Incident Review', path: `/incident/${activeIncident.id}` });
       breadcrumbs.push({ label: activeIncident.title, path: location.pathname });
+    } else if (isGovernance) {
+      breadcrumbs.push({ label: 'Governance Diagnostics', path: '/governance' });
     }
 
     return (
@@ -73,19 +76,20 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
     let activeStep = 0;
     if (isLive) {
-      const showDiag = new URLSearchParams(location.search).get('show_diagnostics') === 'true';
-      activeStep = showDiag ? 4 : 1;
+      activeStep = 1;
     } else if (isHeatmap) {
       activeStep = 2;
     } else if (isIncident) {
       activeStep = 3;
+    } else if (isGovernance) {
+      activeStep = 4;
     }
 
     const steps = [
       { num: 1, label: 'Framing Test', path: '/live' },
       { num: 2, label: 'Knowledge Graph', path: '/heatmap' },
       { num: 3, label: 'Incident Review', path: '/incident/perisic' },
-      { num: 4, label: 'Governance Report', path: '/live?show_diagnostics=true' }
+      { num: 4, label: 'Governance Diagnostics', path: '/governance' }
     ];
 
     const activeStepObj = steps.find(s => s.num === activeStep);
@@ -281,6 +285,24 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             }}
           >
             Incident Review
+          </Link>
+          <Link 
+            to="/governance"
+            title="Review the final governance audit trail — Explainable · Reproducible · Auditable."
+            style={{ 
+              fontSize: '0.8rem', 
+              textDecoration: 'none', 
+              color: isGovernance ? '#EAB308' : 'var(--text-muted)', 
+              fontWeight: isGovernance ? 700 : 500,
+              fontFamily: 'monospace',
+              letterSpacing: '0.5px',
+              transition: 'color 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+            }}
+          >
+            🛡 Governance
           </Link>
           <button 
             onClick={() => setIsAboutOpen(true)}
