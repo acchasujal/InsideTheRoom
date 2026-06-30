@@ -1,7 +1,22 @@
 # Inside the Room
+![IBM Granite](https://img.shields.io/badge/IBM-Granite-blue)![watsonx.ai](https://img.shields.io/badge/Built%20with-watsonx.ai-052FAD)![React](https://img.shields.io/badge/React-19-61DAFB)![Vite](https://img.shields.io/badge/Vite-7-646CFF)![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6)![License](https://img.shields.io/badge/License-MIT-green)
+
 
 > **Discretion Disclosure:** Making AI Governance Auditable  
 > Surface undefined terms. Prove discretion risk. Generate compliance artifacts.
+
+## 🌐 Live Experience
+
+| Resource | Link |
+|----------|------|
+| 🚀 Production | https://inside-the-room.vercel.app |
+| 🎥 Demo Video | [InsideTheRoom-Demo](https://youtu.be/5Gf9zCwRHD8) |
+| 💻 GitHub Repository | https://github.com/acchasujal/InsideTheRoom |
+
+## Preview
+
+![Inside the Room Hero](public/banner.png)
+---
 
 Every rulebook — FIFA's, your insurer's, your content policy's — contains words like *"deliberately"* or *"reasonable"* that are undefined on purpose. Those undefined words are where discretion lives, where lawsuits begin, and where AI systems fail silently.
 
@@ -10,6 +25,12 @@ Every rulebook — FIFA's, your insurer's, your content policy's — contains wo
 Demonstrated through World Cup incidents. Designed for enterprise AI governance.
 
 ---
+
+# Product Showcase
+
+A complete enterprise AI governance platform built on IBM Granite.
+
+![UI Showcase](public/UI-Showcase.png)
 
 ## 🎯 The Problem
 
@@ -56,6 +77,12 @@ Inside the Room uses IBM Granite to **map the interpretive landscape** in any go
 - Enterprise value: Proof of transparency for regulators and stakeholders
 
 ---
+
+# Architecture Overview
+
+The complete reasoning pipeline from ambiguity detection to explainable governance.
+
+![Architecture](public/Architecture-diagram.png)
 
 ## 🏗️ Architecture
 
@@ -344,6 +371,38 @@ Inside the Room operationalizes the core use case of watsonx.governance:
 - [ ] Incident data loaded (incidents.json accessible)
 
 ---
+
+# Judge Cheat Sheet
+
+A one-page executive overview of the project.
+
+📄 **Location** (public/Inside the Room - Judge Cheat Sheet.pdf)
+
+
+# Gallery
+
+## Hero Banner
+
+![Hero](public/banner.png)
+
+---
+
+## Product Showcase
+
+![Showcase](public/UI-Showcase.png)
+
+---
+
+## Architecture
+
+![Architecture](public/Architecture-diagram.png)
+
+---
+
+## Project Logo
+
+![Logo](public/InsideTheRoom.png)
+
 
 ## 📖 Documentation Map
 
